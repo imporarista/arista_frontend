@@ -1,0 +1,67 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <img src="assets/images/icon/arrow_back.png" class="arrow_back" routerLink="/visit/customer-visits-list">
+          <span>VISITA CLIENTE</span>
+        </div>
+        <section class="search-block">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-6 offset-lg-3">
+                <div class="ng-autocomplete">
+                  <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
+                    placeholder="Cliente" (selected)='customers.setCustomerSelected($event)'
+                    (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
+                    [notFoundTemplate]="notFoundTemplate">
+                  </ng-autocomplete>
+
+                  <ng-template #itemTemplate let-item>
+                    <a [innerHTML]="item.label"></a><br />
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div *ngIf="!visiting" class="product-buttons buttons-center">
+      <a class="btn btn-solid" (click)="startVisit()">Empezar visita</a>
+    </div>
+  </div>
+  <div *ngIf="visiting">
+    <h3>{{visit.visitCustomerName}}</h3>
+    <form type="radio" [(ngModel)]="visit.visitHasSale">
+      <span>
+        ¿Realizó Venta?
+      </span>
+      <div>
+        <label>Si</label>
+        <input type="radio" value="1">
+      </div>
+      <div>
+        <label>No</label>
+        <input type="radio" value="0">
+      </div>
+      <div class="col-md-6" *ngIf="visit.visitHasSale == 1">
+        <label>Valor de la venta</label>
+        <input type="number" class="form-control" placeholder="Valor de la venta" [(ngModel)]="visit.visitTotalSale">
+      </div>
+      <div class="col-md-6" *ngIf="visit.visitHasSale != 1">
+        <label>Motivo por el que no hubo venta</label>
+        <input type="text" class="form-control" placeholder="Motivo por el que no hubo venta"
+          [(ngModel)]="visit.visitNoSaleReason">
+      </div>
+      <div class="product-buttons buttons-center">
+        <a class="btn btn-solid" (click)="finishVisit()">Finalizar visita</a>
+      </div>
+    </form>
+  </div>
+  <!-- Container-fluid Ends-->

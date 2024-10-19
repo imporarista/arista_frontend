@@ -1,0 +1,27 @@
+<app-breadcrumb [title]="'Login'" [breadcrumb]="'Login'"></app-breadcrumb>
+<!-- section start -->
+<section class="login-page section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Login</h3>
+                <div class="theme-card">
+                    <form class="theme-form" (ngSubmit)="loginUser()"> <!-- Cambiado aquí -->
+                        <div class="form-group">
+                            <label for="email">Usuario</label>
+                            <input type="text" class="form-control" id="email" placeholder="Escriba su usuario" 
+                                [(ngModel)]="registerCredentials.user" name="user" required> <!-- Agregado name="user" -->
+                        </div>
+                        <div class="form-group">
+                            <label for="review">Contraseña</label>
+                            <input type="password" class="form-control" id="review" placeholder="Ingrese su contraseña" 
+                                [(ngModel)]="registerCredentials.password" name="password" required> <!-- Agregado name="password" -->
+                        </div>
+                        <button type="submit" class="btn btn-solid">Login</button> <!-- Cambiado aquí -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Section ends-->

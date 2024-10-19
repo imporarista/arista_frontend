@@ -1,0 +1,47 @@
+<div class="product-top-filter">
+    <div class="row">
+        <div class="col-12">
+            <div class="product-filter-content">
+                <div class="collection-grid-view" *ngIf="layoutView == 'grid-view'">
+                    <ul>
+                        <li (click)="setGridLayout('col-lg-6')">
+                            <img src="assets/images/icon/2.png" class="product-2-layout-view">
+                        </li>
+                        <li (click)="setGridLayout('col-lg-4')">
+                            <img src="assets/images/icon/3.png" class="product-3-layout-view">
+                        </li>
+                        <li (click)="setGridLayout('col-lg-3')">
+                            <img src="assets/images/icon/4.png" class="product-4-layout-view">
+                        </li>
+                        <li (click)="setGridLayout('col-lg-2')">
+                            <img src="assets/images/icon/6.png" class="product-6-layout-view">
+                        </li>
+                    </ul>
+                </div>
+                <div class="main-navbar">
+                    <div id="mainnav">
+                        <!-- <div class="toggle-nav" (click)="mainMenuToggle()">
+                            <i class="fa fa-bars sidebar-bar"></i>
+                        </div> -->
+                        <ul class="nav-menu" [class.opennav]="navServices?.mainMenuToggle">
+                            <li class="back-btn">
+                                <div class="mobile-back text-end" (click)="mainMenuToggle()">
+                                    <!-- <span>Back</span> -->
+                                    <i class="fa fa-angle-right ps-2" aria-hidden="true"></i>
+                                </div>
+                            </li>
+                        </ul>
+                        <ng-container *ngIf="userType == '2'">
+                            <ul>
+                                <a [routerLink]="['/visit/customer-visits-list']">VISITAS</a> |
+                                <a [routerLink]="['/home/catalog']">CATÁLOGO</a> |
+                                <a [routerLink]="['/visit/customer-orders']">PEDIDOS</a> |
+                                <a [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
+                            </ul>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

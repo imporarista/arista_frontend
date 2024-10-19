@@ -1,0 +1,55 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <img src="assets/images/icon/arrow_back.png" class="arrow_back" routerLink="/home/catalog">
+                    <span>LISTA DE VISITAS</span>
+                </div>
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        <div class="form-group row">
+                            <div class="col-xl-3 col-md-4">
+                                <label for="datefilter">
+                                    Fecha:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <input class="form-control" data-date-format="dd/mm/yyyy"
+                                    [(ngModel)]="dateList.filterDate" type="date">
+                            </div>
+                        </div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" sortable="order_id" (sort)="onSort($event)">Cliente</th>
+                                    <th scope="col" sortable="date" (sort)="onSort($event)">Hora</th>
+                                    <th scope="col" sortable="date" (sort)="onSort($event)">Tiempo de Visita</th>
+                                    <th scope="col" sortable="total" (sort)="onSort($event)">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of visits">
+                                    <td scope="row">{{ item.visitCustomerName }}</td>
+                                    <td>
+                                        {{item.visitStartTime}}
+                                    </td>
+                                    <td>
+                                        {{item.visitSpendTime}}
+                                    </td>
+                                    <td>
+                                        {{item.visitEndTime}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="product-buttons buttons-center" *ngIf="userType == '2'">
+        <a class="btn btn-solid" (click)="newVisit()">Visitar Cliente</a>
+    </div>
+</div>
+<!-- Container-fluid Ends-->

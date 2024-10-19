@@ -1,0 +1,38 @@
+<div class="navbar">
+  <a href="javascript:void(0)" (click)="leftMenuToggle()">
+    <div class="bar-style"><i class="fa fa-bars sidebar-bar" aria-hidden="true"></i></div>
+  </a>
+  <div id="mySidenav" class="sidenav" [class.openSide]="navServices?.leftMenuToggle">
+    <a href="javascript:void(0)" class="sidebar-overlay" (click)="leftMenuToggle()" (mouseover)="onHover(false)"></a>
+    <nav id="unset">
+      <div (click)="leftMenuToggle()">
+        <div class="sidebar-back text-start"><i class="fa fa-angle-left pe-2" aria-hidden="true"></i> Regresar
+        </div>
+      </div>
+      <ul id="sub-menu" class="sidebar-menu">
+        <li *ngFor="let menuItem of categories" (mouseover)="onHover(menuItem.sub_category?.length > 0 ? true : false)">
+            <!-- Link -->
+            <a [routerLink]="['/home/catalog', menuItem.cat_id]">
+               {{menuItem.cat_name}}
+               <span class="sub-arrow" *ngIf="menuItem.sub_category?.length > 0"
+                (click)="toggletNavActive(menuItem)"></span>
+            </a>
+            <!-- 2nd Level Menu -->
+            <ul [class]="menuItem.megaMenu ? 'mega-menu clothing-menu' : ''" [class.opensub1]="menuItem.menu_active" *ngIf="menuItem.sub_category?.length > 0">
+              <!-- Simple Menu Start-->
+              <ng-container>
+                <li *ngFor="let childrenItem of menuItem.sub_category">
+                  <!-- Link -->
+                  <a class="has-submenu" [routerLink]="['/home/catalog', menuItem.cat_id,childrenItem.subc_id]">
+                     {{childrenItem.subc_name}}
+                  </a>
+                </li>
+              </ng-container>
+              <!-- Simple Menu End-->
+            </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+

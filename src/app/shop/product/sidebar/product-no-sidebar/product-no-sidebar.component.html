@@ -1,0 +1,98 @@
+<app-breadcrumb [title]="product?.prod_name" [breadcrumb]="'Product'"></app-breadcrumb>
+<!-- section start -->
+<section class="section-b-space">
+  <div class="collection-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <owl-carousel-o [options]="ProductDetailsMainSliderConfig" #owlCar  class="product-slick height-512">
+                    <ng-container *ngFor="let image of product_images; index as i">
+                        <ng-template carouselSlide [id]="i" >
+                            <div class="zoom-container" (click)="openPhotoSwipe(i)">
+                                <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
+                                   [lazyLoad]="apiService.thumbnailsDirectory + image + (image.includes('.') ? '' : '.jpg')" 
+                                   [alt]="product.prod_name" class="img-fluid" [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')">
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
+                <div class="row" *ngIf="product_images.length > 1">
+                    <div class="col-12">
+                        <div class="slider-nav">
+                            <owl-carousel-o [options]="ProductDetailsThumbConfig" class="product-slick height-240">
+                                <ng-container *ngFor="let image of product_images; index as i">
+                                    <ng-template carouselSlide [id]="i">
+                                        <div class="owl-thumb" [class.active]="i == activeSlide">
+                                            <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
+                                            [lazyLoad]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
+                                            [alt]="product.prod_name"
+                                            class="img-fluid"
+                                            [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
+                                            (click)="owlCar.to(activeSlide = i)">
+                                        </div>
+                                    </ng-template>
+                                </ng-container>
+                            </owl-carousel-o>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 rtl-text">
+                <div class="product-right">
+                    <h2>{{ product?.prod_name }}</h2>
+                    <h3>
+                        {{ product?.price | currency: productService.Currency?.currency:'symbol' }}
+                    </h3>
+                    <app-stock-inventory [stock]="product.stock"></app-stock-inventory>
+                    <div class="product-description border-product">
+                        
+                        <h5 class="avalibility" *ngIf="counter <= product.stock"><span>En Stock</span></h5>
+                        <h5 class="avalibility" *ngIf="counter > product.stock"><span>No hay en Stock</span></h5>
+                        <h6 class="product-title">quantity</h6>
+                        <div class="qty-box">
+                            <div class="input-group">
+                            <span class="input-group-prepend">
+                                <button type="button" class="btn quantity-left-minus" data-type="minus" (click)="decrement()">
+                                    <i class="ti-angle-left"></i>
+                                </button>
+                            </span>
+                            <input type="text" name="quantity" class="form-control input-number" [value]="counter" disabled/>
+                            <span class="input-group-prepend">
+                                <button type="button" class="btn quantity-right-plus" data-type="plus" (click)="increment()">
+                                    <i class="ti-angle-right"></i>
+                                </button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-buttons">
+                        <a href="javascrip:void(0)" class="btn btn-solid" [class.disabled]="counter > product.stock" (click)="addToCart(product)">Agregar al carrito</a>
+                    </div>
+                    <div class="border-product">
+                        <h6 class="product-title">Detalle del producto</h6>
+                        <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="tab-product m-0">
+            <div class="row">
+                <div class="col-sm-12 col-lg-12">
+                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>Descripción</a>
+                        <ng-template ngbNavContent>
+                            <p>{{ product.prod_descriptions }}</p>
+                        </ng-template>
+                    </li>
+                    </ul>
+                    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+  </div>
+  <app-related-product [type]="product?.cat_id"></app-related-product>
+</section>
+<app-size-modal #sizeChart [product]="product"></app-size-modal>
+<!-- Section ends -->

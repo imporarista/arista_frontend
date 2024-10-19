@@ -1,0 +1,50 @@
+<div *ngIf="!loader">
+  <div class="img-wrapper">
+    <div class="lable-block">
+      <span class="lable4 orange" *ngIf="product?.status == 1">Destacado</span>
+      <span class="lable3" *ngIf="product?.status == 2">Nuevo</span>
+      <span class="lable4 red" *ngIf="product?.status == 4">Agotado</span>
+      <span class="lable4 green" *ngIf="product?.status == 6">Outlet</span>
+    </div>
+    <div class="front">
+      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name?.replace(' ', '-')]">
+        <img 
+          [defaultImage]="ImageSrc ? ImageSrc : 'assets/images/product/placeholder.jpg'" 
+          [lazyLoad]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" 
+          class="img-fluid lazy-loading" 
+          alt="{{ product?.image }}" />
+      </a>
+    </div>
+    <div class="back" *ngIf="onHowerChangeImage">
+      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name?.replace(' ', '-')]">
+        <img [src]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" class="img-fluid lazy-loading" alt="{{ apiService.thumbnailsDirectory + product?.image }}">
+      </a>
+    </div>
+    <div class="card-info-desired" *ngIf="desiredProduct.desiredProductsIds.includes(product.prod_id)">
+      <a href="javascript:void(0)" title="Agregar al Carrito" (click)="addToWishlist(product)">
+        <i class="ti-heart"></i>
+      </a>
+    </div>
+    <div class="cart-info cart-wrap">
+      <a href="javascript:void(0)" title="Agregar al Carrito" (click)="addToWishlist(product)">
+        <i class="ti-heart" aria-hidden="true"></i>
+      </a>
+      <a href="javascript:void(0)" title="Vista Rápida" (click)="QuickView.openModal()">
+        <i class="ti-search" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+  <div class="product-detail">
+    <div>
+      <bar-rating [rate]="5" [readOnly]="true"></bar-rating>
+      <h6>{{ product?.prod_name | titlecase }}</h6> 
+      <b>Cantidad:</b>{{ product?.stock }} | <b>Precio:</b>{{ product?.price | currency }}<br/>
+      <span>{{ product?.prod_descriptions }}</span>
+      
+    </div>
+  </div>
+</div>
+<app-skeleton-product-box *ngIf="loader"></app-skeleton-product-box>
+<app-quick-view #quickView [product]="product" [currency]="currency"></app-quick-view>
+<app-cart-modal #cartModal [product]="product" [currency]="currency" *ngIf="cartModal"></app-cart-modal>
+

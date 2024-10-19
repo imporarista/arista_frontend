@@ -1,0 +1,81 @@
+<header class="sticky" [ngClass]="class" [class.fixed]="stick && sticky">
+  <div class="mobile-fix-option"></div>
+  <div class="top-header" *ngIf="topbar">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="header-contact">
+            <ul>
+              <li>Bienvenido a Arista</li>
+              <li><i class="fa fa-phone" aria-hidden="true"></i>Llamar: 313 6589277</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 text-end">
+          <ul class="header-dropdown">
+            <li class="mobile-wishlist">
+              <a [routerLink]="['/shop/cart']"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Carrito de
+                Compras</a>
+            </li>
+            <li></li>
+            <li class="onhover-dropdown mobile-account">
+              <i class="fa fa-user" aria-hidden="true"></i> Mi cuenta
+              <ul class="onhover-show-div">
+                <!-- <li>
+                  <a data-lng="en" [routerLink]="['/pages/login']">
+                    Entrar
+                  </a>
+                </li> -->
+                <li>
+                  <a data-lng="es" (click)="closeSession()">
+                    Cerrar sesion
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="main-menu">
+          <div class="menu-left">
+            <app-left-menu></app-left-menu>
+            <div class="brand-logo">
+              <a routerLink="/home/catalog" id="headerlogo">
+                <img [src]="themeLogo" width="130" height="40" class="img-fluid" alt="logo">
+              </a>
+            </div>
+          </div>
+          <div class="menu-right pull-right">
+            <div class="sub-title">
+              <div class="header-title">
+                <h4><br>Estado<br></h4>
+              </div>
+              <div class="header-contant">
+                <select [(ngModel)]="statusProduct" class="product-status" cancelText="Cancelar"
+                  (change)="filterStatus()">
+                  <option value="">Todos</option>
+                  <option value="1">Destacado</option>
+                  <option value="2">Nuevo</option>
+                  <option value="3">Normal</option>
+                  <option value="4">Agotado</option>
+                  <option value="6">Outlet</option>
+                </select>
+              </div>
+              <div>
+                <!-- <app-menu></app-menu> -->
+              </div>
+            </div>
+            <div>
+              <app-settings></app-settings>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,29 @@
+<app-breadcrumb [title]="'Portfolio'" [breadcrumb]="'Portfolio'"></app-breadcrumb>
+<!-- Our Project Start -->
+<section class="portfolio-section grid-portfolio">
+    <div class="container">
+        <div align="center" id="form1">
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'all'" (click)="filter('all')">Todos</button>
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'fashion'" (click)="filter('fashion')">Destacado</button>
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'bags'" (click)="filter('bags')">Nuevo</button>
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'shoes'" (click)="filter('shoes')">Normal</button>
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'watch'" (click)="filter('watch')">Agotado</button>
+            <button class="filter-button project_button" [class.active]="galleryFilter == 'watch'" (click)="filter('watch')">Outlet</button>
+        </div>
+        <div class="row">
+            <div class="isotopeSelector col-lg-3 col-sm-6" *ngFor="let img of imageData">
+                <div class="overlay">
+                    <div class="border-portfolio">
+                        <a href="javascript:void(0)">
+                            <div class="overlay-background" (click)="lightbox.open(0)">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </div>
+                            <img [src]="img.srcUrl">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Our Project End -->

@@ -1,0 +1,60 @@
+<app-header-one [sticky]="false" [themeLogo]="aristaLogo"></app-header-one>
+<!-- sacado de collection-no-sidebar -->
+<!-- <app-breadcrumb [title]="'Catálogo'" [breadcrumb]="'Catálogo'"></app-breadcrumb> -->
+<!-- section start -->
+<section class="section-b-space">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="collection-product-wrapper" id="products">
+                                    <app-grid [products]="products" [layoutView]="layoutView" [sortBy]="sortBy"
+                                        (setGrid)="updateGridLayout($event)" (setLayout)="updateLayoutView($event)"
+                                        (sortedBy)="sortByFilter($event)">
+                                    </app-grid>
+                                    <div class="product-wrapper-grid" [ngClass]="layoutView">
+                                        <div class="row">
+                                            <div class="col-grid-box" [ngClass]="grid" *ngFor="let product of products">
+                                                <div class="product-box">
+                                                    <app-product-box-one [product]="product"
+                                                        [currency]="productService?.Currency" [thumbnail]="false"
+                                                        [cartModal]="true" [loader]="true">
+                                                    </app-product-box-one>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Infinite Scroll -->
+                                <div infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="1000"
+                                    (scrolled)="loadMoreProducts()" *ngIf="products.length">
+                                </div>
+                                <div class="product-infinitescroll">
+                                    <div class="theme-paggination-block">
+                                        <div class="container-fluid p-0">
+                                            <div class="row">
+                                                <div class="text-center col-sm-12">
+                                                    <div class="infinite-scrolling mt-3 mb-3 d-inline-block">
+                                                        <img src="assets/images/loader.gif"
+                                                            *ngIf="!finished && products.length">
+                                                        <div class="loading-more active"
+                                                            *ngIf="finished && products.length">No hay más productos</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer-one></app-footer-one>
+<!-- section End -->

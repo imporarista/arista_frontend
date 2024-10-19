@@ -1,0 +1,32 @@
+<p>order-list works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <img src="assets/images/icon/arrow_back.png" class="arrow_back"
+                        routerLink="/visit/customer-visits-list">
+                    <span>LISTA DE ÓRDENES</span>
+                </div>
+                <div class="container">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" sortable="date" (sort)="onSort($event)">Fecha</th>
+                                <th scope="col" sortable="date" (sort)="onSort($event)">Hora</th>
+                                <th scope="col" sortable="total" (sort)="onSort($event)">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of orderList">
+                                <td scope="row">{{ item.date }}</td>
+                                <td>
+                                    {{item.id}}
+                                </td>
+                                <td>
+                                    {{item.amount}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
