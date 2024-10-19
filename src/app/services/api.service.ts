@@ -26,9 +26,9 @@ export class ApiService {
     private httpClient: HttpClient,
     private cacheService: CacheService
   ) {
-    this.apiUrl = 'http://aristaws.kijhotechnologies.com/';
-    this.imageDirectory = 'http://arista.kijhotechnologies.com/uploads/images/';
-    this.thumbnailsDirectory = 'http://arista.kijhotechnologies.com/uploads/images/thumbnails/';
+    this.apiUrl = 'https://aristaws.kijhotechnologies.com/';
+    this.imageDirectory = 'https://arista.kijhotechnologies.com/uploads/images/';
+    this.thumbnailsDirectory = 'https://arista.kijhotechnologies.com/uploads/images/thumbnails/';
   }
 
   getPriceRate(rateId: number) {
