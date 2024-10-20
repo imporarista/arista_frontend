@@ -1,12 +1,26 @@
-h3, .h3 {
+h3 {
     font-size: 24px;
     font-weight: 400;
     color: #777777;
     letter-spacing: 0.03em;
     margin-top: 30px;
+    padding-left: 20vw;
 }
 
-.div {
+.padding-left {
     padding-left: inherit;
+}
+.content-center {
+    display: grid;
+    justify-content: space-around;
+}
+.full {
+    width: 80%;
+    div,form {
+        width: 60vw;
+    }
+}
+
+.display-grid {
     display: grid;
 }

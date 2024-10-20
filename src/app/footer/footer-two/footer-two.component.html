@@ -1,0 +1,22 @@
+<footer class="footer">
+  <section class="section-b-space light-layout">
+    <div class="container">
+      <div class="footer-contant">
+        <ng-container *ngIf="userType == '2'">
+          <ul class="btn btn-outline">
+            <a [routerLink]="['/visit/customer-visits-list']">VISITAS</a>
+          </ul>
+          <ul class="btn btn-outline">
+            <a [routerLink]="['/home/catalog']">CATÁLOGO</a>
+          </ul>
+          <ul class="btn btn-outline">
+            <a [routerLink]="['/visit/customer-orders']">PEDIDOS</a>
+          </ul>
+          <ul class="btn btn-outline">
+            <a [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
+          </ul>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+</footer>

@@ -6,12 +6,13 @@ import { Visitinterface } from 'src/app/interfaces/visitinterface';
 import { ApiService } from 'src/app/services/api.service';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
 import { Router, RouterModule } from '@angular/router';
+import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
 
 
 @Component({
   selector: 'app-customer-visit-list',
   standalone: true,
-  imports: [FormsModule, NgbModule, NgForOf, NgIf, RouterModule],
+  imports: [FormsModule, NgbModule, NgForOf, NgIf, RouterModule, FooterTwoComponent],
   templateUrl: './customer-visit-list.component.html',
   styleUrl: './customer-visit-list.component.scss'
 })

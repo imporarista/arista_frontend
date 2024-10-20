@@ -8,11 +8,12 @@ import { CustomerVisitListComponent } from '../customer-visit-list/customer-visi
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { ApiService } from 'src/app/services/api.service';
+import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
 
 @Component({
   selector: 'app-customer-visits',
   standalone: true,
-  imports: [AutocompleteLibModule, CustomerVisitListComponent, RouterModule, FormsModule, NgIf],
+  imports: [AutocompleteLibModule, CustomerVisitListComponent, RouterModule, FormsModule, NgIf, FooterTwoComponent],
   templateUrl: './customer-visits.component.html',
   styleUrl: './customer-visits.component.scss'
 })
@@ -33,6 +34,7 @@ export class CustomerVisitsComponent implements OnInit {
   };
 
   public visiting: boolean
+  public userType: string;
 
   constructor(
     private api: ApiService,
@@ -54,6 +56,7 @@ export class CustomerVisitsComponent implements OnInit {
       visitStartTime: null,
       visitTotalSale: 0
     };
+    this.userType = localStorage.getItem('userType');
   }
 
   ngOnInit(): void {

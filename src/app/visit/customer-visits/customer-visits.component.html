@@ -34,23 +34,24 @@
       <div *ngIf="!visiting" class="product-buttons buttons-center">
         <a class="btn btn-solid" (click)="startVisit()">Empezar visita</a>
       </div>
-      <div *ngIf="visiting">
+      <div *ngIf="visiting" class="padding-left content-center full">
         <h3>{{visit.visitCustomerName}}</h3>
         <form type="radio" [(ngModel)]="visit.visitHasSale">
           <span>
             ¿Realizó Venta?
           </span>
-          <div>
+          <div class="display-grid">
             <label>Si</label>
             <input type="radio" name="sale" value="1" (click)="visit.visitHasSale = 1">
           </div>
-          <div>
+          <div class="display-grid">
             <label>No</label>
             <input type="radio" name="sale" value="0" (click)="visit.visitHasSale = 0">
           </div>
           <div class="col-md-6" *ngIf="visit.visitHasSale == 1">
             <label>Valor de la venta</label>
-            <input type="number" class="form-control" placeholder="Valor de la venta" [(ngModel)]="visit.visitTotalSale">
+            <input type="number" class="form-control" placeholder="Valor de la venta"
+              [(ngModel)]="visit.visitTotalSale">
           </div>
           <div class="col-md-6" *ngIf="visit.visitHasSale != 1">
             <label>Motivo por el que no hubo venta</label>
@@ -64,4 +65,6 @@
       </div>
     </div>
   </div>
+  <br>
+  <app-footer-two></app-footer-two>
   <!-- Container-fluid Ends-->
