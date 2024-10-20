@@ -1,1 +1,39 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <img src="assets/images/icon/arrow_back.png" class="arrow_back"
+                    routerLink="/visit/customer-visits-list">
+                <span>LOCALIZAR CLIENTE</span>
+            </div>
+            <section class="search-block">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3">
+                            <div class="ng-autocomplete">
+                                <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
+                                    placeholder="Cliente" (selected)='customers.setCustomerSelected($event)'
+                                    (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
+                                    [notFoundTemplate]="notFoundTemplate">
+                                </ng-autocomplete>
+
+                                <ng-template #itemTemplate let-item>
+                                    <a [innerHTML]="item.label"></a><br />
+                                </ng-template>
+
+                                <ng-template #notFoundTemplate let-notFound>
+                                    <div [innerHTML]="notFound"></div>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="product-buttons buttons-center">
+        <a class="btn btn-solid" (click)="saveLocation()">Guardar ubicación</a>
+    </div>
+</div>
+<br>
 <app-footer-two></app-footer-two>
