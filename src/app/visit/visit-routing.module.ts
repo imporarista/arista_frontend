@@ -5,6 +5,7 @@ import { CustomerVisitListComponent } from './customer-visit-list/customer-visit
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CustomerVisitsComponent } from './customer-visits/customer-visits.component';
+import { OrderListComponent } from './order-list/order-list.component';
 
 const routes: Routes = [
   // filtros
@@ -26,6 +27,11 @@ const routes: Routes = [
   {
     path: 'customer-location',
     component: CustomerLocationComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'order-list',
+    component: OrderListComponent,
     canActivate: [authGuard]
   }
 ];
