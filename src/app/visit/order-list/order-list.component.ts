@@ -1,3 +1,4 @@
+import { NgForOf } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Customerinterface } from 'src/app/interfaces/customerinterface';
@@ -8,30 +9,12 @@ import { GeneralFunctionsService } from 'src/app/services/general-functions.serv
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NgForOf],
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.scss'
 })
 export class OrderListComponent {
-  public orderList: Orderlistinterface[] = [
-    {
-      date: '2019-07-01',
-      id: 5,
-      amount: 250000
-    }, {
-      date: '2019-07-01',
-      id: 5,
-      amount: 250000
-    }, {
-      date: '2019-07-01',
-      id: 5,
-      amount: 250000
-    }, {
-      date: '2019-07-01',
-      id: 5,
-      amount: 250000
-    }
-  ];
+  public orderList: Orderlistinterface[] = [];
 
   public customer: Customerinterface = {
     label: 'Cliente',
@@ -48,8 +31,10 @@ item: any;
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: any) => {
+      console.log('params de ordenes', params);
       this.customer = params;
       this.api.getCustomerOrders(this.customer.id).subscribe((responseOrders: Orderlistinterface[]) => {
+        console.log('que pido: ', responseOrders)
         this.orderList = responseOrders;
       });
     });
