@@ -2,20 +2,22 @@
   <section class="section-b-space light-layout">
     <div class="container">
       <div class="footer-contant">
-        <ng-container *ngIf="userType == '2'">
-          <ul class="btn btn-outline">
-            <a [routerLink]="['/visit/customer-visits-list']">VISITAS</a>
+        <div class="card-body tab2-card">
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+            <li [ngbNavItem]="1">
+                <a ngbNavLink [routerLink]="['/visit/customer-visits-list']">VISITAS</a>
+              </li>
+              <li [ngbNavItem]="2">
+                <a ngbNavLink [routerLink]="['/home/catalog']">CATÁLOGO</a>
+              </li>
+              <li [ngbNavItem]="3">
+                <a ngbNavLink [routerLink]="['/visit/customer-orders']">PEDIDOS</a>
+              </li>
+              <li [ngbNavItem]="4">
+                <a ngbNavLink [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
+              </li>
           </ul>
-          <ul class="btn btn-outline">
-            <a [routerLink]="['/home/catalog']">CATÁLOGO</a>
-          </ul>
-          <ul class="btn btn-outline">
-            <a [routerLink]="['/visit/customer-orders']">PEDIDOS</a>
-          </ul>
-          <ul class="btn btn-outline">
-            <a [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
-          </ul>
-        </ng-container>
+      </div>
       </div>
     </div>
   </section>
