@@ -24,24 +24,30 @@
                                 <tr>
                                     <th scope="col" sortable="order_id" (sort)="onSort($event)">Cliente</th>
                                     <th scope="col" sortable="date" (sort)="onSort($event)">Hora</th>
-                                    <th scope="col" sortable="date" (sort)="onSort($event)">Tiempo de Visita</th>
-                                    <th scope="col" sortable="total" (sort)="onSort($event)">Total</th>
+                                    <th scope="col" sortable="date" (sort)="onSort($event)">Tiempo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let item of visits">
-                                    <td scope="row">{{ item.visitCustomerName }}</td>
+                                    <td scope="row">{{item.visitCustomerName}}</td>
                                     <td>
-                                        {{item.visitStartTime}}
+                                        {{generalFunctionsService.getTimeFromDateTimeString(item.visitStartTime)}}
                                     </td>
                                     <td>
-                                        {{item.visitSpendTime}}
-                                    </td>
-                                    <td>
-                                        {{item.visitEndTime}}
+                                        {{generalFunctionsService.msToTime(item.visitSpendTime)}}
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">
+                                        Total
+                                    </td>
+                                    <td>
+                                        {{totalTime}}
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

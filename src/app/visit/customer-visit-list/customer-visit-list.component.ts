@@ -28,8 +28,12 @@ export class CustomerVisitListComponent implements OnInit {
     'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
   ];
   public userType: string;
+  visit: Visitinterface;
 
-  constructor(private apiservice: ApiService, public generalFunctionsService: GeneralFunctionsService, private router: Router) {
+  constructor(
+    private apiservice: ApiService,
+    public generalFunctionsService: GeneralFunctionsService,
+    private router: Router) {
     this.userId = localStorage.getItem('userId');
     this.userType = localStorage.getItem('userType');
     this.visits = [];
@@ -37,10 +41,19 @@ export class CustomerVisitListComponent implements OnInit {
 
   ngOnInit(): void {
     const date = new Date();
-    const dateformat =  date.getFullYear() + '-' + this.formatNumberDate(date.getMonth() + 1) + '-' + this.formatNumberDate(date.getDate());
-    this.apiservice.getSellerVisit(dateformat,this.userId).subscribe((data) => {
+    const dateformat = date.getFullYear() + '-' + this.formatNumberDate(date.getMonth() + 1) + '-' + this.formatNumberDate(date.getDate());
+    this.apiservice.getSellerVisit(dateformat, this.userId).subscribe((data) => {
       this.visits = data;
+      this.getTotalTime();
     });
+  }
+
+  getTotalTime() {
+    let total = 0;
+    for (const visit of this.visits) {
+      total += Number(visit.visitSpendTime);
+    }
+    this.totalTime = this.generalFunctionsService.msToTime(total);
   }
 
   onSort(event: any) {
