@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Product } from '../../../../shared/classes/product';
 import { Router } from '@angular/router';
 import { NavService } from '../../../../shared/services/nav.service';
-import { ApiService } from 'src/app/services/api.service';
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
@@ -21,7 +20,7 @@ export class GridComponent implements OnInit {
   public userType: string;
   public active = 4;
 
-  constructor(private router: Router, public navServices: NavService, private api: ApiService) { 
+  constructor(private router: Router, public navServices: NavService) { 
     this.router.events.subscribe((event) => {
       this.navServices.mainMenuToggle = false;
     });
