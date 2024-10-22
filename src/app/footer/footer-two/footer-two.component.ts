@@ -18,7 +18,6 @@ export class FooterTwoComponent {
     private router: Router,
   ) {
     this.userType = localStorage.getItem('userType');
-    console.log('ruta:', this.router.url)
     switch(this.router.url) {
       case '/visit/customer-visits-list':
         this.active = 1;
@@ -30,7 +29,6 @@ export class FooterTwoComponent {
         this.active = 3;
         break;
       case '/visit/customer-location':
-        console.log('si estoy en location')
         this.active = 4;
         break;
       default:
