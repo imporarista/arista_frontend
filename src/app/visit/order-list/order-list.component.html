@@ -17,13 +17,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let order of orderList">
-                                <td scope="row">{{ order.date }}</td>
+                            <tr *ngFor="let order of orderList" (click)="showDetail(order.id)">
                                 <td>
-                                    {{order.id}}
+                                    {{generalFunctions.getDateFromDataTimeString(order.date)}}
                                 </td>
                                 <td>
-                                    {{order.amount}}
+                                    {{generalFunctions.getTimeFromDateTimeString(order.date)}}
+                                </td>
+                                <td>
+                                    ${{order.amount}}
                                 </td>
                             </tr>
                         </tbody>

@@ -15,12 +15,14 @@ import { GeneralFunctionsService } from 'src/app/services/general-functions.serv
 })
 export class OrderListComponent {
   public orderList: Orderlistinterface[] = [];
+  amount: 0
 
   public customer: Customerinterface = {
     label: 'Cliente',
     id: 0
   };
 item: any;
+order: any;
 
   constructor(
     private router: Router,

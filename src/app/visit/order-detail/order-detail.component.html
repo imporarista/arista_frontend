@@ -1,0 +1,39 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <img src="assets/images/icon/arrow_back.png" class="arrow_back" routerLink="/home/catalog">
+                    <span>DETALLE DEL PEDIDO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template class="theme-modal" #quickView let-modal>
+    <div class="modal-content quick-view-modal">
+        <div class="modal-body">
+            <button type="button" class="close float-end border-0" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="row">
+                <div class="col-lg-6  col-xs-12">
+                    <div class="quick-view-img">
+                        <img [src]="ImageSrc ? ImageSrc : (apiService.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')) " [alt]="product.prod_name" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-lg-6 rtl-text">
+                    <div class="product-right">
+                        <h2>{{ product.prod_name }}</h2>
+                        <h3>{{ product.price }}
+                        </h3>
+                        <div class="border-product">
+                            <h6 class="product-title">Detalle del Producto</h6>
+                            <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
