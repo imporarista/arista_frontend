@@ -22,7 +22,7 @@
                             </li>
                         </ul> -->
                         <div class="border-product">
-                            <h6 class="product-title">product details</h6>
+                            <h6 class="product-title">Detalle del Producto</h6>
                             <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
                         </div>
                         <div class="product-description border-product">
@@ -33,7 +33,7 @@
                                     </li>
                                 </ul>
                             </div> -->
-                            <h5 class="avalibility" *ngIf="counter <= product.stock"><span>{{ product.stock }} In Stock</span></h5>
+                            <h5 class="avalibility" *ngIf="counter <= product.stock"><span>{{ product.stock }} En Stock</span></h5>
                             <h5 class="avalibility" *ngIf="counter > product.stock"><span>Solo hay {{ product.stock }} en Stock</span></h5>
                             <h6 class="product-title">Cantidad</h6>
                             <div class="qty-box">
