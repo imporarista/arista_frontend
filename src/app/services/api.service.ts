@@ -83,13 +83,11 @@ export class ApiService {
     const url = this.apiUrl + 'regist_action_last_id';
     // const cacheData = this.cacheService.get(url.toString());
     // if (cacheData) {
-    //   console.log('obteniendo desde cache');
     //   return of(cacheData);
     // }
     return this.httpClient.get(url)
     // .pipe(
     //   tap(data => {
-    //     console.log('guardando');
     //     this.cacheService.put(url.toString(), data)
     //   })
     // );

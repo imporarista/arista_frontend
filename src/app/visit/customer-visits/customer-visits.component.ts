@@ -75,7 +75,6 @@ export class CustomerVisitsComponent implements OnInit {
   }
 
   onFocused(event) {
-    // console.log('evento', event);
   }
 
   /**

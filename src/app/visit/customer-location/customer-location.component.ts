@@ -18,23 +18,22 @@ export class CustomerLocationComponent {
   public customerIdSelected: Number;
 
   constructor(
-  private api: ApiService,
-  public customers: CustomerService,
-  private generalFunctions: GeneralFunctionsService,
-  private router: Router
-) {
-  this.customerIdSelected = 0;
-}
+    private api: ApiService,
+    public customers: CustomerService,
+    private generalFunctions: GeneralFunctionsService,
+    private router: Router
+  ) {
+    this.customerIdSelected = 0;
+  }
 
-onFocused(event) {
-  // console.log('evento', event);
-}
+  onFocused(event) {
+  }
 
-ngOnInit() {
-  this.customers.getCustomers().then();
-  this.generalFunctions.getLocation().then((message) => console.info('responde', message));
-}
+  ngOnInit() {
+    this.customers.getCustomers().then();
+    this.generalFunctions.getLocation().then((message) => console.info('responde', message));
+  }
 
-saveLocation() {
-}
+  saveLocation() {
+  }
 }

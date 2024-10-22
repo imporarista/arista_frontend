@@ -29,7 +29,10 @@ export class CustomerOrdersComponent {
   };
 
   onFocused(event) {
-    // console.log('evento', event);
+  }
+
+  ngOnInit() {
+    this.customers.getCustomers().then();
   }
 
   searchOrders() {

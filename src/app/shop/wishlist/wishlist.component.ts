@@ -32,8 +32,6 @@ export class WishlistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.productService.wishlistItems.subscribe(response => this.products = response);
-    // console.log('producto');
     this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
     this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
   }

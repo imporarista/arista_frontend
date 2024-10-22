@@ -31,10 +31,8 @@ item: any;
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params: any) => {
-      console.log('params de ordenes', params);
       this.customer = params;
       this.api.getCustomerOrders(this.customer.id).subscribe((responseOrders: Orderlistinterface[]) => {
-        console.log('que pido: ', responseOrders)
         this.orderList = responseOrders;
       });
     });

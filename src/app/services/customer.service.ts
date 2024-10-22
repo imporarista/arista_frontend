@@ -53,7 +53,6 @@ export class CustomerService {public customerIdSelected: number;
    */
   setCustomerSelected(selected) {
     this.customerIdSelected = selected.id
-    console.log('a ver que se selecciona', this.customerIdSelected);
     if (this.customerList.length > 0) {
       for (const customer of this.customerList) {
         if (customer.id === this.customerIdSelected) {
@@ -89,7 +88,6 @@ export class CustomerService {public customerIdSelected: number;
     //     this.filteredCustomer.push(customer);
     //   }
     // }
-    // console.log('result', this.filteredCustomer);
     
   // }
 
