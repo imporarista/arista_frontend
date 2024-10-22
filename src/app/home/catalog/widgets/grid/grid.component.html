@@ -20,31 +20,24 @@
                 </div>
                 <div class="main-navbar">
                     <div id="mainnav">
-                        <!-- <div class="toggle-nav" (click)="mainMenuToggle()">
-                            <i class="fa fa-bars sidebar-bar"></i>
-                        </div> -->
-                        <!-- <ul class="nav-menu" [class.opennav]="navServices?.mainMenuToggle">
-                            <li class="back-btn">
-                                <div class="mobile-back text-end" (click)="mainMenuToggle()">
-                                    <!-- <span>Back</span> -->
-                                    <!-- <i class="fa fa-angle-right ps-2" aria-hidden="true"></i> -->
-                                <!-- </div> -->
-                            <!-- </li> -->
-                        <!-- </ul> --> 
-                        <ng-container *ngIf="userType == '2'">
-                            <ul class="btn btn-outline">
-                              <a [routerLink]="['/visit/customer-visits-list']">VISITAS</a>
-                            </ul>
-                            <ul class="btn btn-outline">
-                              <a [routerLink]="['/home/catalog']">CATÁLOGO</a>
-                            </ul>
-                            <ul class="btn btn-outline">
-                              <a [routerLink]="['/visit/customer-orders']">PEDIDOS</a>
-                            </ul>
-                            <ul class="btn btn-outline">
-                              <a [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
-                            </ul>
-                          </ng-container>
+                        <div class="container">
+                            <div class="card-body tab2-card">
+                                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                                    <li [ngbNavItem]="1">
+                                        <a ngbNavLink [routerLink]="['/visit/customer-visits-list']">VISITAS</a>
+                                    </li>
+                                    <li [ngbNavItem]="2">
+                                        <a ngbNavLink [routerLink]="['/home/catalog']">CATÁLOGO</a>
+                                    </li>
+                                    <li [ngbNavItem]="3">
+                                        <a ngbNavLink [routerLink]="['/visit/customer-orders']">PEDIDOS</a>
+                                    </li>
+                                    <li [ngbNavItem]="4">
+                                        <a ngbNavLink [routerLink]="['/visit/customer-location']">LOCALIZAR</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

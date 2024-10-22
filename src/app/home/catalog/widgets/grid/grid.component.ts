@@ -19,12 +19,31 @@ export class GridComponent implements OnInit {
   @Output() setLayout: EventEmitter<any> = new EventEmitter<any>();
   @Output() sortedBy: EventEmitter<any> = new EventEmitter<any>();
   public userType: string;
+  public active = 4;
 
   constructor(private router: Router, public navServices: NavService, private api: ApiService) { 
     this.router.events.subscribe((event) => {
       this.navServices.mainMenuToggle = false;
     });
     this.userType = localStorage.getItem('userType');
+    this.userType = localStorage.getItem('userType');
+    switch(this.router.url) {
+      case '/visit/customer-visits-list':
+        this.active = 1;
+        break;
+      case 'B':
+        this.active = 2;
+        break;
+      case '/visit/customer-orders':
+        this.active = 3;
+        break;
+      case '/visit/customer-location':
+        this.active = 4;
+        break;
+      default:
+        this.active = 1;
+        break;
+    }
   }
 
   ngOnInit(): void {
