@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
 import { ApiService } from 'src/app/services/api.service';
 import { CustomerService } from 'src/app/services/customer.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-customer-location',
@@ -21,7 +22,8 @@ export class CustomerLocationComponent {
     private api: ApiService,
     public customers: CustomerService,
     private generalFunctions: GeneralFunctionsService,
-    private router: Router
+    private router: Router,
+    private toastrService: ToastrService
   ) {
     this.customerIdSelected = 0;
   }
@@ -35,5 +37,41 @@ export class CustomerLocationComponent {
   }
 
   saveLocation() {
+    // this.presentLoading();
+    this.generalFunctions.getLocation().then((message: any) => {
+      const localization = {
+        latitude: message.latitude,
+        longitude: message.longitude
+      };
+      const dataLocalization = {
+        customerId: this.customers.customerIdSelected,
+        customerLocalization: localization
+      };
+      this.api.updateCustomerLocation(dataLocalization).subscribe(() => {
+        // this.loading.dismiss();
+        this.toastSuccess();
+      }, (error:any) => {
+        // this.loading.dismiss();
+        this.toastError('error');
+      });
+    }, () => {
+      // this.loading.dismiss();
+      this.toastError('reject');
+    });
+  }
+
+  toastSuccess() {
+    this.toastrService.success('Ubicación guardada Exitosamente!!');
+  }
+  showToastMessage(error: string) {
+    this.toastrService.error(error);
+  }
+
+  toastError(type: any) {
+    let msg = 'No se logró guardar la ubicación!!';
+    if (type === 'reject') {
+      msg = 'No se logró conectar al servidor!!';
+    }
+    this.showToastMessage(msg);
   }
 }
