@@ -16,16 +16,7 @@ import PhotoSwipe from 'photoswipe';
 })
 export class ProductNoSidebarComponent implements OnInit {
 
-  public product: Product = {
-    prod_id: null,
-    status: null,
-    image: null,
-    prod_name: null,
-    price: null,
-    stock: null,
-    prod_descriptions: null,
-    cat_id: null
-  };
+  public product: Product;
   public product_images: string[];
   public counter: number = 1;
   public activeSlide: any = 0;
@@ -41,8 +32,24 @@ export class ProductNoSidebarComponent implements OnInit {
     public productService: ProductService, public apiService: ApiService,
     private desiredProduct: DesiredProductsService
   ) {
+
+    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts'));
+    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds'));
+    this.product = {
+      prod_id: null,
+      status: null,
+      image: null,
+      prod_name: null,
+      price: null,
+      stock: null,
+      prod_descriptions: null,
+      cat_id: null
+    };
+    this.product_images = [];
     this.route.data.subscribe(response => {
       this.product = response.data
+      const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === this.product.prod_id);
+      this.counter = currentProduct?.quantity ? currentProduct.quantity: 1;
       this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
         this.product_images = response.map(image => {return image.img_big});
       });
@@ -134,12 +141,8 @@ export class ProductNoSidebarComponent implements OnInit {
 
   // Add to cart
   async addToCart(product: any) {
-    const status = await this.desiredProduct.iLike(product);
     product.quantity = this.counter || 1;
-    if (product.quantity > 1) {
-      const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === product.prod_id);
-      currentProduct.quantity = product.quantity;
-    }
+    const status = await this.desiredProduct.iLike(product, true);
     localStorage.setItem('desiredProducts', JSON.stringify(this.desiredProduct.desiredProducts));
     localStorage.setItem('desiredProductsIds', JSON.stringify(this.desiredProduct.desiredProductsIds));
     if(status)
