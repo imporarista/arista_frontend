@@ -77,7 +77,17 @@ export class GeneralFunctionsService {
    */
   public getTimeFromDateTimeString(timeString: any) {
     const time: string[] = timeString.split(' ');
-    return time[1];
+    return this.convertTo12HourFormat(time[1]);
+  }
+
+  public convertTo12HourFormat(time: string): string {
+    const [hours, minutes, seconds] = time.split(':');
+    let hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // la hora '0' debe ser '12'
+    const formattedHour = hour < 10 ? '0' + hour : hour.toString();
+    return `${formattedHour}:${minutes}:${seconds} ${ampm}`;
   }
 
   public getDateFromDataTimeString(timeString: any) {
