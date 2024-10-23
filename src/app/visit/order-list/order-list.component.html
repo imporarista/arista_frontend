@@ -24,8 +24,8 @@
                                 <td>
                                     {{generalFunctions.getTimeFromDateTimeString(order.date)}}
                                 </td>
-                                <td>
-                                    ${{order.amount}}
+                                <td class="text-right">
+                                    {{order.amount | currency}}
                                 </td>
                             </tr>
                         </tbody>

@@ -1,15 +1,15 @@
-import { NgForOf } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Customerinterface } from 'src/app/interfaces/customerinterface';
 import { Orderlistinterface } from 'src/app/interfaces/orderlistinterface';
 import { ApiService } from 'src/app/services/api.service';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [RouterModule, NgForOf],
+  imports: [RouterModule, SharedModule],
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.scss'
 })
