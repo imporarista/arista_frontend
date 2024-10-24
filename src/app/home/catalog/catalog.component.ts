@@ -60,19 +60,21 @@ export class CatalogComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.cat_id = params['cat_id'];
       this.subc_id = params['subc_id'];
+      this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
+      this.loadProducts(true);
     });
   }
 
   ngOnInit(): void {
-    this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
-    this.loadProducts(true);
   }
+
   loadMoreProducts() {
     this.start += this.limit;
     this.loadProducts(false);
   }
 
   loadProducts(resetList: boolean): void {
+    console.log('cargando productos')
     if (!this.loading) {
       this.loading = true;
       let selector = 'all'; // all, category, subCategory

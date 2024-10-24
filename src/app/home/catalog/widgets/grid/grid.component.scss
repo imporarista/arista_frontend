@@ -1,0 +1,10 @@
+@media (max-width: 767px) {
+    a.nav-link {
+        padding: 8px;
+    }
+}
+@media (min-width: 768px) { /* Ajusta el valor según necesites */
+    ul.nav-tabs.nav {
+        padding-top: 11px;
+    }
+}

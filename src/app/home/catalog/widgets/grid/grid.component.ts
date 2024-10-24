@@ -18,19 +18,19 @@ export class GridComponent implements OnInit {
   @Output() setLayout: EventEmitter<any> = new EventEmitter<any>();
   @Output() sortedBy: EventEmitter<any> = new EventEmitter<any>();
   public userType: string;
-  public active = 4;
+  public active: number;
 
   constructor(private router: Router, public navServices: NavService) { 
     this.router.events.subscribe((event) => {
       this.navServices.mainMenuToggle = false;
     });
     this.userType = localStorage.getItem('userType');
-    this.userType = localStorage.getItem('userType');
-    switch(this.router.url) {
+    const route = this.router.url. includes('/home/catalog') ? '/home/catalog': this.router.url;
+    switch(route) {
       case '/visit/customer-visits-list':
         this.active = 1;
         break;
-      case 'B':
+      case '/home/catalog':
         this.active = 2;
         break;
       case '/visit/customer-orders':
