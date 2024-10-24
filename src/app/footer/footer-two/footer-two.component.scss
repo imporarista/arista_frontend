@@ -1,7 +1,13 @@
 :host {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000; // Asegura que el footer esté por encima de otros elementos
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; // Asegura que el footer esté por encima de otros elementos
+  height: 95px;
+}
+@media (max-width: 767px) {
+  a.nav-link {
+      padding: 8px;
   }
+}
