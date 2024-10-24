@@ -1344,10 +1344,11 @@ header {
         bottom: 0;
         left: 0;
         height: 60px;
-        background-color: $font-color;
+        background-color: $footer-color;
         width: 100vw;
         z-index: 9;
         box-shadow: 0 2px 5px 0 rgba(168, 168, 168, 1);
+        color: white;
     }
     .header-5 {
         .top-header {
@@ -1381,7 +1382,7 @@ header {
                 i {
                     font-size: 22px;
                     font-family: $font-themify;
-                    color: $header-font;
+                    color: $footer-font;
                     &:before {
                         content: "\e602";
                     }
@@ -1393,7 +1394,7 @@ header {
                 }
                 &:hover {
                     i {
-                        color: $header-font;
+                        color: $footer-font;
                     }
                 }
             }
@@ -1401,12 +1402,15 @@ header {
                 right: 64%;
                 i {
                     font-family: $font-themify;
-                    color: $header-font !important;
+                    color: $footer-font !important;
                     &:before {
-                        content: "\e634";
+                        content: "\e60d";
                     }
                 }
             }
+            .ti-search {
+                color: $footer-font!important;
+            }            
         }
     }
     .main-menu {
