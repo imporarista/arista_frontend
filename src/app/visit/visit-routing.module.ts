@@ -6,8 +6,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CustomerVisitsComponent } from './customer-visits/customer-visits.component';
 import { OrderListComponent } from './order-list/order-list.component';
-import { OrderDetailComponent } from './order-detail/order-detail.component';
-
+import { OderDetail2Component } from './order-detail-2/oder-detail-2.component';
 const routes: Routes = [
   // filtros
   {
@@ -37,9 +36,14 @@ const routes: Routes = [
   },
   {
     path: 'order-detail',
-    component: OrderDetailComponent,
+    component: OderDetail2Component,
     canActivate: [authGuard]
   }
+  // {
+  //   path: 'order-detail',
+  //   component: OrderDetailComponent,
+  //   canActivate: [authGuard]
+  // }
 ];
 
 @NgModule({
