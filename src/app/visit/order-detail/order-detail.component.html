@@ -10,30 +10,24 @@
         </div>
     </div>
 </div>
-<ng-template class="theme-modal" #quickView let-modal>
-    <div class="modal-content quick-view-modal">
-        <div class="modal-body">
-            <button type="button" class="close float-end border-0" (click)="modal.dismiss('Cross click')">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="row">
-                <div class="col-lg-6  col-xs-12">
-                    <div class="quick-view-img">
-                        <img [src]="ImageSrc ? ImageSrc : (apiService.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')) " [alt]="product.prod_name" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col-lg-6 rtl-text">
-                    <div class="product-right">
-                        <h2>{{ product.prod_name }}</h2>
-                        <h3>{{ product.price }}
-                        </h3>
-                        <div class="border-product">
-                            <h6 class="product-title">Detalle del Producto</h6>
-                            <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
-                        </div> 
-                    </div>
-                </div>
+<content padding>
+    <div *ngIf="productsOrder.length > 0">
+        <div class="wishList" *ngFor="let product of productsOrder.slice().reverse()">
+            <div class="col" size="4" class="image-container" *ngIf="product.image.indexOf('.') === -1">
+                <img [src]="ImageSrc ? ImageSrc : (apiService.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')) " [alt]="product.prod_name" class="img-fluid">
+            </div>
+            <div class="col" size="4" class="image-container" *ngIf="product.image.indexOf('.') !== -1">
+                <img [src]="ImageSrc ? ImageSrc : (apiService.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')) " [alt]="product.prod_name" class="img-fluid">
+            </div>
+            <div size="8">
+                <div class="ref">REF: {{product.prod_name}}</div>
+                <div class="txt9 description-product">Descripción: {{product.prod_descriptions}}</div>
+                <div class="txt9">Precio: {{product.price}}</div>
+                <div class="txt9">Cantidad: {{product.quantity}}</div>
             </div>
         </div>
     </div>
-</ng-template>
+    <div *ngIf="productsOrder.length === 0">
+        <p>No se guardaron productos en este pedido</p>
+    </div>
+</content>
