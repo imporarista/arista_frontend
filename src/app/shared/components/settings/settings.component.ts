@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ProductService } from "../../services/product.service";
 import { Product } from "../../classes/product";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -11,6 +12,10 @@ import { Product } from "../../classes/product";
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
+
+  private timeStoped = 0;
+  private intervalTimeStoped: any = null;
+  public searchText: string
 
   public products: Product[] = [];
   public search: boolean = false;
@@ -43,7 +48,9 @@ export class SettingsComponent implements OnInit {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private translate: TranslateService,
-    public productService: ProductService) {
+    public productService: ProductService,
+    private router: Router
+  ) {
     this.productService.cartItems.subscribe(response => this.products = response);
   }
 
@@ -70,6 +77,34 @@ export class SettingsComponent implements OnInit {
 
   changeCurrency(currency: any) {
     this.productService.Currency = currency
+  }
+
+  getItems(search) {
+    this.searchText = search;
+    console.log('search', search);
+    this.timeStoped = 0;
+    this.startTimer();
+  }
+
+  startTimer() {
+    if (this.intervalTimeStoped !== null) {
+      clearInterval(this.intervalTimeStoped);
+    }
+    let THIS = this;
+    this.intervalTimeStoped = setInterval(function () {
+      THIS.timeStoped++;
+      //pregunta si lleva un segundo sin teclear nada antes de empezar a buscar
+      if (THIS.timeStoped >= 1) {
+        clearInterval(THIS.intervalTimeStoped);
+        if (THIS.searchText === '') {
+          THIS.router.navigate(['home/catalog']);
+        } else {
+          THIS.router.navigate(['home/catalog'], {
+            queryParams: { search: THIS.searchText },
+          });
+        }
+      }
+    }, 1000);
   }
 
 }
