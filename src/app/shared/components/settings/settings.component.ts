@@ -59,6 +59,7 @@ export class SettingsComponent implements OnInit {
 
   searchToggle(){
     this.search = !this.search;
+    this.searchText = '';
   }
 
   changeLanguage(code){
@@ -81,7 +82,6 @@ export class SettingsComponent implements OnInit {
 
   getItems(search) {
     this.searchText = search;
-    console.log('search', search);
     this.timeStoped = 0;
     this.startTimer();
   }
@@ -103,6 +103,7 @@ export class SettingsComponent implements OnInit {
             queryParams: { search: THIS.searchText },
           });
         }
+        THIS.searchToggle();
       }
     }, 1000);
   }

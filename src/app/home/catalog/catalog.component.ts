@@ -72,7 +72,6 @@ export class CatalogComponent implements OnInit {
   }
 
   loadProducts(resetList: boolean): void {
-    console.log('cargando productos')
     if (!this.loading) {
       this.loading = true;
       let selector = 'all'; // all, category, subCategory
@@ -84,7 +83,6 @@ export class CatalogComponent implements OnInit {
         selector = 'category';
         id = this.cat_id;
       } else if (this.searchProduct !== '') {
-        console.log('buscar con estop', this.searchProduct)
         selector = 'search'
         id = this.searchProduct;
       }
