@@ -7,6 +7,9 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule } from '@angular/router';
+import { PreparedPhotoSwipeOptions } from 'photoswipe';
+import PhotoSwipe from 'photoswipe';
+import { Orderdetailinterface } from 'src/app/interfaces/orderdetailinterface';
 
 
 @Component({
@@ -21,7 +24,7 @@ export class OderDetail2Component implements OnInit {
   @ViewChild('alert_no_visit') alert_no_visit: ElementRef
 
   public iva: number;
-  public totalPrice: number;	
+  public totalPrice: number;
   public subTotal: number;
   public product: Product = {
     prod_id: null,
@@ -32,10 +35,32 @@ export class OderDetail2Component implements OnInit {
     stock: null,
     prod_descriptions: null
   };
+  public detailOrder = {
+    subtotal: 0,
+    tax: 0,
+    total: 0
+  };
+  public productsOrder: Orderdetailinterface[] = [
+    {
+      // imagen principal del producto
+      image: '',
+      // nombre del producto o referencia
+      prod_name: '',
+      // descripción del producto
+      prod_descriptions: '',
+      // precio indivudual
+      price: 0,
+      // cantidad seleccionada
+      quantity: 0
+    }
+  ];
 
   private visit: any;
   private userId: number;
   private userType: number;
+  product_images: any;
+  i: number;
+
 
 
   constructor(
@@ -62,7 +87,7 @@ export class OderDetail2Component implements OnInit {
 
   getTotals() {
     // calcula totales del carrito
-    [this.subTotal, this.iva, this.totalPrice]  = this.desiredProduct.cartTotalAmount();
+    [this.subTotal, this.iva, this.totalPrice] = this.desiredProduct.cartTotalAmount();
     localStorage.setItem('desiredProducts', JSON.stringify(this.desiredProduct.desiredProducts));
     localStorage.setItem('desiredProductsIds', JSON.stringify(this.desiredProduct.desiredProductsIds));
   }
@@ -103,10 +128,8 @@ export class OderDetail2Component implements OnInit {
     }
   }
 
-
-
   finishSendOrder(userId: any) {
-//   this.presentLoading();
+    //   this.presentLoading();
     if (this.desiredProduct.desiredProducts.length > 0) {
       let productOrder: { quantity: any; reference: any; description: any; unitValue: any; customerId: any; prodId: any; }[] = [];
       this.desiredProduct.desiredProducts.forEach((product: { quantity: any; prod_name: any; prod_descriptions: any; price: any; prod_id: any; }) => {
@@ -152,6 +175,51 @@ export class OderDetail2Component implements OnInit {
 
   async alertCustomerRequired() {
     this.modalService.open(this.alert_no_visit, { centered: true, size: 'xl' });
+  }
+
+  openPhotoSwipe(image: string) {
+    const items = [
+      {
+         src: this.api.imageDirectory + image + (image.includes('.') ? '' : '.jpg'),
+         w: 800, // Ancho de la imagen
+         h: 600  // Alto de la imagen
+       }
+    ];
+      
+
+    const options: PreparedPhotoSwipeOptions = {
+      index: 0, // índice de la imagen que se va a abrir
+      dataSource: items,
+      bgOpacity: 0.8, // Opacidad del fondo
+      loop: true, // Permitir bucle
+      pinchToClose: true, // Permitir cerrar con gesto de pellizco
+      closeOnVerticalDrag: false, // Cerrar al arrastrar verticalmente
+      preload: [1, 1], // Precargar imágenes cercanas
+      errorMsg: 'No se pudo cargar la imagen.', // Mensaje de error
+      maxWidthToAnimate: 1200, // Ancho máximo para animar
+      showHideAnimationType: 'zoom', // Tipo de animación
+      // ... otros parámetros que desees agregar
+      spacing: 0.1,
+      allowPanToNext: false,
+      hideAnimationDuration: 200,
+      showAnimationDuration: 200,
+      zoomAnimationDuration: 200,
+      easing: 'cubic-bezier(.4,0,.22,1)',
+      escKey: true,
+      arrowKeys: true,
+      trapFocus: false,
+      returnFocus: false,
+      clickToCloseNonZoomable: false,
+      imageClickAction: false,
+      bgClickAction: false,      
+      tapAction: false,
+      doubleTapAction: false,
+      preloaderDelay: 0,
+      indexIndicatorSep: " de ",
+    };
+
+    const gallery = new PhotoSwipe(options); // Solo se pasa options como argumento
+    gallery.init();
   }
 
 }
