@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProductService } from "../../services/product.service";
 import { Product } from "../../classes/product";
 import { Router } from '@angular/router';
+import { NavService } from '../../services/nav.service';
 
 @Component({
   selector: 'app-settings',
@@ -49,7 +50,8 @@ export class SettingsComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private translate: TranslateService,
     public productService: ProductService,
-    private router: Router
+    private router: Router,
+    public navService: NavService
   ) {
     this.productService.cartItems.subscribe(response => this.products = response);
   }
@@ -58,7 +60,7 @@ export class SettingsComponent implements OnInit {
   }
 
   searchToggle(){
-    this.search = !this.search;
+    this.navService.search = !this.navService.search;
     this.searchText = '';
   }
 

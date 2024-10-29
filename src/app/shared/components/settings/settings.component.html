@@ -5,7 +5,7 @@
         <img src="assets/images/icon/search.png" class="img-fluid" alt="">
         <i class="ti-search"></i>
       </div>
-      <div id="search-overlay" class="search-overlay" [ngStyle]="{'display': search ? 'block' : 'none' }">
+      <div id="search-overlay" class="search-overlay" [ngStyle]="{'display': navService.search ? 'block' : 'none' }">
         <div>
           <span class="closebtn" title="Close Overlay" (click)="searchToggle()">×</span>
           <div class="overlay-content">

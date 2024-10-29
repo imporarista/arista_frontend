@@ -25,6 +25,7 @@ export class NavService {
 	public screenWidth: any;
 	public leftMenuToggle: boolean = false;
 	public mainMenuToggle: boolean = false;
+	public search: boolean = false;
 
 	// Windows width
 	@HostListener('window:resize', ['$event'])
