@@ -66,11 +66,6 @@ export class CatalogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  loadMoreProducts() {
-    this.start += this.limit;
-    this.loadProducts(false);
-  }
-
   loadProducts(resetList: boolean): void {
     if (!this.loading) {
       this.loading = true;
@@ -89,6 +84,7 @@ export class CatalogComponent implements OnInit {
     
       this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
         (products) => {
+          this.start += this.limit;
           this.loading = false;
           if (resetList) {
             this.products = products;
@@ -171,7 +167,4 @@ export class CatalogComponent implements OnInit {
       value: JSON.stringify(this.desiredProduct.desiredProductsIds)
     });
   }
-
-
-
 }

@@ -29,7 +29,7 @@
                                 </div>
                                 <!-- Infinite Scroll -->
                                 <div infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="1000"
-                                    (scrolled)="loadMoreProducts()" *ngIf="products.length">
+                                    (scrolled)="loadProducts(false)" *ngIf="products.length">
                                 </div>
                                 <div class="product-infinitescroll">
                                     <div class="theme-paggination-block">
