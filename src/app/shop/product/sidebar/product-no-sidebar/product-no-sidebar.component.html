@@ -70,7 +70,7 @@
                     </div>
                     <div class="border-product">
                         <h6 class="product-title">Detalle del producto</h6>
-                        <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
+                        <p [innerHTML]="product.prod_descriptions.substring(0, 200)+'...'"></p>
                     </div>
                 </div>
             </div>

@@ -48,6 +48,7 @@ export class ProductNoSidebarComponent implements OnInit {
     this.product_images = [];
     this.route.data.subscribe(response => {
       this.product = response.data
+      this.changeVoltsColor();
       const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === this.product.prod_id);
       this.counter = currentProduct?.quantity ? currentProduct.quantity: 1;
       this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
@@ -57,6 +58,12 @@ export class ProductNoSidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  changeVoltsColor() {
+    this.product.prod_descriptions = this.product.prod_descriptions
+      .replace('12V', '<span class="color-green">12 V</span>')
+      .replace('24V', '<span class="color-red">24 V</span>');
   }
 
   openPhotoSwipe(index: number) {
