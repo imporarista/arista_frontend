@@ -14473,3 +14473,18 @@ span.color-green {
 span.color-red {
     color: red !important;
 }
+.row.content-center {
+    justify-content: center;
+}
+
+.col-12.content-center {
+    flex: 0 0 auto;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+}
+
+.btn-centered {
+    display: grid;
+    justify-content: center;
+}
