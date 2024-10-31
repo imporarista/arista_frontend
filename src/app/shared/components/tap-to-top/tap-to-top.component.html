@@ -1,4 +1,22 @@
 <!-- tap to top -->
+<div class="tap-top top-cart" (click)="tapToCart()" 
+[ngStyle]="{ 'display': show ? 'block' : 'none' }">
+  <div>
+    <i class="fa fa-shopping-cart"></i>
+  </div>
+</div>
+<div class="tap-top top-search" (click)="openSearch()" 
+	[ngStyle]="{ 'display': show ? 'block' : 'none' }">
+    <div>
+      <i class="ti-search"></i>
+    </div>
+</div>
+<div class="tap-top top-category" (click)="openMenu()" 
+[ngStyle]="{ 'display': show ? 'block' : 'none' }">
+  <div>
+    <i class="fa fa-bars"></i>
+  </div>
+</div>
 <div class="tap-top top-cls" (click)="tapToTop()" 
 	[ngStyle]="{ 'display': show ? 'block' : 'none' }">
     <div>

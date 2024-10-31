@@ -23,7 +23,7 @@
                         </ul> -->
                         <div class="border-product">
                             <h6 class="product-title">Detalle del Producto</h6>
-                            <p>{{ product.prod_descriptions.substring(0, 200)+'...' }}</p>
+                            <p [innerHTML]="product.prod_descriptions.substring(0, 200)+'...'"></p>
                         </div>
                         <div class="product-description border-product">
                             <!-- <div class="size-box" *ngIf="Size(product.variants).length">

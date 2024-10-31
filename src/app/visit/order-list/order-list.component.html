@@ -16,7 +16,7 @@
                                 <th scope="col" sortable="total" (sort)="onSort($event)">Valor</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="pointer">
                             <tr *ngFor="let order of orderList" (click)="showDetail(order.id)">
                                 <td>
                                     {{generalFunctions.getDateFromDataTimeString(order.date)}}

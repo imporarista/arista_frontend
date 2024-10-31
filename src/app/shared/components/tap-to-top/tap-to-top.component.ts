@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
+import { Router } from '@angular/router';
+import { NavService } from '../../services/nav.service';
 
 @Component({
   selector: 'app-tap-to-top',
@@ -10,7 +12,10 @@ export class TapToTopComponent implements OnInit {
   
   public show: boolean = false;
 
-  constructor(private viewScroller: ViewportScroller) { }
+  constructor(private viewScroller: ViewportScroller,
+    private router: Router,
+    private navServices: NavService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -30,4 +35,15 @@ export class TapToTopComponent implements OnInit {
   	this.viewScroller.scrollToPosition([0, 0]);
   }
 
+  tapToCart() {
+    this.router.navigate(['/shop/cart']);
+  } 
+
+  openSearch() {
+    this.navServices.search = !this.navServices.search;
+  }
+
+  openMenu() {
+    this.navServices.leftMenuToggle = !this.navServices.leftMenuToggle;
+  }
 }

@@ -16,12 +16,10 @@ export class CatalogComponent implements OnInit {
   public grid: string = 'col-xl-3 col-md-6';
   public layoutView: string = 'grid-view';
   public products: Product[] = [];
-  public pageNo: number = 1;
-  public paginate: any = {}; // Pagination use only
-  public sortBy: string; // Sorting Order
   private cat_id: number;
   private subc_id: number;
   private statusProduct: string;
+  private searchProduct: string;
   private start: number //item en que inicia la carga
   private limit: number // cuantos productos carga cada vez
   public finished: boolean // determina si ya se cargo todos los productos
@@ -49,12 +47,12 @@ export class CatalogComponent implements OnInit {
     this.limit = 120;
     this.finished = false
     this.priceRateId = 0;
+    this.searchProduct = '';
     // Get Query params..
     this.route.queryParams.subscribe(params => {
       this.statusProduct = params.status ? params.status : '';
-
-      this.sortBy = params.sortBy ? params.sortBy : 'ascending';
-      this.pageNo = params.page ? params.page : this.pageNo;
+      this.searchProduct = params.search ? params.search : '';
+      this.loadProducts(true);
     })
 
     this.route.params.subscribe(params => {
@@ -68,13 +66,7 @@ export class CatalogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  loadMoreProducts() {
-    this.start += this.limit;
-    this.loadProducts(false);
-  }
-
   loadProducts(resetList: boolean): void {
-    console.log('cargando productos')
     if (!this.loading) {
       this.loading = true;
       let selector = 'all'; // all, category, subCategory
@@ -85,10 +77,14 @@ export class CatalogComponent implements OnInit {
       } else if (typeof (this.cat_id) !== 'undefined') {
         selector = 'category';
         id = this.cat_id;
+      } else if (this.searchProduct !== '') {
+        selector = 'search'
+        id = this.searchProduct;
       }
     
       this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
         (products) => {
+          this.start += this.limit;
           this.loading = false;
           if (resetList) {
             this.products = products;
@@ -171,7 +167,4 @@ export class CatalogComponent implements OnInit {
       value: JSON.stringify(this.desiredProduct.desiredProductsIds)
     });
   }
-
-
-
 }

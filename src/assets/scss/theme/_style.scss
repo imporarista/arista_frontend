@@ -2571,8 +2571,8 @@ header {
             box-shadow: 0 0 12px 0 $round-border;
             bottom: 30px;
             background-color: $white;
-            opacity: 0;
-            transition: all 0.2s ease;
+            opacity: 1;
+            // transition: all 0.2s ease;
             button {
                 background: none;
                 box-shadow: none;
@@ -2646,8 +2646,8 @@ header {
         right: 0;
         left: 0;
         justify-content: center;
-        opacity: 0;
-        transition: all 0.5s ease;
+        opacity: 1;
+        // transition: all 0.5s ease;
         a {
             [class^="icon-"],
             [class*=" icon-"] {
@@ -5129,6 +5129,15 @@ ngx-loading-bar {
     cursor: pointer;
     &.top-cls {
         bottom: 130px;
+    }
+    &.top-category {
+        bottom: 190px;
+    }
+    &.top-search {
+        bottom: 250px;
+    }
+    &.top-cart {
+        bottom: 310px;
     }
 }
 
@@ -14461,4 +14470,25 @@ div#loading-bar {
 .relative.z-index-100 {
     position: relative;
     z-index: 100;
+}
+span.color-green {
+    color: green !important;
+}
+span.color-red {
+    color: red !important;
+}
+.row.content-center {
+    justify-content: center;
+}
+
+.col-12.content-center {
+    flex: 0 0 auto;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+}
+
+.btn-centered {
+    display: grid;
+    justify-content: center;
 }

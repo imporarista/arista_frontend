@@ -34,39 +34,12 @@ export class ProductBoxOneComponent implements OnInit {
     }
     this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
     this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
-  }
-
-  // Get Product Color
-  Color(variants) {
-    const uniqColor = [];
-    for (let i = 0; i < Object.keys(variants).length; i++) {
-      if (uniqColor.indexOf(variants[i].color) === -1 && variants[i].color) {
-        uniqColor.push(variants[i].color)
-      }
-    }
-    return uniqColor
-  }
-
-  // Change Variants
-  ChangeVariants(color, product) {
-    product.variants.map((item) => {
-      if (item.color === color) {
-        product.images.map((img) => {
-          if (img.image_id === item.image_id) {
-            this.ImageSrc = img.src;
-          }
-        })
-      }
-    })
+    this.changeVoltsColor();
   }
 
   // Change Variants Image
   ChangeVariantsImage(src) {
     this.ImageSrc = src;
-  }
-
-  addToCart(product: any) {
-    this.productService.addToCart(product);
   }
 
   addToWishlist(product: any) {
@@ -79,4 +52,9 @@ export class ProductBoxOneComponent implements OnInit {
     this.productService.addToCompare(product);
   }
 
+  changeVoltsColor() {
+    this.product.prod_descriptions = this.product.prod_descriptions
+      .replace('12V', '<span class="color-green">12 V</span>')
+      .replace('24V', '<span class="color-red">24 V</span>');
+  }
 }
