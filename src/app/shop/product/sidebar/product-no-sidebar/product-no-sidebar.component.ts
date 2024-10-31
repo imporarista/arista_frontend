@@ -46,6 +46,10 @@ export class ProductNoSidebarComponent implements OnInit {
       cat_id: null
     };
     this.product_images = [];
+    
+  }
+
+  ngOnInit(): void {
     this.route.data.subscribe(response => {
       this.product = response.data
       const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === this.product.prod_id);
@@ -54,9 +58,6 @@ export class ProductNoSidebarComponent implements OnInit {
         this.product_images = response.map(image => {return image.img_big});
       });
     });
-  }
-
-  ngOnInit(): void {
   }
 
   openPhotoSwipe(index: number) {
