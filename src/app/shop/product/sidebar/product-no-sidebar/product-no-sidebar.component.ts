@@ -32,9 +32,8 @@ export class ProductNoSidebarComponent implements OnInit {
     public productService: ProductService, public apiService: ApiService,
     private desiredProduct: DesiredProductsService
   ) {
-
-    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts'));
-    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds'));
+    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
+    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
     this.product = {
       prod_id: null,
       status: null,
