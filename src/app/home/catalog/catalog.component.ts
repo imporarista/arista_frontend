@@ -1,6 +1,6 @@
 import { ApiService } from 'src/app/services/api.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
@@ -25,6 +25,7 @@ export class CatalogComponent implements OnInit {
   public aristaLogo = 'assets/appImages/logoMenu.svg'
   private loading: boolean = false;
   private priceRateId: number;
+  private readFromDB: boolean;
 
   currentTax = 0.19;
   detailOrder = {
@@ -41,13 +42,39 @@ export class CatalogComponent implements OnInit {
     private apiService: ApiService,
     public desiredProduct: DesiredProductsService,
   ) {
+
+    this.initData();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (event.id === 1) {
+          // Aquí puedes manejar la lógica cuando se navega a una nueva ruta
+          console.log('Navegación a una nueva ruta:', event);
+          this.loadProducts(true); // Cargar productos si es necesario
+        } else if (event.id > 2) {
+          console.log('Navegación a una nueva ruta:', event);
+          this.handleBackNavigation();
+        }
+      }
+    });
+  }
+
+  initData() {
     this.start = 0;
     this.limit = 120;
     this.finished = false
     this.priceRateId = 0;
+    this.statusProduct = '';
     this.searchProduct = '';
-    // Get Query params..
-    this.route.queryParams.subscribe(params => {
+    this.cat_id = undefined;
+    this.subc_id = undefined;
+    this.priceRateId =  1;
+    this.loading = false;
+    this.readFromDB = true;
+  }
+
+  getParams() {
+     // Get Query params..
+     this.route.queryParams.subscribe(params => {
       this.statusProduct = params.status ? params.status : '';
       this.searchProduct = params.search ? params.search : '';
       this.loadProducts(true);
@@ -59,7 +86,6 @@ export class CatalogComponent implements OnInit {
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
       this.loading = false;
-      console.log('a cargar por cambios', this.cat_id, this.subc_id)
       this.loadProducts(true);
     });
   }
@@ -68,9 +94,8 @@ export class CatalogComponent implements OnInit {
   }
 
   loadProducts(resetList: boolean): void {
-    console.log('cargando productos')
-    if (!this.loading) {
-      console.log('si va a cargar')
+    console.log('readFromDB', this.readFromDB);
+    if (!this.loading && this.readFromDB) {
       this.loading = true;
       let selector = 'all'; // all, category, subCategory
       let id = null; // id de sub categoría o sub categoría
@@ -92,11 +117,13 @@ export class CatalogComponent implements OnInit {
           if (resetList) {
             this.products = products;
             this.finished = false;
+            this.saveProductsLocalStorages();
           } else {
             this.products = this.products.concat(products);
             if (products.length < this.limit) {
               this.finished = true;
             }
+            this.saveProductsLocalStorages();
           }
         },
         (error) => {
@@ -104,6 +131,33 @@ export class CatalogComponent implements OnInit {
           this.loading = false;
         }
       );
+    }
+
+  }
+
+  saveProductsLocalStorages() {
+    // Guardar productos en localStorage
+    localStorage.setItem('products', JSON.stringify(this.products));
+    localStorage.setItem('start', this.start.toString());
+  }
+
+  private handleBackNavigation(): void {
+    this.readFromDB = false;
+    const storedProducts = localStorage.getItem('products');
+    const storedStart = localStorage.getItem('start');
+
+    if (storedProducts && storedStart) {
+      console.log('cargar productos de productos en localStorage')
+      this.products = JSON.parse(storedProducts);
+      this.start = parseInt(storedStart);
+      this.finished = false; // Asegúrate d10e que el estado de finalización sea correcto
+      this.readFromDB = true;
+    } else {
+      // Si no hay productos almacenados, reiniciar
+      this.readFromDB = true;
+      this.start = 0;
+      this.products = [];
+      this.loadProducts(true); // Cargar productos desde la API
     }
   }
 
