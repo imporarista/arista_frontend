@@ -5,7 +5,6 @@ import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
-import { ChangeDetectorRef } from '@angular/core'; // Asegúrate de importar esto
 
 @Component({
   selector: 'app-catalog',
@@ -41,7 +40,6 @@ export class CatalogComponent implements OnInit {
     public productService: ProductService,
     private apiService: ApiService,
     public desiredProduct: DesiredProductsService,
-    private cdr: ChangeDetectorRef, // Inyecta ChangeDetectorRef
   ) {
     this.start = 0;
     this.limit = 120;
@@ -56,9 +54,12 @@ export class CatalogComponent implements OnInit {
     })
 
     this.route.params.subscribe(params => {
+      this.start = 0;
       this.cat_id = params['cat_id'];
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
+      this.loading = false;
+      console.log('a cargar por cambios', this.cat_id, this.subc_id)
       this.loadProducts(true);
     });
   }
@@ -67,7 +68,9 @@ export class CatalogComponent implements OnInit {
   }
 
   loadProducts(resetList: boolean): void {
+    console.log('cargando productos')
     if (!this.loading) {
+      console.log('si va a cargar')
       this.loading = true;
       let selector = 'all'; // all, category, subCategory
       let id = null; // id de sub categoría o sub categoría
@@ -95,7 +98,6 @@ export class CatalogComponent implements OnInit {
               this.finished = true;
             }
           }
-          this.cdr.detectChanges(); // Forzar la detección de cambios
         },
         (error) => {
           console.error('Error al cargar productos:', error); // Manejo de errores
