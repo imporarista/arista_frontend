@@ -54,7 +54,6 @@ export class ProductNoSidebarComponent implements OnInit {
       const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === this.product.prod_id);
       this.counter = currentProduct?.quantity ? currentProduct.quantity: 1;
       this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
-        console.log('llamó las images', response);
         this.product_images = response.map(image => {return image.img_big});
       });
     });
