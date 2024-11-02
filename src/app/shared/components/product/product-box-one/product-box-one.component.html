@@ -38,7 +38,7 @@
     <div>
       <bar-rating [rate]="5" [readOnly]="true"></bar-rating>
       <h6>{{ product?.prod_name | titlecase }}</h6> 
-      <b>Cantidad:</b>{{ product?.stock }} | <b>Precio:</b>{{ product?.price | currency }}<br/>
+      <b *ngIf="userType == '2'">Cantidad:</b><span *ngIf="userType == '2'">{{ product?.stock }} |</span> <b>Precio:</b>{{ product?.price | currency }}<br/>
       <span [innerHTML]="product?.prod_descriptions"></span>
       
     </div>

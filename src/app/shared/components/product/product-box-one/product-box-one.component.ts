@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { ApiService } from 'src/app/services/api.service';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { QuickViewComponent } from "../../modal/quick-view/quick-view.component";
@@ -5,6 +6,7 @@ import { CartModalComponent } from "../../modal/cart-modal/cart-modal.component"
 import { ProductService } from "../../../services/product.service";
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
   selector: 'app-product-box-one',
@@ -23,10 +25,13 @@ export class ProductBoxOneComponent implements OnInit {
   @ViewChild("quickView") QuickView: QuickViewComponent;
   @ViewChild("cartModal") CartModal: CartModalComponent;
   public aristaLogo = 'assets/appImages/logoMenu.svg'
+  public userType: string;
+  public ImageSrc : string;
+  public ngIf: number;
 
-  public ImageSrc : string
-
-  constructor(private productService: ProductService, public apiService: ApiService, public desiredProduct: DesiredProductsService) { }
+  constructor(private productService: ProductService, public apiService: ApiService, public desiredProduct: DesiredProductsService) { 
+    this.userType = localStorage.getItem('userType');
+  }
 
   ngOnInit(): void {
     if(this.loader) {
