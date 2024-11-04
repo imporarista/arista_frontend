@@ -21,6 +21,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { SuccessComponent } from './checkout/success/success.component';
 
 import { Resolver } from '../shared/services/resolver.service';
+import { authGuard } from '../guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
   {
     path: 'product/no/sidebar/:slug',
     component: ProductNoSidebarComponent,
+    canActivate: [authGuard],
     resolve: {
       data: Resolver
     }
