@@ -18,14 +18,9 @@
                 Compras</a>
             </li>
             <li></li>
-            <li class="onhover-dropdown mobile-account">
+            <li class="onhover-dropdown mobile-account" *ngIf="showSearchAndProfile">
               <i class="fa fa-user" aria-hidden="true"></i> Mi cuenta
               <ul class="onhover-show-div">
-                <!-- <li>
-                  <a data-lng="en" [routerLink]="['/pages/login']">
-                    Entrar
-                  </a>
-                </li> -->
                 <li>
                   <a data-lng="es" (click)="closeSession()">
                     Cerrar sesion

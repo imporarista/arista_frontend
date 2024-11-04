@@ -1,5 +1,9 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
+import { ProductService } from '../../services/product.service';
+import { DesiredProductsService } from 'src/app/services/desired-products.service';
 
 @Component({
   selector: 'app-header-one',
@@ -22,8 +26,24 @@ export class HeaderOneComponent implements OnInit {
   finish: boolean;
   selector: string;
   id: any;
+  public showSearchAndProfile: boolean;
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private viewScroller: ViewportScroller,
+    public productService: ProductService,
+    private apiService: ApiService,
+    public desiredProduct: DesiredProductsService,
+  ) {
+    this.showSearchAndProfile = true;
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        console.log(event.url);
+        // this.showSearchAndProfile = event.url.includes('/home/catalog');
+      }
+    });
+  }
 
   ngOnInit(): void {
     var parser = document.createElement('a');
