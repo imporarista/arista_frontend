@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { NavService } from '../../services/nav.service';
 
 @Component({
@@ -11,11 +11,19 @@ import { NavService } from '../../services/nav.service';
 export class TapToTopComponent implements OnInit {
   
   public show: boolean = false;
+  public showButtons: boolean = false;
 
   constructor(private viewScroller: ViewportScroller,
     private router: Router,
     private navServices: NavService
-  ) { }
+  ) {
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.showButtons = event.url.includes('/home/catalog');
+      }
+    });
+  }
 
   ngOnInit(): void {
   }
@@ -24,7 +32,7 @@ export class TapToTopComponent implements OnInit {
   @HostListener("window:scroll", [])
   onWindowScroll() {
     let number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  	if (number > 600) { 
+  	if (number > 600 && this.showButtons) { 
   	  this.show = true;
   	} else {
   	  this.show = false;
