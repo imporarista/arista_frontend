@@ -12,7 +12,7 @@
       <ul id="sub-menu" class="sidebar-menu">
         <li *ngFor="let menuItem of categories" (mouseover)="onHover(menuItem.sub_category?.length > 0 ? true : false)">
             <!-- Link -->
-            <a [routerLink]="['/home/catalog', menuItem.cat_id]">
+            <a [routerLink]="['/home/catalog', menuItem.cat_id]" (click)="window.localStorage.removeItem('products')">
                {{menuItem.cat_name}}
                <span class="sub-arrow" *ngIf="menuItem.sub_category?.length > 0"
                 (click)="toggletNavActive(menuItem)"></span>
@@ -23,7 +23,7 @@
               <ng-container>
                 <li *ngFor="let childrenItem of menuItem.sub_category">
                   <!-- Link -->
-                  <a class="has-submenu" [routerLink]="['/home/catalog', menuItem.cat_id,childrenItem.subc_id]">
+                  <a class="has-submenu" [routerLink]="['/home/catalog', menuItem.cat_id,childrenItem.subc_id]" (click)="window.localStorage.removeItem('products')">
                      {{childrenItem.subc_name}}
                   </a>
                 </li>

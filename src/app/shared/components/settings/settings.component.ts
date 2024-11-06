@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -98,6 +98,9 @@ export class SettingsComponent implements OnInit {
       //pregunta si lleva un segundo sin teclear nada antes de empezar a buscar
       if (THIS.timeStoped >= 1) {
         clearInterval(THIS.intervalTimeStoped);
+        localStorage.removeItem('products');
+        localStorage.setItem('start', '0');
+        console.log('limpiar localStorage')
         if (THIS.searchText === '') {
           THIS.router.navigate(['home/catalog']);
         } else {

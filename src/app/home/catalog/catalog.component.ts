@@ -46,6 +46,7 @@ export class CatalogComponent implements OnInit {
     this.initData();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.getParams();
         if (event.id === 1) {
           // Aquí puedes manejar la lógica cuando se navega a una nueva ruta
           console.log('Navegación a una nueva ruta:', event);
@@ -73,20 +74,13 @@ export class CatalogComponent implements OnInit {
   }
 
   getParams() {
-     // Get Query params..
-     this.route.queryParams.subscribe(params => {
-      this.statusProduct = params.status ? params.status : '';
-      this.searchProduct = params.search ? params.search : '';
-      this.loadProducts(true);
-    })
-
     this.route.params.subscribe(params => {
       this.start = 0;
       this.cat_id = params['cat_id'];
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
-      this.loading = false;
-      this.loadProducts(true);
+      // this.loading = false;
+      // this.loadProducts(true);
     });
   }
 
@@ -95,44 +89,49 @@ export class CatalogComponent implements OnInit {
 
   loadProducts(resetList: boolean): void {
     console.log('readFromDB', this.readFromDB);
-    if (!this.loading && this.readFromDB) {
-      this.loading = true;
-      let selector = 'all'; // all, category, subCategory
-      let id = null; // id de sub categoría o sub categoría
-      if (typeof (this.subc_id) !== 'undefined') {
-        selector = 'subCategory';
-        id = this.subc_id;
-      } else if (typeof (this.cat_id) !== 'undefined') {
-        selector = 'category';
-        id = this.cat_id;
-      } else if (this.searchProduct !== '') {
-        selector = 'search'
-        id = this.searchProduct;
-      }
-    
-      this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
-        (products) => {
-          this.start += this.limit;
-          this.loading = false;
-          if (resetList) {
-            this.products = products;
-            this.finished = false;
-            this.saveProductsLocalStorages();
-          } else {
-            this.products = this.products.concat(products);
-            if (products.length < this.limit) {
-              this.finished = true;
-            }
-            this.saveProductsLocalStorages();
-          }
-        },
-        (error) => {
-          console.error('Error al cargar productos:', error); // Manejo de errores
-          this.loading = false;
+    // Get Query params..
+    this.route.queryParams.subscribe(params => {
+      this.statusProduct = params.status ? params.status : '';
+      this.searchProduct = params.search ? params.search : '';
+      // this.loadProducts(true);
+      if (!this.loading && this.readFromDB) {
+        this.loading = true;
+        let selector = 'all'; // all, category, subCategory
+        let id = null; // id de sub categoría o sub categoría
+        if (typeof (this.subc_id) !== 'undefined') {
+          selector = 'subCategory';
+          id = this.subc_id;
+        } else if (typeof (this.cat_id) !== 'undefined') {
+          selector = 'category';
+          id = this.cat_id;
+        } else if (this.searchProduct !== '') {
+          selector = 'search'
+          id = this.searchProduct;
         }
-      );
-    }
-
+      
+        this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
+          (products) => {
+            this.start += this.limit;
+            this.loading = false;
+            if (resetList) {
+              this.products = products;
+              this.finished = false;
+              this.saveProductsLocalStorages();
+            } else {
+              this.products = this.products.concat(products);
+              if (products.length < this.limit) {
+                this.finished = true;
+              }
+              this.saveProductsLocalStorages();
+            }
+          },
+          (error) => {
+            console.error('Error al cargar productos:', error); // Manejo de errores
+            this.loading = false;
+          }
+        );
+      }
+    })
   }
 
   saveProductsLocalStorages() {
@@ -153,6 +152,7 @@ export class CatalogComponent implements OnInit {
       this.finished = false; // Asegúrate d10e que el estado de finalización sea correcto
       this.readFromDB = true;
     } else {
+      console.log('no hay productos en localStorage')
       // Si no hay productos almacenados, reiniciar
       this.readFromDB = true;
       this.start = 0;

@@ -11,7 +11,7 @@ import { Subcategory } from './../../../interfaces/subcategory';
   styleUrls: ['./left-menu.component.scss']
 })
 export class LeftMenuComponent implements OnInit {
-
+  public window = window;
   public menuItems: Menu[];
   public categories: Category[];
   private userId = 3;
