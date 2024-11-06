@@ -32,7 +32,38 @@
                                 <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name.replace(' ', '-')]">{{
                                     product.prod_name | titlecase }}</a>
                                 <div class="mobile-cart-content row">
-                                    <div class="col">
+                                    <div class="col col-9">
+                                        <div class="text-truncate" [innerHTML]="product.prod_descriptions"></div>
+                                        <div><strong>Precio:</strong> {{ product.price | currency }}</div>
+                                        <div>
+                                            <div class="qty-box">
+                                                <div class="input-group">
+                                                    <span class="input-group-prepend">
+                                                        <button type="button" class="btn quantity-left-minus" data-type="minus"
+                                                            (click)="decrement(product)">
+                                                            <i class="ti-angle-left"></i>
+                                                        </button>
+                                                    </span>
+                                                    <input type="text" name="quantity" class="form-control input-number" disabled
+                                                        [(ngModel)]="product.quantity">
+                                                    <span class="input-group-prepend">
+                                                        <button type="button" class="btn quantity-right-plus" data-type="plus"
+                                                            (click)="increment(product)">
+                                                            <i class="ti-angle-right"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col col-1">
+                                        <h2 class="td-color">
+                                            <a (click)="removeItem(product)" class="icon">
+                                                <i class="ti-close"></i>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                    <!-- <div class="col">
                                         <div class="qty-box">
                                             <div class="input-group">
                                                 <input type="text" name="quantity" class="form-control input-number"
@@ -51,7 +82,7 @@
                                                 <i class="ti-close"></i>
                                             </a>
                                         </h2>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </td>
                             <td>

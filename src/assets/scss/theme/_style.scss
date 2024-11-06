@@ -14492,3 +14492,10 @@ span.color-red {
     display: grid;
     justify-content: center;
 }
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Ajusta este valor según necesites */
+}
