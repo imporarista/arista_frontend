@@ -44,17 +44,19 @@ export class CatalogComponent implements OnInit {
   ) {
 
     this.initData();
+    this.getParams();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.getParams();
-        if (event.id === 1) {
-          // Aquí puedes manejar la lógica cuando se navega a una nueva ruta
-          console.log('Navegación a una nueva ruta:', event);
-          this.loadProducts(true); // Cargar productos si es necesario
-        } else if (event.id > 2) {
-          console.log('Navegación a una nueva ruta:', event);
-          this.handleBackNavigation();
-        }
+        this.start=0;
+  //       this.getParams();
+  //       if (event.id === 1) {
+  //         // Aquí puedes manejar la lógica cuando se navega a una nueva ruta
+  //         console.log('Navegación a una nueva ruta:', event);
+  //         this.loadProducts(true); // Cargar productos si es necesario
+  //       } else if (event.id > 2) {
+  //         console.log('Navegación a una nueva ruta:', event);
+  //         this.handleBackNavigation();
+  //       }
       }
     });
   }
@@ -74,13 +76,20 @@ export class CatalogComponent implements OnInit {
   }
 
   getParams() {
+    // Get Query params..
+    this.loading = false;
+    this.start = 0;
+    this.route.queryParams.subscribe(params => {
+      this.statusProduct = params.status ? params.status : '';
+      this.searchProduct = params.search ? params.search : '';
+    });
     this.route.params.subscribe(params => {
-      this.start = 0;
+      this.loading = false;
+    this.start = 0;
       this.cat_id = params['cat_id'];
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
-      // this.loading = false;
-      // this.loadProducts(true);
+      this.loadProducts(true);
     });
   }
 
@@ -88,12 +97,6 @@ export class CatalogComponent implements OnInit {
   }
 
   loadProducts(resetList: boolean): void {
-    console.log('readFromDB', this.readFromDB);
-    // Get Query params..
-    this.route.queryParams.subscribe(params => {
-      this.statusProduct = params.status ? params.status : '';
-      this.searchProduct = params.search ? params.search : '';
-      // this.loadProducts(true);
       if (!this.loading && this.readFromDB) {
         this.loading = true;
         let selector = 'all'; // all, category, subCategory
@@ -131,7 +134,6 @@ export class CatalogComponent implements OnInit {
           }
         );
       }
-    })
   }
 
   saveProductsLocalStorages() {

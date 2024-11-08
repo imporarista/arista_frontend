@@ -56,6 +56,7 @@ export class ApiService {
       priceRate,
       limit
     };
+    console.log('data de busqueda', data);
     const url = this.apiUrl + 'getProducts/' + JSON.stringify(data);
     const cacheurl = 'product-' + selector + '-' + id + '-' + start + '-' + statusProduct + '-' + priceRate;
     const cacheData = this.cacheService.get(cacheurl);
