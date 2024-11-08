@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                                 <!-- Infinite Scroll -->
-                                <div infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="1000"
+                                <div infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="5000"
                                     (scrolled)="loadProducts(false)" *ngIf="products.length">
                                 </div>
                                 <div class="product-infinitescroll">

@@ -9,6 +9,7 @@ export class BreadcrumbComponent implements OnInit {
 
   @Input() title : string;
   @Input() breadcrumb : string;
+  public window = window;
 
   constructor() {
   }

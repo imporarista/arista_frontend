@@ -2,6 +2,7 @@ import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { ProductService } from '../../services/product.service';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header-one',
@@ -9,7 +10,7 @@ import { DesiredProductsService } from 'src/app/services/desired-products.servic
   styleUrls: ['./header-one.component.scss']
 })
 export class HeaderOneComponent implements OnInit {
-
+  public window = window;
   @Input() class: string;
   @Input() themeLogo: string = 'assets/appImages/logoMenu.svg'; // Default Logo
   @Input() topbar: boolean = true; // Default True
@@ -28,6 +29,7 @@ export class HeaderOneComponent implements OnInit {
   constructor(
     public productService: ProductService,
     public desiredProduct: DesiredProductsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -84,8 +86,12 @@ export class HeaderOneComponent implements OnInit {
     parser.search = '?' + list.join('&');
     return parser.href;
   }
+
   filterStatus() {
-    location.href = this.URL_add_parameter(location.href, 'status', this.statusProduct);
+    this.router.navigate(['/home/catalog'], {
+        queryParams: { status: this.statusProduct },
+        queryParamsHandling: 'merge' // Mantiene otros queryParams existentes si los hay
+    });
   }
 
   closeSession() {

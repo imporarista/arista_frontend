@@ -41,7 +41,7 @@
             <app-left-menu></app-left-menu>
             <div class="brand-logo">
               <a routerLink="/home/catalog" id="headerlogo">
-                <img [src]="themeLogo" width="130" height="40" class="img-fluid" alt="logo">
+                <img [src]="themeLogo" width="130" height="40" class="img-fluid" alt="logo" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">
               </a>
             </div>
           </div>

@@ -77,15 +77,16 @@ export class CatalogComponent implements OnInit {
 
   getParams() {
     // Get Query params..
-    this.loading = false;
     this.start = 0;
     this.route.queryParams.subscribe(params => {
       this.statusProduct = params.status ? params.status : '';
       this.searchProduct = params.search ? params.search : '';
+      this.start = 0;
+      console.log('searchProduct', this.searchProduct, 'statusProduct', this.statusProduct);
+      this.loadProducts(true);
     });
     this.route.params.subscribe(params => {
-      this.loading = false;
-    this.start = 0;
+      this.start = 0;
       this.cat_id = params['cat_id'];
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
@@ -114,6 +115,7 @@ export class CatalogComponent implements OnInit {
       
         this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
           (products) => {
+            console.log('buscando desde el ', this.start);
             this.start += this.limit;
             this.loading = false;
             if (resetList) {
@@ -148,13 +150,11 @@ export class CatalogComponent implements OnInit {
     const storedStart = localStorage.getItem('start');
 
     if (storedProducts && storedStart) {
-      console.log('cargar productos de productos en localStorage')
       this.products = JSON.parse(storedProducts);
       this.start = parseInt(storedStart);
       this.finished = false; // Asegúrate d10e que el estado de finalización sea correcto
       this.readFromDB = true;
     } else {
-      console.log('no hay productos en localStorage')
       // Si no hay productos almacenados, reiniciar
       this.readFromDB = true;
       this.start = 0;
