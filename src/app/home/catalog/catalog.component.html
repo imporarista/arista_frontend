@@ -12,7 +12,10 @@
                             <div class="col-sm-12">
                                 <div class="collection-product-wrapper" id="products">
                                     <app-grid [products]="products" [layoutView]="layoutView"
-                                        (setGrid)="updateGridLayout($event)" (setLayout)="updateLayoutView($event)">
+                                        [(category)]="category"
+                                        [(status)]="statusProduct" 
+                                        (setGrid)="updateGridLayout($event)"
+                                        (setLayout)="updateLayoutView($event)">
                                     </app-grid>
                                     <div class="product-wrapper-grid" [ngClass]="layoutView">
                                         <div class="row">

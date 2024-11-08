@@ -6,6 +6,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
 import { reset } from 'mousetrap';
+import { Category } from 'src/app/interfaces/category';
 
 @Component({
   selector: 'app-catalog',
@@ -13,20 +14,22 @@ import { reset } from 'mousetrap';
   styleUrl: './catalog.component.scss'
 })
 export class CatalogComponent implements OnInit {
-  public grid: string = 'col-xl-3 col-md-6';
-  public layoutView: string = 'grid-view';
-  public products: Product[] = [];
+  private categories: Category[];
   private cat_id: number;
-  private subc_id: number;
-  private statusProduct: string;
-  private searchProduct: string;
-  private start: number //item en que inicia la carga
   private limit: number // cuantos productos carga cada vez
-  public finished: boolean // determina si ya se cargo todos los productos
-  public aristaLogo = 'assets/appImages/logoMenu.svg'
   private loading: boolean = false;
   private priceRateId: number;
   private readFromDB: boolean;
+  private searchProduct: string;
+  private start: number //item en que inicia la carga
+  private subc_id: number;
+  public aristaLogo = 'assets/appImages/logoMenu.svg'
+  public category: string;
+  public finished: boolean // determina si ya se cargo todos los productos
+  public grid: string = 'col-xl-3 col-md-6';
+  public layoutView: string = 'grid-view';
+  public products: Product[] = [];
+  public statusProduct: string;
 
   currentTax = 0.19;
   detailOrder = {
@@ -43,7 +46,8 @@ export class CatalogComponent implements OnInit {
     private apiService: ApiService,
     public desiredProduct: DesiredProductsService,
   ) {
-
+    this.categories = [];
+    this.category = 'Todos';
     this.initData();
     this.getParams();
     this.router.events.subscribe(event => {
@@ -89,6 +93,14 @@ export class CatalogComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.start = 0;
       this.cat_id = params['cat_id'];
+      
+      if (this.cat_id) {
+        const selectedCategory = this.categories.find(category => category.cat_id === this.cat_id);
+        this.category = selectedCategory ? selectedCategory.cat_name : 'Todos';
+      } else {
+        this.category = 'Todos';
+      }
+
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
       this.loadProducts(true);
@@ -96,6 +108,9 @@ export class CatalogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.apiService.getCategories(localStorage.getItem('user_id')).subscribe((categories) => {
+      this.categories = categories;
+    });
   }
 
   loadProducts(resetList: boolean): void {

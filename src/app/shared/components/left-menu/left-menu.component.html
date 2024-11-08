@@ -10,6 +10,9 @@
         </div>
       </div>
       <ul id="sub-menu" class="sidebar-menu">
+        <li>
+          <a [routerLink]="['/home/catalog']" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">Todos</a>
+        </li>
         <li *ngFor="let menuItem of categories" (mouseover)="onHover(menuItem.sub_category?.length > 0 ? true : false)">
             <!-- Link -->
             <a [routerLink]="['/home/catalog', menuItem.cat_id]" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">
