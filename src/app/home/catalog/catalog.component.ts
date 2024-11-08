@@ -5,6 +5,7 @@ import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
+import { reset } from 'mousetrap';
 
 @Component({
   selector: 'app-catalog',
@@ -112,29 +113,36 @@ export class CatalogComponent implements OnInit {
           selector = 'search'
           id = this.searchProduct;
         }
-      
-        this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
-          (products) => {
-            console.log('buscando desde el ', this.start);
-            this.start += this.limit;
-            this.loading = false;
-            if (resetList) {
-              this.products = products;
-              this.finished = false;
-              this.saveProductsLocalStorages();
-            } else {
-              this.products = this.products.concat(products);
-              if (products.length < this.limit) {
-                this.finished = true;
+        if (localStorage.getItem('products') && resetList) {
+          console.log('cargar productos de productos en localStorage')
+          this.products = JSON.parse(localStorage.getItem('products'));
+          this.start = parseInt(localStorage.getItem('start') ?? '0') + this.limit;
+          this.loading = false;
+        } else {
+          console.log('buscando desde la API')
+          this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
+            (products) => {
+              console.log('buscando desde el ', this.start);
+              this.start += this.limit;
+              this.loading = false;
+              if (resetList) {
+                this.products = products;
+                this.finished = false;
+                this.saveProductsLocalStorages();
+              } else {
+                this.products = this.products.concat(products);
+                if (products.length < this.limit) {
+                  this.finished = true;
+                }
+                this.saveProductsLocalStorages();
               }
-              this.saveProductsLocalStorages();
+            },
+            (error) => {
+              console.error('Error al cargar productos:', error); // Manejo de errores
+              this.loading = false;
             }
-          },
-          (error) => {
-            console.error('Error al cargar productos:', error); // Manejo de errores
-            this.loading = false;
-          }
-        );
+          );
+        }
       }
   }
 
