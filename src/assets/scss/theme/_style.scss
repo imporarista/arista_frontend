@@ -14472,7 +14472,7 @@ div#loading-bar {
     z-index: 100;
 }
 span.color-green {
-    color: green !important;
+    color: #8af58a !important;
 }
 span.color-red {
     color: red !important;
@@ -14497,5 +14497,16 @@ span.color-red {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px; /* Ajusta este valor según necesites */
+    max-width: 95%; /* Ajusta este valor según necesites */
+}
+
+.blue-info-box {
+    background: #19648c;
+    color: white;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    h6 {
+        color: #fbcf08;
+        font-weight: bold;
+    }
 }

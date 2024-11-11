@@ -35,12 +35,13 @@
     </div>
   </div>
   <div class="product-detail">
-    <div>
+    <div class="blue-info-box">
       <bar-rating [rate]="5" [readOnly]="true"></bar-rating>
       <h6>{{ product?.prod_name | titlecase }}</h6> 
       <b *ngIf="userType == '2'">Cantidad:</b><span *ngIf="userType == '2'">{{ product?.stock }} |</span> <b>Precio:</b>{{ product?.price | currency }}<br/>
-      <span [innerHTML]="product?.prod_descriptions"></span>
-      
+      <div style="display: flex">
+        <span [innerHTML]="product?.prod_descriptions" class="text-truncate"></span>
+      </div>
     </div>
   </div>
 </div>
