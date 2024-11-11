@@ -7,7 +7,7 @@
       <span class="lable4 green" *ngIf="product?.status == 6">Outlet</span>
     </div>
     <div class="front">
-      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name?.replace(' ', '-')]">
+      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name]">
         <img 
           [defaultImage]="ImageSrc ? ImageSrc : 'assets/images/product/placeholder.jpg'" 
           [lazyLoad]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" 
@@ -16,7 +16,7 @@
       </a>
     </div>
     <div class="back" *ngIf="onHowerChangeImage">
-      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name?.replace(' ', '-')]">
+      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name]">
         <img [src]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" class="img-fluid lazy-loading" alt="{{ apiService.thumbnailsDirectory + product?.image }}">
       </a>
     </div>

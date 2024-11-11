@@ -27,7 +27,7 @@ export class Resolver  {
   async resolve(route: ActivatedRouteSnapshot): Promise<any> {
     return await new Promise(resolve => {
       // this.productService.getProductBySlug(route.params.slug).subscribe(product => {
-      this.apiService.getProducts('search', route.params.slug, 0, 12, '', 1).subscribe(products => {
+      this.apiService.getProducts('search', route.params.slug, 0, 1, '', 1).subscribe(products => {
         if (products.length == 0) { // When product is empty redirect 404
           resolve(null);
           this.router.navigateByUrl('/pages/404', { skipLocationChange: true });
