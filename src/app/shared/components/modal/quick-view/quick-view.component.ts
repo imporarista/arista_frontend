@@ -22,13 +22,16 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
   public ImageSrc: string;
   public counter: number = 1;
   public modalOpen: boolean = false;
+  public userType: string;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private router: Router, private modalService: NgbModal,
     // public productService: ProductService
     private desiredProduct: DesiredProductsService,
     public apiService: ApiService
-  ) { }
+  ) {
+    this.userType = localStorage.getItem('userType')  ?? '2';
+  }
 
   ngOnInit(): void {
   }

@@ -33,8 +33,8 @@
                                     </li>
                                 </ul>
                             </div> -->
-                            <h5 class="avalibility" *ngIf="counter <= product.stock"><span>{{ product.stock }} En Stock</span></h5>
-                            <h5 class="avalibility" *ngIf="counter > product.stock"><span>Solo hay {{ product.stock }} en Stock</span></h5>
+                            <h5 class="avalibility" *ngIf="counter <= product.stock && userType == '2'"><span>{{ product.stock }} En Stock</span></h5>
+                            <h5 class="avalibility" *ngIf="counter > product.stock && userType == '2'"><span>Solo hay {{ product.stock }} en Stock</span></h5>
                             <h6 class="product-title">Cantidad</h6>
                             <div class="qty-box">
                                 <div class="input-group">

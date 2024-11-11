@@ -22,6 +22,7 @@ export class ProductNoSidebarComponent implements OnInit {
   public activeSlide: any = 0;
   public selectedSize: any;
   public active = 1;
+  public userType: string;
 
   @ViewChild("sizeChart") SizeChart: SizeModalComponent;
 
@@ -32,6 +33,7 @@ export class ProductNoSidebarComponent implements OnInit {
     public productService: ProductService, public apiService: ApiService,
     private desiredProduct: DesiredProductsService
   ) {
+    this.userType = localStorage.getItem('userType')  ?? '2';
     this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
     this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
     this.product = {

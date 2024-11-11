@@ -43,11 +43,11 @@
                     <h3>
                         {{ product?.price | currency: productService.Currency?.currency:'symbol' }}
                     </h3>
-                    <app-stock-inventory [stock]="product.stock"></app-stock-inventory>
+                    <app-stock-inventory [stock]="product.stock" *ngIf="userType == '2'"></app-stock-inventory>
                     <div class="product-description border-product">
                         
-                        <h5 class="avalibility" *ngIf="counter <= product.stock"><span>En Stock</span></h5>
-                        <h5 class="avalibility" *ngIf="counter > product.stock"><span>No hay en Stock</span></h5>
+                        <h5 class="avalibility" *ngIf="counter <= product.stock && userType == '2'"><span>En Stock</span></h5>
+                        <h5 class="avalibility" *ngIf="counter > product.stock && userType == '2'"><span>No hay en Stock</span></h5>
                         <h6 class="product-title">Cantidad</h6>
                         <div class="qty-box">
                             <div class="input-group">
@@ -65,8 +65,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-buttons">
-                        <a href="javascrip:void(0)" class="btn btn-solid" [class.disabled]="counter > product.stock" (click)="addToCart(product)">Agregar al carrito</a>
+                    <div class="product-buttons row">
+                        <div class="col-6">
+                            <a [routerLink]="['/home/catalog']" class="btn btn-solid">Continua tu compra</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="javascrip:void(0)" class="btn btn-solid" [class.disabled]="counter > product.stock" (click)="addToCart(product)">Agregar al carrito</a>
+                        </div>
                     </div>
                     <div class="border-product">
                         <h6 class="product-title">Detalle del producto</h6>

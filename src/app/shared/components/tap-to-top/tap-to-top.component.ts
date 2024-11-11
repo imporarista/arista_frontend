@@ -32,7 +32,7 @@ export class TapToTopComponent implements OnInit {
   @HostListener("window:scroll", [])
   onWindowScroll() {
     let number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  	if (number > 600 && this.showButtons) { 
+  	if (number > 600) {
   	  this.show = true;
   	} else {
   	  this.show = false;
