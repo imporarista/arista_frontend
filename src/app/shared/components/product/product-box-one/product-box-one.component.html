@@ -8,16 +8,10 @@
     </div>
     <div class="front">
       <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name]">
-        <img 
-          [defaultImage]="ImageSrc ? ImageSrc : 'assets/images/product/placeholder.jpg'" 
-          [lazyLoad]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" 
-          class="img-fluid lazy-loading" 
-          alt="{{ product?.image }}" />
-      </a>
-    </div>
-    <div class="back" *ngIf="onHowerChangeImage">
-      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name]">
-        <img [src]="ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')" class="img-fluid lazy-loading" alt="{{ apiService.thumbnailsDirectory + product?.image }}">
+        <div class="img-fluid lazy-loading"
+            style="height: 200px; width: 100%; background-size: contain; background-repeat: no-repeat; background-position: center;" 
+            [ngStyle]="{'background-image': 'url(' + (ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')) + ')'}">
+        </div>
       </a>
     </div>
     <div class="card-info-desired" *ngIf="desiredProduct.desiredProductsIds.includes(product.prod_id)">
