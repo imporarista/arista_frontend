@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
 import { FormsModule } from '@angular/forms';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
 import { ApiService } from 'src/app/services/api.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { ToastrService } from 'ngx-toastr';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-customer-location',
@@ -22,7 +23,7 @@ export class CustomerLocationComponent {
     private api: ApiService,
     public customers: CustomerService,
     private generalFunctions: GeneralFunctionsService,
-    private router: Router,
+    private location: Location,
     private toastrService: ToastrService
   ) {
     this.customerIdSelected = 0;
@@ -73,5 +74,9 @@ export class CustomerLocationComponent {
       msg = 'No se logró conectar al servidor!!';
     }
     this.showToastMessage(msg);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

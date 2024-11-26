@@ -7,6 +7,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
 import { Router, RouterModule } from '@angular/router';
 import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class CustomerVisitListComponent implements OnInit {
   constructor(
     private apiservice: ApiService,
     public generalFunctionsService: GeneralFunctionsService,
-    private router: Router) {
+    private router: Router,
+    private location: Location) {
     this.userId = localStorage.getItem('userId');
     this.userType = localStorage.getItem('userType');
     this.visits = [];
@@ -73,5 +75,9 @@ export class CustomerVisitListComponent implements OnInit {
 
   goVisitCatalog() {
     this.router.navigate(['visit/home/catalog']);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

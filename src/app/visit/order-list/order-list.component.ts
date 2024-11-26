@@ -5,7 +5,7 @@ import { Orderlistinterface } from 'src/app/interfaces/orderlistinterface';
 import { ApiService } from 'src/app/services/api.service';
 import { GeneralFunctionsService } from 'src/app/services/general-functions.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-order-list',
   standalone: true,
@@ -29,6 +29,7 @@ order: any;
     private api: ApiService,
     public generalFunctions: GeneralFunctionsService,
     private activatedRoute: ActivatedRoute,
+    private location: Location,
   ) { }
 
   ngOnInit() {
@@ -48,5 +49,8 @@ order: any;
     console.info(event);
   }
 
+  goBack(): void {
+    this.location.back();
+  }
 
 }

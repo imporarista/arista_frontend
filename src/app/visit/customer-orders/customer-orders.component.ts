@@ -7,7 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Customerinterface } from 'src/app/interfaces/customerinterface';
 import { NgIf } from '@angular/common';
 import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-customer-orders',
   standalone: true,
@@ -22,6 +22,7 @@ export class CustomerOrdersComponent {
 
   constructor(
     public customers: CustomerService,
+    private location: Location,
     private router: Router,
   ) {
     this.customersList = [];
@@ -42,5 +43,9 @@ export class CustomerOrdersComponent {
         break;
       }
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

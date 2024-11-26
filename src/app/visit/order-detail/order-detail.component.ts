@@ -1,10 +1,9 @@
-import { CommonModule, NgIf } from '@angular/common';
-import { Component, Inject, Input, PLATFORM_ID, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule, NgIf, Location} from '@angular/common';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/interfaces/product';
 import { ApiService } from 'src/app/services/api.service';
 import { Orderdetailinterface } from 'src/app/interfaces/orderdetailinterface';
-
 @Component({
   selector: 'app-order-detail',
   standalone: true,
@@ -43,7 +42,8 @@ export class OrderDetailComponent {
   public currentTax = 0.19;
 
 
-  constructor(@Inject(PLATFORM_ID)
+  constructor(
+    private location: Location,
     private router: Router,
     public apiService: ApiService,
     private activatedRoute: ActivatedRoute
@@ -70,5 +70,9 @@ export class OrderDetailComponent {
 
   async openViewer(src: any) {
     this.router.navigate(['/zoom', { src }]);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

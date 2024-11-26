@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { PreparedPhotoSwipeOptions } from 'photoswipe';
 import PhotoSwipe from 'photoswipe';
 import { Orderdetailinterface } from 'src/app/interfaces/orderdetailinterface';
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
@@ -69,6 +69,7 @@ export class OderDetail2Component implements OnInit {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     @Inject(PLATFORM_ID) private platformId: Object,
+    private location: Location,
   ) {
     this.iva = 0;
     this.totalPrice = 0;
@@ -220,6 +221,10 @@ export class OderDetail2Component implements OnInit {
 
     const gallery = new PhotoSwipe(options); // Solo se pasa options como argumento
     gallery.init();
+  }
+
+  goBack() {
+    this.location.back();
   }
 
 }

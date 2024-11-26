@@ -7,6 +7,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { CustomerVisitListComponent } from '../customer-visit-list/customer-visit-list.component';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { Location } from '@angular/common';
 import { ApiService } from 'src/app/services/api.service';
 import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
 
@@ -41,6 +42,7 @@ export class CustomerVisitsComponent implements OnInit {
     public customers: CustomerService,
     private generalFunctions: GeneralFunctionsService,
     private router: Router,
+    private location: Location,
   ) {
     this.visiting = false;
     this.visit = {
@@ -121,6 +123,10 @@ export class CustomerVisitsComponent implements OnInit {
       localStorage.remove({ key: constants.CUSTOMER_VISIT });
       this.router.navigate(['/visit-list']);
     });
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
 
