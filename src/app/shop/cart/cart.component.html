@@ -151,10 +151,10 @@
             </div>
         </div>
         <div class="row cart-buttons" *ngIf='desiredProduct.desiredProducts.length'>
-            <div class="col-6">
+            <div [ngClass]="{'col-6': userType != 1, 'col-12': userType == 1}">
                 <a [routerLink]="['/home/catalog']" class="btn btn-solid">Continua tu compra</a>
             </div>
-            <div class="col-6">
+            <div class="col-6" *ngIf="userType == 1">
                 <a (click)="sendOrder()" class="btn btn-solid">enviar pedido</a>
             </div>
             <!-- <div class="col-6">

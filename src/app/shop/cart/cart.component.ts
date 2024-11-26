@@ -31,7 +31,7 @@ export class CartComponent implements OnInit {
 
   private visit: any;
   private userId: number;
-  private userType: number;
+  public userType: number;
 
 
   constructor(
