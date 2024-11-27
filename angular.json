@@ -92,6 +92,9 @@
           "configurations": {
             "production": {
               "buildTarget": "multikart:build:production"
+            },
+            "development": {
+              "liveReload": true
             }
           }
         },

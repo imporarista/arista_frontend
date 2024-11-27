@@ -6,7 +6,7 @@ import { constants } from 'src/environments/constants';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PreparedPhotoSwipeOptions } from 'photoswipe';
 import PhotoSwipe from 'photoswipe';
 import { Orderdetailinterface } from 'src/app/interfaces/orderdetailinterface';
@@ -54,14 +54,12 @@ export class OderDetail2Component implements OnInit {
       quantity: 0
     }
   ];
-
+  public orderId: number;
   private visit: any;
   private userId: number;
   private userType: number;
   product_images: any;
   i: number;
-
-
 
   constructor(
     public desiredProduct: DesiredProductsService,
@@ -70,27 +68,38 @@ export class OderDetail2Component implements OnInit {
     private modalService: NgbModal,
     @Inject(PLATFORM_ID) private platformId: Object,
     private location: Location,
+    private route: ActivatedRoute
   ) {
     this.iva = 0;
     this.totalPrice = 0;
     this.subTotal = 0;
     this.userId = 0;
     this.userType = 0;
+    this.orderId = 0;
   }
 
   ngOnInit(): void {
-    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
-    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
-    this.getTotals();
+    this.route.params.subscribe(params => {
+      console.log('params', params);
+      this.orderId = Number(params['orderId']) || 0;
+      if (this.orderId > 0) {
+        this.getOrderDetail();
+      }
+    });
     this.userId = parseInt(localStorage.getItem('userId') || '0');
     this.userType = parseInt(localStorage.getItem('userType') || '0');
+  }
+
+  getOrderDetail() {
+    this.api.getCustomerOrderDetail(this.orderId).subscribe((data: any) => {
+      this.desiredProduct.desiredProducts = data;
+      this.getTotals();
+    });
   }
 
   getTotals() {
     // calcula totales del carrito
     [this.subTotal, this.iva, this.totalPrice] = this.desiredProduct.cartTotalAmount();
-    localStorage.setItem('desiredProducts', JSON.stringify(this.desiredProduct.desiredProducts));
-    localStorage.setItem('desiredProductsIds', JSON.stringify(this.desiredProduct.desiredProductsIds));
   }
 
   // Increament
