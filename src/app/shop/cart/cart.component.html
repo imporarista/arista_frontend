@@ -30,7 +30,7 @@
                                                 [alt]="product.prod_name">
                                         </a>
                                     </div>
-                                    <div class="col-12 col-sm-6">
+                                    <div class="col-12 col-sm-6" *ngIf="isSmallScreen()">
                                         <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name]">{{ product.prod_name | titlecase }}</a>
                                         <div class="mobile-cart-content row">
                                             <div class="col col-9">
@@ -67,6 +67,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                {{ product.prod_name }}
                             </td>
                             <td>
                                 <h2>
@@ -134,7 +137,7 @@
             </div>
         </div>
         <div class="row cart-buttons" *ngIf='desiredProduct.desiredProducts.length'>
-            <div [ngClass]="{'col-6': userType != 1, 'col-12': userType == 1}">
+            <div [ngClass]="{'col-6': userType == 1, 'col-12': userType == 2}">
                 <a [routerLink]="['/home/catalog']" class="btn btn-solid">Continua tu compra</a>
             </div>
             <div class="col-6" *ngIf="userType == 1">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild, HostListener } from '@angular/core';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
 import { ApiService } from 'src/app/services/api.service';
 import { Product } from 'src/app/interfaces/product';
@@ -33,6 +33,9 @@ export class CartComponent implements OnInit {
   private userId: number;
   public userType: number;
 
+  // Variable para almacenar el estado de la pantalla
+  isSmall: boolean = false;
+
 
   constructor(
     public desiredProduct: DesiredProductsService,
@@ -46,6 +49,7 @@ export class CartComponent implements OnInit {
     this.subTotal = 0;
     this.userId = 0;
     this.userType = 0;
+    this.checkScreenSize();
   }
 
   ngOnInit(): void {
@@ -148,6 +152,22 @@ export class CartComponent implements OnInit {
 
   async alertCustomerRequired() {
     this.modalService.open(this.alert_no_visit, { centered: true, size: 'xl' });
+  }
+
+  // Método para verificar el tamaño de la pantalla
+  checkScreenSize() {
+    this.isSmall = window.innerWidth <= 768; // Ajusta el valor según tus necesidades
+  }
+
+  // Listener para detectar cambios en el tamaño de la ventana
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.checkScreenSize();
+  }
+
+  // Método que retorna el estado de la pantalla
+  isSmallScreen(): boolean {
+    return this.isSmall;
   }
 
 }
