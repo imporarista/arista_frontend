@@ -131,21 +131,21 @@ export class CatalogComponent implements OnInit {
         if (localStorage.getItem('products') && resetList) {
           console.log('cargar productos de productos en localStorage')
           this.products = JSON.parse(localStorage.getItem('products'));
-          this.start = parseInt(localStorage.getItem('start') ?? '0') + this.limit;
+          this.start = this.products.length;
           this.loading = false;
         } else {
           console.log('buscando desde la API')
           this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
             (products) => {
+              this.start = this.products.length;
               console.log('buscando desde el ', this.start);
-              this.start += this.limit;
               this.loading = false;
               if (resetList) {
                 this.products = products;
                 this.finished = false;
                 this.saveProductsLocalStorages();
               } else {
-                this.products = this.products.concat(products);
+                this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
                 if (products.length < this.limit) {
                   this.finished = true;
                 }

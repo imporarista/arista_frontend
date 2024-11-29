@@ -47,6 +47,8 @@ import { TapToTopComponent } from './components/tap-to-top/tap-to-top.component'
 
 // Pipes
 import { DiscountPipe } from './pipes/discount.pipe';
+import { FullViewComponent } from './components/modal/full-view/full-view.component';
+import { RelatedProductComponent } from './components/related-product/related-product.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { DiscountPipe } from './pipes/discount.pipe';
     ProductBoxVerticalSliderComponent,
     NewsletterComponent,
     QuickViewComponent,
+    FullViewComponent,
+    RelatedProductComponent,
     CartModalComponent,
     CartVariationComponent,
     VideoModalComponent,
@@ -111,6 +115,8 @@ import { DiscountPipe } from './pipes/discount.pipe';
     ProductBoxVerticalSliderComponent,
     NewsletterComponent,
     QuickViewComponent,
+    FullViewComponent,
+    RelatedProductComponent,
     CartModalComponent,
     CartVariationComponent,
     VideoModalComponent,

@@ -7,6 +7,9 @@ import { ProductService } from "../../../services/product.service";
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ProductNoSidebarComponent } from 'src/app/shop/product/sidebar/product-no-sidebar/product-no-sidebar.component';
+import { FullViewComponent } from '../../modal/full-view/full-view.component';
 
 @Component({
   selector: 'app-product-box-one',
@@ -20,16 +23,26 @@ export class ProductBoxOneComponent implements OnInit {
   @Input() thumbnail: boolean = false; // Default False 
   @Input() onHowerChangeImage: boolean = false; // Default False
   @Input() cartModal: boolean = false; // Default False
+  @Input() productNoSidebar: boolean = false; // Default False
   @Input() loader: boolean = false;
   
   @ViewChild("quickView") QuickView: QuickViewComponent;
+  @ViewChild("fullView") FullView: FullViewComponent;
   @ViewChild("cartModal") CartModal: CartModalComponent;
+  @ViewChild("productNoSidebar") ProductNoSidebar: ProductNoSidebarComponent;
   public aristaLogo = 'assets/appImages/logoMenu.svg'
   public userType: string;
   public ImageSrc : string;
   public ngIf: number;
+  public selectedProductUrl: SafeResourceUrl; // Variable para almacenar la URL del producto
+  public isModalOpen: boolean = false; // Variable para controlar el estado del modal
 
-  constructor(private productService: ProductService, public apiService: ApiService, public desiredProduct: DesiredProductsService) { 
+  constructor(
+    private productService: ProductService,
+    private sanitizer: DomSanitizer,
+    public apiService: ApiService,
+    public desiredProduct: DesiredProductsService
+  ) { 
     this.userType = localStorage.getItem('userType');
   }
 
@@ -61,5 +74,11 @@ export class ProductBoxOneComponent implements OnInit {
     this.product.prod_descriptions = this.product.prod_descriptions
       .replace('12V', '<span class="color-green">12 V</span>')
       .replace('24V', '<span class="color-red">24 V</span>');
+  }
+
+  openFullScreenPopup(prodName: string) {
+    const url = `/shop/product/no/sidebar/${prodName}`;
+    this.selectedProductUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Sanitiza la URL
+    this.isModalOpen = true; // Abre el modal
   }
 }

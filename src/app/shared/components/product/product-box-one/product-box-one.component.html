@@ -7,7 +7,8 @@
       <span class="lable4 green" *ngIf="product?.status == 6">Outlet</span>
     </div>
     <div class="front">
-      <a [routerLink]="['/shop/product/no/sidebar/', product?.prod_name]">
+      <a href="javascript:void(0)" (click)="FullView.openModal()">
+      <!-- <a href="javascript:void(0)" (click)="openFullScreenPopup(product?.prod_name)"> -->
         <div class="img-fluid lazy-loading"
             style="height: 200px; width: 100%; background-size: contain; background-repeat: no-repeat; background-position: center;" 
             [ngStyle]="{'background-image': 'url(' + (ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')) + ')'}">
@@ -41,5 +42,14 @@
 </div>
 <app-skeleton-product-box *ngIf="loader"></app-skeleton-product-box>
 <app-quick-view #quickView [product]="product" [currency]="currency"></app-quick-view>
+<app-full-view #fullView [product]="product" [currency]="currency"></app-full-view>
 <app-cart-modal #cartModal [product]="product" [currency]="currency" *ngIf="cartModal"></app-cart-modal>
+<!-- <app-product-no-sidebar #productNoSidebar [product]="product" *ngIf="productNoSidebar"></app-product-no-sidebar> -->
+
+<!-- <div *ngIf="isModalOpen" class="modal full-screen-modal detail-modal">
+    <div class="modal-content">
+        <span class="close" (click)="isModalOpen = false">&times;</span>
+        <iframe [src]="selectedProductUrl" width="100%" height="100%" style="border: none;"></iframe>
+    </div>
+</div> -->
 
