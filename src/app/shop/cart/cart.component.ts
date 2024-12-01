@@ -5,6 +5,7 @@ import { Product } from 'src/app/interfaces/product';
 import { constants } from 'src/environments/constants';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import PhotoSwipe, { PreparedPhotoSwipeOptions } from 'photoswipe';
 
 
 @Component({
@@ -168,6 +169,52 @@ export class CartComponent implements OnInit {
   // Método que retorna el estado de la pantalla
   isSmallScreen(): boolean {
     return this.isSmall;
+  }
+
+  openPhotoSwipe(productImage: string) {
+    const images = [productImage];
+    console.log(images);
+    const items = images.map((image, i) => {
+      return {
+        src: this.api.imageDirectory + image + (image.includes('.') ? '' : '.jpg'),
+        w: 800, // Ancho de la imagen
+        h: 600  // Alto de la imagen
+      };
+    });
+
+    const options: PreparedPhotoSwipeOptions = {
+      index: 0, // índice de la imagen que se va a abrir
+      dataSource: items,
+      bgOpacity: 0.8, // Opacidad del fondo
+      loop: true, // Permitir bucle
+      pinchToClose: true, // Permitir cerrar con gesto de pellizco
+      closeOnVerticalDrag: false, // Cerrar al arrastrar verticalmente
+      preload: [1, 1], // Precargar imágenes cercanas
+      errorMsg: 'No se pudo cargar la imagen.', // Mensaje de error
+      maxWidthToAnimate: 1200, // Ancho máximo para animar
+      showHideAnimationType: 'zoom', // Tipo de animación
+      // ... otros parámetros que desees agregar
+      spacing: 0.1,
+      allowPanToNext: false,
+      hideAnimationDuration: 200,
+      showAnimationDuration: 200,
+      zoomAnimationDuration: 200,
+      easing: 'cubic-bezier(.4,0,.22,1)',
+      escKey: true,
+      arrowKeys: true,
+      trapFocus: false,
+      returnFocus: false,
+      clickToCloseNonZoomable: false,
+      imageClickAction: false,
+      bgClickAction: false,      
+      tapAction: false,
+      doubleTapAction: false,
+      preloaderDelay: 0,
+      indexIndicatorSep: " de ",
+    };
+
+    const gallery = new PhotoSwipe(options); // Solo se pasa options como argumento
+    gallery.init();
   }
 
 }

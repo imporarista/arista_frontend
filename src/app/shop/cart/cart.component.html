@@ -25,10 +25,12 @@
                             <td>
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
-                                        <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name]">
-                                            <img [src]="api.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')"
+                                        <div class="zoom-container" (click)="openPhotoSwipe(product.image)">
+                                            <a>
+                                                <img [src]="api.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')"
                                                 [alt]="product.prod_name">
-                                        </a>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="col-12 col-sm-6" *ngIf="isSmallScreen()">
                                         <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name]">{{ product.prod_name | titlecase }}</a>

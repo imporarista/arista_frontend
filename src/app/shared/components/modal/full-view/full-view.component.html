@@ -28,7 +28,7 @@
                                             [alt]="product.prod_name"
                                             class="img-fluid"
                                             [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
-                                            (click)="owlCar.to(activeSlide = i)">
+                                            (click)="owlCar.to(activeSlide = i.toString())">
                                         </div>
                                     </ng-template>
                                 </ng-container>
