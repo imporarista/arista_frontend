@@ -12,7 +12,7 @@
                                 <div class="zoom-container" (click)="openPhotoSwipe(i)">
                                     <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
                                        [lazyLoad]="apiService.thumbnailsDirectory + image + (image.includes('.') ? '' : '.jpg')" 
-                                       [alt]="product.prod_name" class="img-fluid" [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')">
+                                       [alt]="product.prod_name" class="img-fluid" [src]="apiService.imageDirectory + image + (image?.includes('.') ? '' : '.jpg')">
                                 </div>
                             </ng-template>
                         </ng-container>

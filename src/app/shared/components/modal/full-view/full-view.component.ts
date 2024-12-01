@@ -43,6 +43,10 @@ export class FullViewComponent implements OnInit, OnDestroy  {
   }
 
   ngOnInit(): void {
+    const modalElement = document.querySelector('.modal-content'); // Selecciona el contenedor del modal
+    if (modalElement) {
+      modalElement.scrollTop = 0; // Hacer scroll hacia arriba
+    }
     this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
       this.product_images = response.map(image => {return image.img_big});
     });
