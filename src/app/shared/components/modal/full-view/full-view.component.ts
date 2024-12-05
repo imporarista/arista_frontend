@@ -43,9 +43,16 @@ export class FullViewComponent implements OnInit, OnDestroy  {
   }
 
   ngOnInit(): void {
-    const modalElement = document.querySelector('.modal-content'); // Selecciona el contenedor del modal
+    console.log('entra');
+    const modalElement = document.querySelector('.Fullview.d-block.modal'); // Selecciona el contenedor del modal
     if (modalElement) {
-      modalElement.scrollTop = 0; // Hacer scroll hacia arriba
+      console.log('entra 2');
+      setTimeout(() => {
+        modalElement.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 500);
     }
     this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
       this.product_images = response.map(image => {return image.img_big});
