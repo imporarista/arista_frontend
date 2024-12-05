@@ -1,11 +1,10 @@
 import { ApiService } from 'src/app/services/api.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
-import { reset } from 'mousetrap';
 import { Category } from 'src/app/interfaces/category';
 
 @Component({
@@ -50,20 +49,6 @@ export class CatalogComponent implements OnInit {
     this.category = 'Todos';
     this.initData();
     this.getParams();
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.start=0;
-  //       this.getParams();
-  //       if (event.id === 1) {
-  //         // Aquí puedes manejar la lógica cuando se navega a una nueva ruta
-  //         console.log('Navegación a una nueva ruta:', event);
-  //         this.loadProducts(true); // Cargar productos si es necesario
-  //       } else if (event.id > 2) {
-  //         console.log('Navegación a una nueva ruta:', event);
-  //         this.handleBackNavigation();
-  //       }
-      }
-    });
   }
 
   initData() {
@@ -87,7 +72,6 @@ export class CatalogComponent implements OnInit {
       this.statusProduct = params.status ? params.status : '';
       this.searchProduct = params.search ? params.search : '';
       this.start = 0;
-      console.log('searchProduct', this.searchProduct, 'statusProduct', this.statusProduct);
       this.loadProducts(true);
     });
     this.route.params.subscribe(params => {
@@ -128,36 +112,26 @@ export class CatalogComponent implements OnInit {
           selector = 'search'
           id = this.searchProduct;
         }
-        if (localStorage.getItem('products') && resetList) {
-          console.log('cargar productos de productos en localStorage')
-          this.products = JSON.parse(localStorage.getItem('products'));
-          this.start = this.products.length;
-          this.loading = false;
-        } else {
-          console.log('buscando desde la API')
-          this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
-            (products) => {
-              this.start = this.products.length;
-              console.log('buscando desde el ', this.start);
-              this.loading = false;
-              if (resetList) {
-                this.products = products;
-                this.finished = false;
-                this.saveProductsLocalStorages();
-              } else {
-                this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
-                if (products.length < this.limit) {
-                  this.finished = true;
-                }
-                this.saveProductsLocalStorages();
+        console.log('buscando desde la API')
+        this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
+          (products) => {
+            this.start = this.products.length;
+            this.loading = false;
+            if (resetList) {
+              this.products = products;
+              this.finished = false;
+            } else {
+              this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
+              if (products.length < this.limit) {
+                this.finished = true;
               }
-            },
-            (error) => {
-              console.error('Error al cargar productos:', error); // Manejo de errores
-              this.loading = false;
             }
-          );
-        }
+          },
+          (error) => {
+            console.error('Error al cargar productos:', error); // Manejo de errores
+            this.loading = false;
+          }
+        );
       }
   }
 
@@ -165,25 +139,6 @@ export class CatalogComponent implements OnInit {
     // Guardar productos en localStorage
     localStorage.setItem('products', JSON.stringify(this.products));
     localStorage.setItem('start', this.start.toString());
-  }
-
-  private handleBackNavigation(): void {
-    this.readFromDB = false;
-    const storedProducts = localStorage.getItem('products');
-    const storedStart = localStorage.getItem('start');
-
-    if (storedProducts && storedStart) {
-      this.products = JSON.parse(storedProducts);
-      this.start = parseInt(storedStart);
-      this.finished = false; // Asegúrate d10e que el estado de finalización sea correcto
-      this.readFromDB = true;
-    } else {
-      // Si no hay productos almacenados, reiniciar
-      this.readFromDB = true;
-      this.start = 0;
-      this.products = [];
-      this.loadProducts(true); // Cargar productos desde la API
-    }
   }
 
   // SortBy Filter
