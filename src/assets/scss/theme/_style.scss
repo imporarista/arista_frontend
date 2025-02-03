@@ -14517,6 +14517,11 @@ span.color-red {
     }
 }
 
+.card-body.visit-table {
+    height: 550px;
+    max-height: 550px;
+    overflow-y: auto;
+}
 /* Estilos para el modal */
 .full-screen-modal.detail-modal {
     position: fixed;
