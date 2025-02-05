@@ -14,7 +14,7 @@ export class LeftMenuComponent implements OnInit {
   public window = window;
   public menuItems: Menu[];
   public categories: Category[];
-  private userId = 3;
+  private userId = localStorage.getItem('userId');
 
   constructor(
     private router: Router, 

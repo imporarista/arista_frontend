@@ -115,13 +115,14 @@ export class CatalogComponent implements OnInit {
         console.log('buscando desde la API')
         this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
           (products) => {
-            this.start = this.products.length;
             this.loading = false;
             if (resetList) {
               this.products = products;
               this.finished = false;
+              this.start = this.products.length;
             } else {
               this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
+              this.start = this.products.length;
               if (products.length < this.limit) {
                 this.finished = true;
               }
