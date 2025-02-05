@@ -112,7 +112,6 @@ export class CatalogComponent implements OnInit {
           selector = 'search'
           id = this.searchProduct;
         }
-        console.log('buscando desde la API')
         this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
           (products) => {
             this.loading = false;
