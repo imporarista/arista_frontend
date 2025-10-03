@@ -17,8 +17,8 @@
             <!-- Link -->
             <a [routerLink]="['/home/catalog', menuItem.cat_id]" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">
                {{menuItem.cat_name}}
-               <span class="sub-arrow" *ngIf="menuItem.sub_category?.length > 0"
-                (click)="toggletNavActive(menuItem)"></span>
+               <span class="sub-arrow" *ngIf="menuItem.sub_category?.length > 0" [class.open]="menuItem.menu_active"
+                (click)="toggletNavActive(menuItem); $event.preventDefault(); $event.stopPropagation()"></span>
             </a>
             <!-- 2nd Level Menu -->
             <ul [class]="menuItem.megaMenu ? 'mega-menu clothing-menu' : ''" [class.opensub1]="menuItem.menu_active" *ngIf="menuItem.sub_category?.length > 0">
@@ -38,4 +38,3 @@
     </nav>
   </div>
 </div>
-

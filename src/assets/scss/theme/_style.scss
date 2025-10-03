@@ -14372,6 +14372,65 @@ div#loading-bar {
 // Left sidebar scroll
 .sidenav nav {
     overflow-y: auto;
+    overscroll-behavior: contain; /* evita que el scroll se propague al body */
+    -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
+}
+
+// Asegurar que el icono de submenú se perciba como interactivo
+.sidenav .sidebar-menu .sub-arrow {
+    cursor: pointer;
+}
+
+/* Submenú vertical debajo del padre con animación */
+.sidenav .sidebar-menu > li > ul {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    display: block !important; /* permitir animación */
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform-origin: top;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+.sidenav .sidebar-menu > li > ul.opensub1 {
+    max-height: 1000px; /* suficiente para la mayoría de listas */
+    opacity: 1;
+}
+
+/* Indicador + / - en el toggler */
+.sidenav .sidebar-menu > li > a .sub-arrow:before {
+    content: '+' !important;
+}
+.sidenav .sidebar-menu > li > a .sub-arrow.open:before {
+    content: '-' !important;
+}
+
+/* Tamaño mayor del "+" en tablets y móviles */
+@media (max-width: 1199px) {
+  .sidenav .sidebar-menu > li > a {
+    padding-right: 56px !important; /* deja espacio para un icono más grande */
+  }
+  .sidenav .sidebar-menu > li > a .sub-arrow {
+    width: 44px !important;
+    height: 44px !important;
+    right: 8px !important;
+    font: bold 22px/44px monospace !important; /* icono más grande y centrado */
+  }
+}
+@media (max-width: 767px) {
+  .sidenav .sidebar-menu > li > a {
+    padding-right: 60px !important;
+  }
+  .sidenav .sidebar-menu > li > a .sub-arrow {
+    width: 48px !important;
+    height: 48px !important;
+    right: 6px !important;
+    font: bold 24px/48px monospace !important;
+  }
 }
     
 .sidebar-unset {
