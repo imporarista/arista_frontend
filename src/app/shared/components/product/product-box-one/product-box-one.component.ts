@@ -47,13 +47,13 @@ export class ProductBoxOneComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.loader) {
-      setTimeout(() => { this.loader = false; }, 2000); // Skeleton Loader
-    }
-    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
-    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
-    this.changeVoltsColor();
-  }
+  // Cambia realizado en el loader
+  this.loader = false;
+  
+  this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
+  this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
+  this.changeVoltsColor();
+}
 
   // Change Variants Image
   ChangeVariantsImage(src) {
