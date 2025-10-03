@@ -12,7 +12,7 @@
             <div class="container">
               <div class="row">
                 <div class="col-xl-12">
-                  <form>
+                  <form (ngSubmit)="onSubmitSearch()">
                     <div class="form-group">
                       <input type="text" class="form-control" (input)="getItems($event.target.value)" [(ngModel)]="searchText" name="searchText" id="exampleInputPassword1" placeholder="Buscar un Producto">
                     </div>
