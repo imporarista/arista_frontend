@@ -1,0 +1,11 @@
+/* Quitar las flechas del input tipo number en navegadores WebKit (Chrome, Edge, Safari) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quitar las flechas en Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, Input,
-  Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ViewChild, TemplateRef, Input,
+  Inject, PLATFORM_ID
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
@@ -15,60 +17,53 @@ import PhotoSwipe from 'photoswipe';
   templateUrl: './full-view.component.html',
   styleUrls: ['./full-view.component.scss']
 })
-export class FullViewComponent implements OnInit, OnDestroy  {
+export class FullViewComponent implements OnInit, OnDestroy {
 
-  @Input() product: Product;
-  @Input() currency: any;  
-  @ViewChild("fullView", { static: false }) FullView: TemplateRef<any>;
+  @Input() product!: Product;
+  @Input() currency: any;
+  @ViewChild("fullView", { static: false }) FullView!: TemplateRef<any>;
 
-  public closeResult: string;
-  public ImageSrc: string;
+  public closeResult: string = '';
+  public ImageSrc: string = '';
   public counter: number = 1;
   public modalOpen: boolean = false;
   public userType: string;
+  public product_images: string[] = [];
+  public stockMessage: string = '';
 
-  public ProductDetailsMainSliderConfig: any = ProductDetailsMainSlider;
-  public ProductDetailsThumbConfig: any = ProductDetailsThumbSlider;
-  public activeSlide: any = 0;
-  public product_images: string[];
+  public ProductDetailsMainSliderConfig = ProductDetailsMainSlider;
+  public ProductDetailsThumbConfig = ProductDetailsThumbSlider;
+  public activeSlide: number = 0;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router, private modalService: NgbModal,
-    // public productService: ProductService
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router,
+    private modalService: NgbModal,
     private desiredProduct: DesiredProductsService,
     public apiService: ApiService
   ) {
-    this.userType = localStorage.getItem('userType')  ?? '2';
-    this.product_images = [];
+    this.userType = localStorage.getItem('userType') ?? '2';
   }
 
   ngOnInit(): void {
-    console.log('entra');
-    const modalElement = document.querySelector('.Fullview.d-block.modal'); // Selecciona el contenedor del modal
-    if (modalElement) {
-      console.log('entra 2');
-      setTimeout(() => {
-        modalElement.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      }, 500);
-    }
     this.apiService.getImagesProduct(this.product.prod_id).subscribe(response => {
-      this.product_images = response.map(image => {return image.img_big});
+      this.product_images = response.map(image => image.img_big);
     });
   }
 
   openModal() {
     this.modalOpen = true;
-    if (isPlatformBrowser(this.platformId)) { // For SSR 
-      this.modalService.open(this.FullView, { 
+    this.counter = 1; // 🔹 Reiniciar contador al abrir modal
+    this.stockMessage = '';
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.modalService.open(this.FullView, {
         size: 'lg',
         ariaLabelledBy: 'modal-basic-title',
         centered: true,
-        windowClass: 'Fullview' 
+        windowClass: 'Fullview'
       }).result.then((result) => {
-        `Result ${result}`
+        `Result ${result}`;
       }, (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
       });
@@ -85,92 +80,102 @@ export class FullViewComponent implements OnInit, OnDestroy  {
     }
   }
 
-  // Get Product Color
-  Color(variants) {
-    const uniqColor = []
-    for (let i = 0; i < Object.keys(variants).length; i++) {
-      if (uniqColor.indexOf(variants[i].color) === -1 && variants[i].color) {
-        uniqColor.push(variants[i].color)
-      }
-    }
-    return uniqColor
-  }
-
-  // Get Product Size
-  Size(variants) {
-    const uniqSize = []
-    for (let i = 0; i < Object.keys(variants).length; i++) {
-      if (uniqSize.indexOf(variants[i].size) === -1 && variants[i].size) {
-        uniqSize.push(variants[i].size)
-      }
-    }
-    return uniqSize
-  }
-
-  // Change Variants
-  ChangeVariants(color, product) {
-    product.variants.map((item) => {
-      if (item.color === color) {
-        product.images.map((img) => {
-          if (img.image_id === item.image_id) {
-            this.ImageSrc = img.src
-          }
-        })
-      }
-    })
-  }
-
-  // Increament
   increment() {
-    this.counter++ ;
+    if (this.counter < this.product.stock) {
+      this.counter++;
+      this.stockMessage = '';
+    } else {
+      this.stockMessage = `Solo hay ${this.product.stock} en stock`;
+    }
   }
 
-  // Decrement
   decrement() {
-    if (this.counter > 1) this.counter-- ;
+    if (this.counter > 1) {
+      this.counter--;
+      this.stockMessage = '';
+    }
   }
 
-  // Add to cart
+onQuantityChange(event: any) {
+  const inputValue = event.target.value;
+
+
+  if (inputValue === '') {
+    this.counter = null as any; 
+    this.stockMessage = '';
+    return;
+  }
+
+ 
+  let value = Number(inputValue);
+
+ 
+  if (isNaN(value)) {
+    this.stockMessage = '';
+    return;
+  }
+
+  
+  if (value > this.product.stock) {
+    value = this.product.stock;
+    this.stockMessage = `Solo hay ${this.product.stock} en stock`;
+  } else {
+    this.stockMessage = '';
+  }
+
+  this.counter = value;
+  event.target.value = value;
+}
+
+
+
   async addToCart(product: any) {
+    if (this.counter > this.product.stock) {
+      this.stockMessage = `Solo hay ${this.product.stock} en stock`;
+      return;
+    }
+
     const status = await this.desiredProduct.iLike(product);
     product.quantity = this.counter || 1;
+
     if (product.quantity > 1) {
       const currentProduct = this.desiredProduct.desiredProducts.find(p => p.prod_id === product.prod_id);
-      currentProduct.quantity = product.quantity;
+      if (currentProduct) currentProduct.quantity = product.quantity;
     }
+
     localStorage.setItem('desiredProducts', JSON.stringify(this.desiredProduct.desiredProducts));
     localStorage.setItem('desiredProductsIds', JSON.stringify(this.desiredProduct.desiredProductsIds));
-    if(status)
+
+    if (status)
       this.router.navigate(['/shop/cart']);
   }
 
   ngOnDestroy() {
-    if(this.modalOpen){
+    if (this.modalOpen) {
       this.modalService.dismissAll();
     }
   }
 
   openPhotoSwipe(index: number) {
-    const items = this.product_images.map((image, i) => {
+    const items = this.product_images.map((image) => {
       return {
         src: this.apiService.imageDirectory + image + (image.includes('.') ? '' : '.jpg'),
-        w: 800, // Ancho de la imagen
-        h: 600  // Alto de la imagen
+        w: 800,
+        h: 600
       };
     });
 
     const options: PreparedPhotoSwipeOptions = {
-      index: index, // índice de la imagen que se va a abrir
+      index,
       dataSource: items,
-      bgOpacity: 0.8, // Opacidad del fondo
-      loop: true, // Permitir bucle
-      pinchToClose: true, // Permitir cerrar con gesto de pellizco
-      closeOnVerticalDrag: false, // Cerrar al arrastrar verticalmente
-      preload: [1, 1], // Precargar imágenes cercanas
-      errorMsg: 'No se pudo cargar la imagen.', // Mensaje de error
-      maxWidthToAnimate: 1200, // Ancho máximo para animar
-      showHideAnimationType: 'zoom', // Tipo de animación
-      // ... otros parámetros que desees agregar
+      bgOpacity: 0.8,
+      loop: true,
+      pinchToClose: true,
+      closeOnVerticalDrag: false,
+      preload: [1, 1],
+      errorMsg: 'No se pudo cargar la imagen.',
+      maxWidthToAnimate: 1200,
+      showHideAnimationType: 'zoom',
       spacing: 0.1,
       allowPanToNext: false,
       hideAnimationDuration: 200,
@@ -183,14 +188,14 @@ export class FullViewComponent implements OnInit, OnDestroy  {
       returnFocus: false,
       clickToCloseNonZoomable: false,
       imageClickAction: false,
-      bgClickAction: false,      
+      bgClickAction: false,
       tapAction: false,
       doubleTapAction: false,
       preloaderDelay: 0,
       indexIndicatorSep: " de ",
     };
 
-    const gallery = new PhotoSwipe(options); // Solo se pasa options como argumento
+    const gallery = new PhotoSwipe(options);
     gallery.init();
   }
 
