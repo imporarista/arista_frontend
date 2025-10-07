@@ -1,51 +1,113 @@
-<!-- Reemplaza desde <div class="col-lg-6 rtl-text"> hasta el final del product-right -->
-<div class="col-lg-6 rtl-text">
-    <div class="product-right mercado-libre-style">
-        <!-- Código del producto -->
-        <div class="product-code">#{{ product?.prod_id }}</div>
-        <div class="product-price">
-            {{ product?.price | currency: productService.Currency?.currency:'symbol' }}
-        </div>
-        
-        <h2 class="product-title">{{ product?.prod_name }}</h2>
-        
-        <!-- Stock information -->
-        <div class="stock-info" *ngIf="userType == '2'">
-            <span *ngIf="counter <= product.stock" class="in-stock">✓ {{ product.stock }} En Stock</span>
-            <span *ngIf="counter > product.stock" class="out-of-stock">✗ No hay suficiente stock</span>
-        </div>
+<app-breadcrumb [title]="product?.prod_name" [breadcrumb]="'Producto'"></app-breadcrumb>
+<!-- section start -->
+<section class="section-b-space">
+  <div class="collection-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <owl-carousel-o [options]="ProductDetailsMainSliderConfig" #owlCar  class="product-slick height-512">
+                    <ng-container *ngFor="let image of product_images; index as i">
+                        <ng-template carouselSlide [id]="i" >
+                            <div class="zoom-container">
+                                <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
+                                   [lazyLoad]="apiService.thumbnailsDirectory + image + (image.includes('.') ? '' : '.jpg')" 
+                                   [alt]="product.prod_name" class="img-fluid" [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')">
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
+                <div class="row" *ngIf="product_images.length > 1">
+                    <div class="col-12">
+                        <div class="slider-nav">
+                            <owl-carousel-o [options]="ProductDetailsThumbConfig" class="product-slick height-240">
+                                <ng-container *ngFor="let image of product_images; index as i">
+                                    <ng-template carouselSlide [id]="i">
+                                        <div class="owl-thumb" [class.active]="i == activeSlide">
+                                            <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
+                                            [lazyLoad]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
+                                            [alt]="product.prod_name"
+                                            class="img-fluid"
+                                            [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
+                                            (click)="owlCar.to(activeSlide = i)">
+                                        </div>
+                                    </ng-template>
+                                </ng-container>
+                            </owl-carousel-o>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 rtl-text">
+                <div class="product-right mercado-libre-style">
+                    <!-- Código del producto -->
+                    <div class="product-code">#{{ product?.prod_id }}</div>
+                    
+                    <!-- Precio -->
+                    <div class="product-price">
+                        {{ product?.price | currency: productService.Currency?.currency:'symbol' }}
+                    </div>
+                    
+                    <!-- Nombre del producto -->
+                    <h2 class="product-title">{{ product?.prod_name }}</h2>
+                    
+                    <!-- Información de stock -->
+                    <div class="stock-info" *ngIf="userType == '2'">
+                        <span *ngIf="counter <= product.stock" class="in-stock">✓ {{ product.stock }} En Stock</span>
+                        <span *ngIf="counter > product.stock" class="out-of-stock">✗ No hay suficiente stock</span>
+                    </div>
 
-        <!-- Cantidad controls estilo Mercado Libre -->
-        <div class="quantity-section">
-            <h6 class="quantity-label">Cantidad</h6>
-            <div class="quantity-controls">
-                <button type="button" class="quantity-btn" (click)="decrement()">
-                    <
-                </button>
-                <input type="text" name="quantity" class="quantity-input" [value]="counter" disabled>
-                <button type="button" class="quantity-btn" (click)="increment()">
-                    >
-                </button>
+                    <!-- Selector de cantidad -->
+                    <div class="quantity-section">
+                        <h6 class="quantity-label">Cantidad</h6>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" (click)="decrement()">
+                                &lt;
+                            </button>
+                            <input type="text" name="quantity" class="quantity-input" [value]="counter" disabled>
+                            <button type="button" class="quantity-btn" (click)="increment()">
+                                &gt;
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" 
+                                [class.disabled]="counter > product.stock" 
+                                (click)="addToCart(product)">
+                            AGREGAR AL CARRITO
+                        </button>
+                        <a [routerLink]="['/home/catalog']" class="btn btn-secondary">
+                            CONTINUAR COMPRANDO
+                        </a>
+                    </div>
+
+                    <!-- Detalles del producto -->
+                    <div class="product-details-section">
+                        <h6 class="section-title">Detalle del producto</h6>
+                        <p class="product-description" [innerHTML]="product.prod_descriptions"></p>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Action buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-primary" 
-                    [class.disabled]="counter > product.stock" 
-                    (click)="addToCart(product)">
-                AGREGAR AL CARRITO
-            </button>
-            <button class="btn btn-secondary" 
-                    [routerLink]="['/home/catalog']">
-                CONTINUAR COMPRANDO
-            </button>
-        </div>
-
-        <!-- Product details -->
-        <div class="product-details-section">
-            <h6 class="section-title">Detalle del producto</h6>
-            <p class="product-description" [innerHTML]="product.prod_descriptions"></p>
-        </div>
+        <section class="tab-product m-0">
+            <div class="row">
+                <div class="col-sm-12 col-lg-12">
+                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>Descripción</a>
+                        <ng-template ngbNavContent>
+                            <p [innerHTML]="product.prod_descriptions"></p>
+                        </ng-template>
+                    </li>
+                    </ul>
+                    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+                </div>
+            </div>
+        </section>
     </div>
-</div>
+  </div>
+  <app-related-product [type]="product?.cat_id"></app-related-product>
+</section>
+<app-size-modal #sizeChart [product]="product"></app-size-modal>
+<!-- Section ends -->
