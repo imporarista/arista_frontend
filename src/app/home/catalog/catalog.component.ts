@@ -1,5 +1,5 @@
 import { ApiService } from 'src/app/services/api.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
@@ -12,19 +12,21 @@ import { Category } from 'src/app/interfaces/category';
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
-export class CatalogComponent implements OnInit {
+export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   private categories: Category[];
   private cat_id: number;
-  private limit: number // cuantos productos carga cada vez
+  private limit: number;
   private loading: boolean = false;
   private priceRateId: number;
   private readFromDB: boolean;
   private searchProduct: string;
-  private start: number //item en que inicia la carga
+  private start: number;
   private subc_id: number;
-  public aristaLogo = 'assets/appImages/logoMenu.svg'
+  private shouldRestoreScroll: boolean = false; // NUEVO
+  
+  public aristaLogo = 'assets/appImages/logoMenu.svg';
   public category: string;
-  public finished: boolean // determina si ya se cargo todos los productos
+  public finished: boolean;
   public grid: string = 'col-xl-3 col-md-6';
   public layoutView: string = 'grid-view';
   public products: Product[] = [];
@@ -36,6 +38,9 @@ export class CatalogComponent implements OnInit {
     tax: 0,
     total: 0
   };
+
+ 
+  private readonly CATALOG_STATE_KEY = 'catalog_scroll_state';
 
   constructor(
     private route: ActivatedRoute,
@@ -54,28 +59,34 @@ export class CatalogComponent implements OnInit {
   initData() {
     this.start = 0;
     this.limit = 120;
-    this.finished = false
+    this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
     this.searchProduct = '';
     this.cat_id = undefined;
     this.subc_id = undefined;
-    this.priceRateId =  1;
+    this.priceRateId = 1;
     this.loading = false;
     this.readFromDB = true;
   }
 
   getParams() {
-    // Get Query params..
+   
     this.start = 0;
     this.route.queryParams.subscribe(params => {
       this.statusProduct = params.status ? params.status : '';
       this.searchProduct = params.search ? params.search : '';
+      
+  
+      if (this.tryRestoreState()) {
+        return; 
+      }
+
       this.start = 0;
       this.loadProducts(true);
     });
+
     this.route.params.subscribe(params => {
-      this.start = 0;
       this.cat_id = params['cat_id'];
       
       if (this.cat_id) {
@@ -86,7 +97,14 @@ export class CatalogComponent implements OnInit {
       }
 
       this.subc_id = params['subc_id'];
-      this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
+      this.priceRateId = Number(localStorage.getItem('price_rate_id')) || 1;
+      
+
+      if (this.tryRestoreState()) {
+        return;
+      }
+
+      this.start = 0;
       this.loadProducts(true);
     });
   }
@@ -97,80 +115,195 @@ export class CatalogComponent implements OnInit {
     });
   }
 
-  loadProducts(resetList: boolean): void {
-      if (!this.loading && this.readFromDB) {
-        this.loading = true;
-        let selector = 'all'; // all, category, subCategory
-        let id = null; // id de sub categoría o sub categoría
-        if (typeof (this.subc_id) !== 'undefined') {
-          selector = 'subCategory';
-          id = this.subc_id;
-        } else if (typeof (this.cat_id) !== 'undefined') {
-          selector = 'category';
-          id = this.cat_id;
-        } else if (this.searchProduct !== '') {
-          selector = 'search'
-          id = this.searchProduct;
-        }
-        this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
-          (products) => {
-            this.loading = false;
-            if (resetList) {
-              this.products = products;
-              this.finished = false;
-              this.start = this.products.length;
-            } else {
-              this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
-              this.start = this.products.length;
-              if (products.length < this.limit) {
-                this.finished = true;
-              }
-            }
-          },
-          (error) => {
-            console.error('Error al cargar productos:', error); // Manejo de errores
-            this.loading = false;
-          }
-        );
+
+  ngAfterViewInit(): void {
+    if (this.shouldRestoreScroll) {
+      const savedState = this.getSavedState();
+      if (savedState && savedState.scrollPosition) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: savedState.scrollPosition,
+            behavior: 'auto'
+          });
+          this.shouldRestoreScroll = false;
+        }, 100);
       }
+    }
+  }
+
+
+  ngOnDestroy(): void {
+    this.saveCurrentState();
+  }
+
+
+  private getSavedState(): any {
+    try {
+      const saved = sessionStorage.getItem(this.CATALOG_STATE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch (error) {
+      console.error('Error al leer estado:', error);
+      return null;
+    }
+  }
+
+
+  private saveCurrentState(): void {
+    try {
+      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      
+      const state = {
+        products: this.products,
+        scrollPosition: scrollPosition,
+        start: this.start,
+        limit: this.limit,
+        finished: this.finished,
+        cat_id: this.cat_id,
+        subc_id: this.subc_id,
+        statusProduct: this.statusProduct,
+        searchProduct: this.searchProduct,
+        priceRateId: this.priceRateId,
+        layoutView: this.layoutView,
+        grid: this.grid,
+        timestamp: Date.now()
+      };
+      
+      sessionStorage.setItem(this.CATALOG_STATE_KEY, JSON.stringify(state));
+    } catch (error) {
+      console.error('Error al guardar estado:', error);
+    }
+  }
+
+
+  private tryRestoreState(): boolean {
+    const savedState = this.getSavedState();
+    
+    if (!savedState) {
+      return false;
+    }
+
+    const fifteenMinutes = 15 * 60 * 1000;
+    if (Date.now() - savedState.timestamp > fifteenMinutes) {
+      this.clearSavedState();
+      return false;
+    }
+
+    
+    const paramsMatch = 
+      savedState.cat_id === this.cat_id &&
+      savedState.subc_id === this.subc_id &&
+      savedState.statusProduct === this.statusProduct &&
+      savedState.searchProduct === this.searchProduct;
+
+    if (!paramsMatch) {
+      this.clearSavedState();
+      return false;
+    }
+
+    // Restaurar estado
+    this.products = savedState.products || [];
+    this.start = savedState.start || 0;
+    this.limit = savedState.limit || 120;
+    this.finished = savedState.finished || false;
+    this.layoutView = savedState.layoutView || 'grid-view';
+    this.grid = savedState.grid || 'col-xl-3 col-md-6';
+    this.shouldRestoreScroll = true;
+
+    return true;
+  }
+
+
+  private clearSavedState(): void {
+    try {
+      sessionStorage.removeItem(this.CATALOG_STATE_KEY);
+    } catch (error) {
+      console.error('Error al limpiar estado:', error);
+    }
+  }
+
+  loadProducts(resetList: boolean): void {
+    // Limpiar estado al resetear lista (nuevos filtros)
+    if (resetList) {
+      this.clearSavedState();
+    }
+
+    if (!this.loading && this.readFromDB) {
+      this.loading = true;
+      let selector = 'all';
+      let id = null;
+      
+      if (typeof (this.subc_id) !== 'undefined') {
+        selector = 'subCategory';
+        id = this.subc_id;
+      } else if (typeof (this.cat_id) !== 'undefined') {
+        selector = 'category';
+        id = this.cat_id;
+      } else if (this.searchProduct !== '') {
+        selector = 'search';
+        id = this.searchProduct;
+      }
+      
+      this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
+        (products) => {
+          this.loading = false;
+          if (resetList) {
+            this.products = products;
+            this.finished = false;
+            this.start = this.products.length;
+          } else {
+            this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
+            this.start = this.products.length;
+            if (products.length < this.limit) {
+              this.finished = true;
+            }
+          }
+        },
+        (error) => {
+          console.error('Error al cargar productos:', error);
+          this.loading = false;
+        }
+      );
+    }
   }
 
   saveProductsLocalStorages() {
-    // Guardar productos en localStorage
+    // Método legacy - mantener por compatibilidad
     localStorage.setItem('products', JSON.stringify(this.products));
     localStorage.setItem('start', this.start.toString());
   }
 
-  // SortBy Filter
   sortByFilter(value) {
+    // Limpiar estado al aplicar filtros
+    this.clearSavedState();
+    
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { sortBy: value ? value : null },
-      queryParamsHandling: 'merge', // preserve the existing query params in the route
-      skipLocationChange: false  // do trigger navigation
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
     }).finally(() => {
-      this.viewScroller.scrollToAnchor('products'); // Anchore Link
+      this.viewScroller.scrollToAnchor('products');
     });
   }
 
-  // product Pagination
   setPage(page: number) {
+ 
+    this.clearSavedState();
+    
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { page: page },
-      queryParamsHandling: 'merge', // preserve the existing query params in the route
-      skipLocationChange: false  // do trigger navigation
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
     }).finally(() => {
-      this.viewScroller.scrollToAnchor('products'); // Anchore Link
+      this.viewScroller.scrollToAnchor('products');
     });
   }
 
-  // Change Grid Layout
   updateGridLayout(value: string) {
     this.grid = value;
   }
 
-  // Change Layout View
   updateLayoutView(value: string) {
     this.layoutView = value;
     if (value == 'list-view')
