@@ -1,3 +1,4 @@
+
 import {
   Component, OnInit, OnDestroy, ViewChild, TemplateRef, Input,
   Inject, PLATFORM_ID
@@ -51,24 +52,28 @@ export class FullViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  openModal() {
-    this.modalOpen = true;
-    this.counter = 1; // 🔹 Reiniciar contador al abrir modal
-    this.stockMessage = '';
+ openModal() {
+  this.modalOpen = true;
+  this.counter = 1;
+  this.stockMessage = '';
 
-    if (isPlatformBrowser(this.platformId)) {
-      this.modalService.open(this.FullView, {
-        size: 'lg',
-        ariaLabelledBy: 'modal-basic-title',
-        centered: true,
-        windowClass: 'Fullview'
-      }).result.then((result) => {
-        `Result ${result}`;
-      }, (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      });
-    }
+  if (isPlatformBrowser(this.platformId)) {
+    // Solo esto es suficiente
+    document.body.classList.add('modal-open-fullview');
+
+    const modalRef = this.modalService.open(this.FullView, {
+      size: 'lg',
+      ariaLabelledBy: 'modal-basic-title',
+      centered: false,
+      windowClass: 'Fullview',
+      scrollable: true
+    });
+
+    modalRef.result.finally(() => {
+      document.body.classList.remove('modal-open-fullview');
+    });
   }
+}
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -96,38 +101,32 @@ export class FullViewComponent implements OnInit, OnDestroy {
     }
   }
 
-onQuantityChange(event: any) {
-  const inputValue = event.target.value;
+  onQuantityChange(event: any) {
+    const inputValue = event.target.value;
 
+    if (inputValue === '') {
+      this.counter = null as any; 
+      this.stockMessage = '';
+      return;
+    }
 
-  if (inputValue === '') {
-    this.counter = null as any; 
-    this.stockMessage = '';
-    return;
+    let value = Number(inputValue);
+
+    if (isNaN(value)) {
+      this.stockMessage = '';
+      return;
+    }
+
+    if (value > this.product.stock) {
+      value = this.product.stock;
+      this.stockMessage = `Solo hay ${this.product.stock} en stock`;
+    } else {
+      this.stockMessage = '';
+    }
+
+    this.counter = value;
+    event.target.value = value;
   }
-
- 
-  let value = Number(inputValue);
-
- 
-  if (isNaN(value)) {
-    this.stockMessage = '';
-    return;
-  }
-
-  
-  if (value > this.product.stock) {
-    value = this.product.stock;
-    this.stockMessage = `Solo hay ${this.product.stock} en stock`;
-  } else {
-    this.stockMessage = '';
-  }
-
-  this.counter = value;
-  event.target.value = value;
-}
-
-
 
   async addToCart(product: any) {
     if (this.counter > this.product.stock) {
