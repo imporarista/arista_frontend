@@ -14,8 +14,7 @@ import { NavService } from '../../services/nav.service';
 })
 export class SettingsComponent implements OnInit {
 
-  private timeStoped = 0;
-  private intervalTimeStoped: any = null;
+  private debounceHandle: any = null;
   public searchText: string
 
   public products: Product[] = [];
@@ -83,34 +82,26 @@ export class SettingsComponent implements OnInit {
   }
 
   getItems(search) {
+    // Actualiza el texto pero no dispara búsqueda automática ni cierra overlay
     this.searchText = search;
-    this.timeStoped = 0;
-    this.startTimer();
+    if (this.debounceHandle !== null) {
+      clearTimeout(this.debounceHandle);
+    }
   }
 
-  startTimer() {
-    if (this.intervalTimeStoped !== null) {
-      clearInterval(this.intervalTimeStoped);
+  onSubmitSearch() {
+    localStorage.removeItem('products');
+    localStorage.setItem('start', '0');
+    const term = (this.searchText || '').trim();
+    if (term === '') {
+      this.router.navigate(['home/catalog']);
+    } else {
+      this.router.navigate(['home/catalog'], {
+        queryParams: { search: term },
+      });
     }
-    let THIS = this;
-    this.intervalTimeStoped = setInterval(function () {
-      THIS.timeStoped++;
-      //pregunta si lleva un segundo sin teclear nada antes de empezar a buscar
-      if (THIS.timeStoped >= 1) {
-        clearInterval(THIS.intervalTimeStoped);
-        localStorage.removeItem('products');
-        localStorage.setItem('start', '0');
-        console.log('limpiar localStorage')
-        if (THIS.searchText === '') {
-          THIS.router.navigate(['home/catalog']);
-        } else {
-          THIS.router.navigate(['home/catalog'], {
-            queryParams: { search: THIS.searchText },
-          });
-        }
-        THIS.searchToggle();
-      }
-    }, 1000);
+    // Cierra el overlay solo al confirmar (Enter/submit)
+    this.searchToggle();
   }
 
 }

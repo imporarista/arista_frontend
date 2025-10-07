@@ -47,11 +47,13 @@ export class LeftMenuComponent implements OnInit {
   }
 
   onHover(menuItem) {
-    if(window.innerWidth > 1200 && menuItem){
-       document.getElementById('unset').classList.add('sidebar-unset')
-    } else {
-      document.getElementById('unset').classList.remove('sidebar-unset')
+    // No desactivar el scroll del contenedor del menú
+    const el = document.getElementById('unset');
+    if (el) {
+      el.classList.remove('sidebar-unset');
     }
   }
+
+  // No need to intercept wheel; submenu opens inline
 
 }
