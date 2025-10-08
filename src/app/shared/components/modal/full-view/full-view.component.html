@@ -25,6 +25,7 @@
                 <div *ngFor="let image of product_images; index as i" 
                      class="thumbnail-item" 
                      [class.active]="i === activeSlide"
+                     (mouseenter)="activeSlide = i"
                      (click)="activeSlide = i">
                   <img [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
                        [alt]="product.prod_name"
