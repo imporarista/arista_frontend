@@ -5,12 +5,12 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* Quitar las flechas en Firefox */
+/* Quitar las flechas en el producto*/
 input[type=number] {
   -moz-appearance: textfield;
 }
 
-// GALERÍA ESTILO MERCADO LIBRE - TAMAÑO ORIGINAL
+
 .mercado-libre-gallery {
   display: flex;
   flex-direction: column;
@@ -96,7 +96,7 @@ input[type=number] {
   }
 }
 
-// MEJORAS PARA LA CALIDAD DE IMAGEN
+
 .img-fluid {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
@@ -106,7 +106,7 @@ input[type=number] {
   image-rendering: auto;
 }
 
-// Estilos responsive
+
 @media (max-width: 768px) {
   .mercado-libre-gallery {
     .main-image-container {
@@ -125,9 +125,6 @@ input[type=number] {
   }
 }
 
-// [MANTENEMOS LOS ESTILOS ANTERIORES DEL PRODUCTO...]
-
-// GALERÍA ESTILO MERCADO LIBRE
 .mercado-libre-gallery {
   display: flex;
   flex-direction: column;
@@ -209,21 +206,21 @@ input[type=number] {
   }
 }
 
-// MEJORAS PARA LA CALIDAD DE IMAGEN
+
 .img-fluid {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   image-rendering: high-quality;
 }
 
-// Asegurar que las imágenes se vean nítidas
+
 .main-image, .thumbnail-image {
   image-rendering: auto;
   backface-visibility: hidden;
   transform: translateZ(0);
 }
 
-// Estilos responsive
+
 @media (max-width: 768px) {
   .mercado-libre-gallery {
     .main-image-container {
@@ -237,7 +234,7 @@ input[type=number] {
   }
 }
 
-// [MANTENEMOS LOS ESTILOS ANTERIORES DEL PRODUCTO]
+
 .mercado-libre-style {
   padding: 15px;
 
@@ -399,7 +396,7 @@ input[type=number] {
   }
 }
 
-// Ajustes para el modal
+
 :host ::ng-deep .Fullview .modal-dialog {
   max-width: 90%;
   margin: 1rem auto;
