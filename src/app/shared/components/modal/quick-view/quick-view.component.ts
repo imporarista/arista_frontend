@@ -38,7 +38,7 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
 
   openModal() {
     this.modalOpen = true;
-    if (isPlatformBrowser(this.platformId)) { // For SSR 
+    if (isPlatformBrowser(this.platformId)) { 
       this.modalService.open(this.QuickView, { 
         size: 'lg',
         ariaLabelledBy: 'modal-basic-title',

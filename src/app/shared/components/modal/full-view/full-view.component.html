@@ -6,11 +6,11 @@
       </button>
 
       <div class="row">
-        <!-- COLUMNA DE IMÁGENES ESTILO MERCADO LIBRE -->
+        
         <div class="col-lg-6 col-xs-12">
           <div class="mercado-libre-gallery">
            
-             <!-- Imagen principal -->
+          
             <div class="main-image-container" (click)="openPhotoSwipe(activeSlide)">
               <img [src]="apiService.imageDirectory + product_images[activeSlide] + (product_images[activeSlide]?.includes('.') ? '' : '.jpg')"
                    [alt]="product.prod_name" 
@@ -19,7 +19,7 @@
                    [lazyLoad]="apiService.imageDirectory + product_images[activeSlide] + (product_images[activeSlide]?.includes('.') ? '' : '.jpg')">
             </div>
 
-            <!-- Miniaturas -->
+           
             <div class="thumbnails-container" *ngIf="product_images.length > 1">
               <div class="thumbnails-scroll">
                 <div *ngFor="let image of product_images; index as i" 
@@ -40,7 +40,7 @@
 
         <div class="col-lg-6 rtl-text">
           <div class="product-right mercado-libre-style">
-            <!-- CÓDIGO CORREGIDO - SIN # -->
+           
 
             <h2 class="product-title">{{ product.prod_name | titlecase }}</h2>
              <div class="product-price">{{ product.price | currency }}</div>
