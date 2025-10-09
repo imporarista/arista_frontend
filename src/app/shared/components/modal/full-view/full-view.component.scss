@@ -349,7 +349,7 @@ input[type=number] {
       justify-content: center;
       
       &.btn-primary {
-        background-color: #3483fa;
+        background-color:#19648C;
         color: white;
         
         &:hover:not(.disabled) {
@@ -365,8 +365,8 @@ input[type=number] {
       
       &.btn-secondary {
         background-color: transparent;
-        color: #3483fa;
-        border: 2px solid #3483fa;
+        color: #19648C;
+        border: 2px solid #19648C;
         
         &:hover {
           background-color: rgba(52, 131, 250, 0.1);

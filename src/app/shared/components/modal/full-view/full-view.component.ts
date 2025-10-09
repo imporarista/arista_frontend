@@ -59,7 +59,7 @@ export class FullViewComponent implements OnInit, OnDestroy {
   this.activeSlide = 0;
 
   if (isPlatformBrowser(this.platformId)) {
-    // Solo esto es suficiente
+   
     document.body.classList.add('modal-open-fullview');
 
     const modalRef = this.modalService.open(this.FullView, {
