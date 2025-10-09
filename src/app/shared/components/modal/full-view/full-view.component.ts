@@ -56,6 +56,7 @@ export class FullViewComponent implements OnInit, OnDestroy {
   this.modalOpen = true;
   this.counter = 1;
   this.stockMessage = '';
+  this.activeSlide = 0;
 
   if (isPlatformBrowser(this.platformId)) {
     // Solo esto es suficiente
