@@ -91,6 +91,8 @@ body {
   color: var(--color-accent-hover);
 }
 
+
+
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -794,6 +796,7 @@ body {
 
 .footer-section ul {
   list-style: none;
+  padding: 0;
 }
 
 .footer-section ul li {
@@ -801,6 +804,7 @@ body {
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.95rem;
   transition: color 0.3s ease;
+  display: block;
 }
 
 .footer-section ul li:hover {
@@ -932,4 +936,6 @@ body {
   .contact-section {
     padding: 3rem 0;
   }
+
+  
 }

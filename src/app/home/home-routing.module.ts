@@ -9,7 +9,11 @@ import { HomeComponent } from './home.component';
 
 const routes: Routes = [
 
-  // filtros
+  {
+    path: '',
+    component: HomeComponent
+  },
+  
   {
     path: 'catalog',
     component: CatalogComponent,
@@ -25,7 +29,7 @@ const routes: Routes = [
     component: CatalogComponent,
     canActivate: [authGuard]
   },
-  // codigo pre existente
+  
   {
     path: 'fashion',
     component: FashionOneComponent
@@ -33,14 +37,7 @@ const routes: Routes = [
   {
     path: 'watch',
     component: WatchComponent
-  },
-
-  {
-  path: '',
-  component: HomeComponent,
-  canActivate: [authGuard]
-}
-
+  }
 ];
 
 @NgModule({

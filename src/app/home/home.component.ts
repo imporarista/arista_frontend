@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   imageDirectory = 'assets/images/categories/';
   thumbnailsDirectory = 'assets/images/products/thumbnails/';
 
-  // Variables para el carrusel
+  
   currentSlide: number = 0;
   carouselItems = [
     { title: 'CALIDAD', text: 'Antenas certificadas y garantizadas' },
@@ -57,7 +57,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+
   irCatalog(catId?: number) {
+    
+    if (!this.estaLogueado()) {
+      
+      this.router.navigate(['/login']);
+      return;
+    }
+
+   
     if (catId) {
       this.router.navigate(['/home/catalog', catId]);
     } else {
@@ -65,27 +74,46 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+ 
   verProducto(prod: Product) {
+    if (!this.estaLogueado()) { 
+      this.router.navigate(['/login']);
+      return;
+    }
+
     console.log('Ver producto:', prod);
   }
 
-  // Métodos del carrusel
+
+  estaLogueado(): boolean {
+    return localStorage.getItem('userId') !== null;
+  }
+
+
+  irALogin() {
+    if (!this.estaLogueado()) {
+      this.router.navigate(['/login']);
+    } else {
+      this.router.navigate(['/home/catalog']);
+    }
+  }
+
   siguienteSlide() {
-    this.detenerAutoplay(); // Detener autoplay
+    this.detenerAutoplay();
     this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
-    this.iniciarAutoplay(); // Reiniciar autoplay
+    this.iniciarAutoplay();
   }
 
   anteriorSlide() {
-    this.detenerAutoplay(); // Detener autoplay
+    this.detenerAutoplay();
     this.currentSlide = (this.currentSlide - 1 + this.carouselItems.length) % this.carouselItems.length;
-    this.iniciarAutoplay(); // Reiniciar autoplay
+    this.iniciarAutoplay();
   }
 
   irASlide(index: number) {
-    this.detenerAutoplay(); // Detener autoplay
+    this.detenerAutoplay();
     this.currentSlide = index;
-    this.iniciarAutoplay(); // Reiniciar autoplay
+    this.iniciarAutoplay();
   }
 
   pausarAutoplay() {
@@ -97,9 +125,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   iniciarAutoplay() {
-    // Primero detener cualquier autoplay existente
     this.detenerAutoplay();
-    // Iniciar nuevo autoplay
     this.autoplayInterval = setInterval(() => {
       this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
     }, 5000);

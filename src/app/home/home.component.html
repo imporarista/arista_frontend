@@ -7,25 +7,39 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="#" class="logo">Tienda Arista</a>
-                <ul class="nav-links">
-
-                    <li><a href="inicio">Inicio</a></li>
-                    <li><a href="catalogo">Catálogo</a></li>
-                    <li><a href="productos">Productos</a></li>
-                    <li><a href="nosotros">Nosotros</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-                <button class="menu-toggle" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+    <div class="container">
+        <div class="nav-content">
+            <a href="#" class="logo">Tienda Arista</a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a (click)="irALogin()" style="cursor: pointer;">Catálogo</a></li>
+                <li><a (click)="irALogin()" style="cursor: pointer;">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                
+                <li class="auth-button">
+                    <a *ngIf="!estaLogueado()" 
+                       (click)="irALogin()" 
+                       class="btn-auth btn-login"
+                       style="cursor: pointer;">
+                        Iniciar Sesión
+                    </a>
+                    <a *ngIf="estaLogueado()" 
+                       (click)="irALogin()" 
+                       class="btn-auth btn-catalog"
+                       style="cursor: pointer;">
+                        Ver Catálogo
+                    </a>
+                </li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <section id="inicio" class="hero">
         <div class="hero-overlay"></div>
@@ -33,7 +47,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">ENCUENTRA VARIEDAD Y CALIDAD EN ANTENAS PARA VEHÍCULOS</h1>
                 <p class="hero-subtitle">¡Todo en un solo lugar!</p>
-                <a href="#productos" class="btn btn-hero">INGRESA A NUESTRA TIENDA ONLINE</a>
+                <button (click)="irALogin()" class="btn btn-hero">INGRESA A NUESTRA TIENDA ONLINE</button>
             </div>
         </div>
     </section>
@@ -41,9 +55,8 @@
     <section class="brand-section">
         <div class="container">
             <div class="brand-content">
-               
                 <h2 class="brand-title">MÁS DE 10 AÑOS OFRECIENDO CALIDAD EN ANTENAS AUTOMOTRICES</h2>
-                <p class="brand-subtitle">EFICIENCIA,CALIDAD,INNOVACIÓN</p>
+                <p class="brand-subtitle">EFICIENCIA, CALIDAD, INNOVACIÓN</p>
             </div>
         </div>
     </section>
@@ -108,31 +121,31 @@
     </section>
 
     <section class="featured-section">
-    <div class="container">
-        <h2 class="featured-title">NOS DESTACAMOS EN</h2>
-        <div class="featured-carousel" 
-             (mouseenter)="pausarAutoplay()" 
-             (mouseleave)="reanudarAutoplay()">
-            <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
-            <div class="carousel-content">
-                <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
-                    <div class="featured-image">
-                        <div class="featured-badge">
-                            <h3 class="badge-title">{{item.title}}</h3>
-                            <p class="badge-text">{{item.text}}</p>
+        <div class="container">
+            <h2 class="featured-title">NOS DESTACAMOS EN</h2>
+            <div class="featured-carousel" 
+                 (mouseenter)="pausarAutoplay()" 
+                 (mouseleave)="reanudarAutoplay()">
+                <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
+                <div class="carousel-content">
+                    <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
+                        <div class="featured-image">
+                            <div class="featured-badge">
+                                <h3 class="badge-title">{{item.title}}</h3>
+                                <p class="badge-text">{{item.text}}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
             </div>
-            <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
+            <div class="carousel-dots">
+                <span class="dot" *ngFor="let item of carouselItems; let i = index" 
+                      [class.active]="i === currentSlide" 
+                      (click)="irASlide(i)"></span>
+            </div>
         </div>
-        <div class="carousel-dots">
-            <span class="dot" *ngFor="let item of carouselItems; let i = index" 
-                  [class.active]="i === currentSlide" 
-                  (click)="irASlide(i)"></span>
-        </div>
-    </div>
-</section>
+    </section>
 
     <section id="contacto" class="contact-section">
         <div class="container">
@@ -168,7 +181,6 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    
                     <h3>Arista Store</h3>
                     <p>Tu tienda de antenas automotrices de confianza</p>
                 </div>
@@ -207,5 +219,5 @@
             </div>
         </div>
     </footer>
-
-   
+</body>
+</html>
