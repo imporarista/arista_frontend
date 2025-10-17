@@ -6,9 +6,16 @@
     <a href="javascript:void(0)" class="sidebar-overlay" (click)="leftMenuToggle()" (mouseover)="onHover(false)"></a>
     <nav id="unset">
       <div (click)="leftMenuToggle()">
-        <div class="sidebar-back text-start"><i class="fa fa-angle-left pe-2" aria-hidden="true"></i> Regresar
+        <div class="sidebar-back text-start">
+          <i class="fa fa-angle-left pe-2" aria-hidden="true"></i> Regresar
         </div>
       </div>
+      
+      <!-- Botón Home -->
+      <div class="home-link" (click)="irAHome()">
+        <i class="fa fa-home pe-2" aria-hidden="true"></i> Volver a Inicio
+      </div>
+      
       <ul id="sub-menu" class="sidebar-menu">
         <li>
           <a [routerLink]="['/home/catalog']" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">Todos</a>

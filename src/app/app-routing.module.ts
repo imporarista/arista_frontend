@@ -5,11 +5,12 @@ import { ShopComponent } from './shop/shop.component';
 import { PagesComponent } from './pages/pages.component';
 import { ElementsComponent } from './elements/elements.component';
 import { LoginComponent } from './pages/account/login/login.component';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home/catalog',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -19,15 +20,18 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+    
   },
   {
     path: 'visit',
-    loadChildren: () => import('./visit/visit.module').then(m => m.VisitModule)
+    loadChildren: () => import('./visit/visit.module').then(m => m.VisitModule),
+    canActivate: [authGuard]
   },
   {
     path: 'shop',
     component: ShopComponent,
-    loadChildren: () => import('./shop/shop.module').then(m => m.ShopModule)
+    loadChildren: () => import('./shop/shop.module').then(m => m.ShopModule),
+    canActivate: [authGuard]
   },
   { 
     path: 'pages',
@@ -37,10 +41,11 @@ const routes: Routes = [
   { 
     path: 'elements', 
     component: ElementsComponent,
-    loadChildren: () => import('./elements/elements.module').then(m => m.ElementsModule) },
+    loadChildren: () => import('./elements/elements.module').then(m => m.ElementsModule)
+  },
   {
-    path: '**', // Navigate to Home Page if not found any page
-    redirectTo: 'home/catalog',
+    path: '**',
+    redirectTo: 'home',
   },
 ];
 
@@ -49,7 +54,7 @@ const routes: Routes = [
     useHash: false,
     anchorScrolling: 'enabled',
     scrollPositionRestoration: 'enabled'
-})],
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
