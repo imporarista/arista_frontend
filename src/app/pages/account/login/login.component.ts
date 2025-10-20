@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
     user: string;
     password: string;
   };
-  
+
   errorMessage: string = '';
   loading: boolean = false;
 
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
+
     if (localStorage.getItem('userId') !== null) {
       this.router.navigate(['/home/catalog']);
     }
@@ -41,11 +41,12 @@ export class LoginComponent implements OnInit {
           if (responseLogin.length > 0) {
             const userType = responseLogin[0].userType;
             const priceRateId = responseLogin[0].priceRateId;
-            
+
             localStorage.setItem('userId', responseLogin[0].id);
             localStorage.setItem('userType', userType);
             localStorage.setItem('priceRateId', priceRateId);
-            
+            localStorage.setItem('userName', responseLogin[0].name);
+            localStorage.setItem('userEmail', responseLogin[0].email);
             this.router.navigate(['/home/catalog']);
           } else {
             this.errorMessage = 'Usuario o contraseña incorrectos';
