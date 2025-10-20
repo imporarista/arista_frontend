@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arista Store - Antenas para Vehículos</title>
+</head>
+<body>
+    <nav class="navbar">
+    <div class="container">
+        <div class="nav-content">
+            <a href="#" class="logo">Tienda Arista</a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a (click)="irALogin()" style="cursor: pointer;">Catálogo</a></li>
+                <li><a (click)="irALogin()" style="cursor: pointer;">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                
+                <li class="auth-button">
+                    <a *ngIf="!estaLogueado()" 
+                       (click)="irALogin()" 
+                       class="btn-auth btn-login"
+                       style="cursor: pointer;">
+                        Iniciar Sesión
+                    </a>
+                    <a *ngIf="estaLogueado()" 
+                       (click)="irALogin()" 
+                       class="btn-auth btn-catalog"
+                       style="cursor: pointer;">
+                        Ver Catálogo
+                    </a>
+                </li>
+            </ul>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+    <section id="inicio" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">ENCUENTRA VARIEDAD Y CALIDAD EN ANTENAS PARA VEHÍCULOS</h1>
+                <p class="hero-subtitle">¡Todo en un solo lugar!</p>
+                <button (click)="irALogin()" class="btn btn-hero">INGRESA A NUESTRA TIENDA ONLINE</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="brand-section">
+        <div class="container">
+            <div class="brand-content">
+                <h2 class="brand-title">MÁS DE 10 AÑOS OFRECIENDO CALIDAD EN ANTENAS AUTOMOTRICES</h2>
+                <p class="brand-subtitle">EFICIENCIA, CALIDAD, INNOVACIÓN</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="nosotros" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2 class="about-title">Sobre nosotros</h2>
+                    <p>Somos una empresa orientada a la fabricación, desarrollo y comercialización de antenas y accesorios para el sector automotriz.</p>
+                    <p>Nos enfocamos en ofrecer productos de alta calidad que resalten la estética y funcionalidad de tu vehículo. Buscamos estar en un lugar único de personalidad y exclusividad.</p>
+                    <p>Nuestra gama de productos está dirigida a clientes, comerciantes, cadenas, tiendas y más.</p>
+                    <a href="#contacto" class="btn btn-outline">CONÓCENOS</a>
+                </div>
+                <div class="about-image">
+                    <div class="about-visual">
+                        <h3>Antenas de Calidad</h3>
+                        <p>Tecnología automotriz innovadora</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="productos" class="products-section">
+        <div class="products-header">
+            <div class="container">
+                <h2 class="products-title">NUESTROS PRODUCTOS</h2>
+            </div>
+        </div>
+        <div class="container">
+            <div class="products-grid">
+                <div class="product-item">
+                    <div class="product-image">
+                        <div class="product-icon">PIONNER</div>
+                    </div>
+                    <h3 class="product-name">ANTENAS TIPO PIONNER</h3>
+                </div>
+                
+                <div class="product-item">
+                    <div class="product-image">
+                        <div class="product-icon">ACTION</div>
+                    </div>
+                    <h3 class="product-name">ANTENAS ACTION</h3>
+                </div>
+                
+                <div class="product-item">
+                    <div class="product-image">
+                        <div class="product-icon">ESPIRAL</div>
+                    </div>
+                    <h3 class="product-name">ANTENAS ESPIRALES</h3>
+                </div>
+                
+                <div class="product-item">
+                    <div class="product-image">
+                        <div class="product-icon">ELECTRÓNICA</div>
+                    </div>
+                    <h3 class="product-name">ANTENAS ELECTRÓNICAS</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="featured-title">NOS DESTACAMOS EN</h2>
+            <div class="featured-carousel" 
+                 (mouseenter)="pausarAutoplay()" 
+                 (mouseleave)="reanudarAutoplay()">
+                <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
+                <div class="carousel-content">
+                    <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
+                        <div class="featured-image">
+                            <div class="featured-badge">
+                                <h3 class="badge-title">{{item.title}}</h3>
+                                <p class="badge-text">{{item.text}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
+            </div>
+            <div class="carousel-dots">
+                <span class="dot" *ngFor="let item of carouselItems; let i = index" 
+                      [class.active]="i === currentSlide" 
+                      (click)="irASlide(i)"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="contact-section">
+        <div class="container">
+            <h2 class="contact-title">Contáctanos</h2>
+            <p class="contact-subtitle">Para mayor información, escríbenos a nuestro WhatsApp</p>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">TEL</span>
+                    <span>313 872 69 00</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">DIR</span>
+                    <span>Arista Cra. 18 #11-46 Armenia, Quindío</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">EMAIL</span>
+                    <span>Arista.Ventasc&#64;Gmail.Com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">HOR</span>
+                    <span>Lunes a Viernes - 8 am - 5 pm</span>
+                </div>
+            </div>
+            
+            <a href="https://wa.me/573138726900" class="btn btn-whatsapp" target="_blank">
+                Chatea con nosotros por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arista Store</h3>
+                    <p>Tu tienda de antenas automotrices de confianza</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Arista Store</h4>
+                    <ul>
+                        <li>Inicio</li>
+                        <li>Catálogo</li>
+                        <li>Productos</li>
+                        <li>Nosotros</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li>313 872 69 00</li>
+                        <li>Arista.Ventasc&#64;Gmail.Com</li>
+                        <li>Armenia, Quindío</li>
+                        <li>Lunes a Viernes - 8 am - 5 pm</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook" class="social-link">FB</a>
+                        <a href="#" aria-label="Instagram" class="social-link">IG</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>2025 - Todos los derechos reservados ®</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -4,23 +4,43 @@
     <div class="container">
         <div class="row content-center">
             <div class="col col-12 content-center">
-                  <img src="assets/appImages/logoMenu.svg" width="130" height="140" class="img-fluid" alt="logo">
+                <img src="assets/appImages/logoMenu.svg" width="130" height="140" class="img-fluid" alt="logo">
             </div>
             <div class="col-lg-6">
                 <div class="theme-card">
-                    <form class="theme-form" (ngSubmit)="loginUser()"> <!-- Cambiado aquí -->
+                    <form class="theme-form" (ngSubmit)="loginUser()">
+                        
+                        <!-- Mensaje de error -->
+                        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+                            {{ errorMessage }}
+                        </div>
+
                         <div class="form-group">
                             <label for="email">Usuario</label>
-                            <input type="text" class="form-control" id="email" placeholder="Escriba su usuario" 
-                                [(ngModel)]="registerCredentials.user" name="user" required> <!-- Agregado name="user" -->
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="email" 
+                                   placeholder="Escriba su usuario" 
+                                   [(ngModel)]="registerCredentials.user" 
+                                   name="user" 
+                                   required
+                                   [disabled]="loading">
                         </div>
                         <div class="form-group">
                             <label for="review">Contraseña</label>
-                            <input type="password" class="form-control" id="review" placeholder="Ingrese su contraseña" 
-                                [(ngModel)]="registerCredentials.password" name="password" required> <!-- Agregado name="password" -->
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="review" 
+                                   placeholder="Ingrese su contraseña" 
+                                   [(ngModel)]="registerCredentials.password" 
+                                   name="password" 
+                                   required
+                                   [disabled]="loading">
                         </div>
                         <div class="btn-centered">
-                            <button type="submit" class="btn btn-solid">Login</button> <!-- Cambiado aquí -->
+                            <button type="submit" class="btn btn-solid" [disabled]="loading">
+                                {{ loading ? 'Iniciando sesión...' : 'Login' }}
+                            </button>
                         </div>
                     </form>
                 </div>
