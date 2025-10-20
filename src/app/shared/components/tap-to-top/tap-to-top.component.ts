@@ -13,11 +13,11 @@ export class TapToTopComponent implements OnInit {
   public show: boolean = false;
   public showButtons: boolean = false;
 
-  constructor(private viewScroller: ViewportScroller,
+  constructor(
+    private viewScroller: ViewportScroller,
     private router: Router,
     private navServices: NavService
   ) {
-
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.showButtons = event.url.includes('/home/catalog');
@@ -53,5 +53,10 @@ export class TapToTopComponent implements OnInit {
 
   openMenu() {
     this.navServices.leftMenuToggle = !this.navServices.leftMenuToggle;
+  }
+
+
+  isHomePage(): boolean {
+    return this.router.url === '/home' || this.router.url === '/';
   }
 }
