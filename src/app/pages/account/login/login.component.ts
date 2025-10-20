@@ -34,6 +34,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('userId', responseLogin[0].id);
         localStorage.setItem('userType', userType);
         localStorage.setItem('priceRateId', priceRateId);
+        localStorage.setItem('userName', responseLogin[0].name);
+        localStorage.setItem('userEmail', responseLogin[0].email);
         window.location.href = '/';
       } else {
         // todo alerta de error

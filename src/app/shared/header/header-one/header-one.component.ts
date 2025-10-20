@@ -18,6 +18,12 @@ export class HeaderOneComponent implements OnInit {
 
   public stick: boolean = false;
   public statusProduct = '';
+  public userId: string | null = null;
+  public userType: string | null = null;
+  public priceRateId: string | null = null;
+  public name: string | null = null;
+  public email: string | null = null;
+  
 
   api: ApiService;
   start: number;
@@ -30,7 +36,7 @@ export class HeaderOneComponent implements OnInit {
     public productService: ProductService,
     public desiredProduct: DesiredProductsService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     var parser = document.createElement('a');
@@ -47,6 +53,14 @@ export class HeaderOneComponent implements OnInit {
         break;
       }
     }
+
+    // Leer datos del usuario desde localStorage para mostrarlos en el header
+    this.userId = localStorage.getItem('userId');
+    this.userType = localStorage.getItem('userType');
+    this.priceRateId = localStorage.getItem('priceRateId');
+    this.name = localStorage.getItem('userName');
+    this.email = localStorage.getItem('userEmail');
+
   }
 
   // @HostListener Decorator
@@ -91,8 +105,8 @@ export class HeaderOneComponent implements OnInit {
     localStorage.removeItem('products');
     localStorage.removeItem('start');
     this.router.navigate(['/home/catalog'], {
-        queryParams: { status: this.statusProduct },
-        queryParamsHandling: 'merge' // Mantiene otros queryParams existentes si los hay
+      queryParams: { status: this.statusProduct },
+      queryParamsHandling: 'merge' // Mantiene otros queryParams existentes si los hay
     });
   }
 
