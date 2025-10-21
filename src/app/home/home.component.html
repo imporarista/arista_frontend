@@ -64,23 +64,26 @@
     </section>
 
     <section id="nosotros" class="about-section">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2 class="about-title">Sobre nosotros</h2>
-                    <p>En Importadora Arista S.A.S llevamos más de dos décadas ofreciendo lujos y accesorios automotrices de alta calidad. Cuidando cada detalle desde la importación hasta la entrega.</p>
-                    <p>Con presencia nacional y un catálogo en constante crecimiento, somos el socio estratégico ideal para quienes buscan calidad, diseño y rentabilidad en el mundo automotriz.</p>
-                    <a href="#contacto" class="btn btn-outline">CONÓCENOS</a>
-                </div>
-                <div class="about-image">
-                    <div class="about-visual">
-                        <h3></h3>
-                        <p></p>
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2 class="about-title">Sobre nosotros</h2>
+                <p>En Importadora Arista S.A.S llevamos más de dos décadas ofreciendo lujos y accesorios automotrices de alta calidad. Cuidando cada detalle desde la importación hasta la entrega.</p>
+                <p>Con presencia nacional y un catálogo en constante crecimiento, somos el socio estratégico ideal para quienes buscan calidad, diseño y rentabilidad en el mundo automotriz.</p>
+                <a href="#contacto" class="btn btn-outline">CONÓCENOS</a>
+            </div>
+            <div class="about-carousel">
+                <div class="about-carousel-container">
+                    <div class="about-carousel-item" 
+                         *ngFor="let image of aboutImages; let i = index" 
+                         [class.active]="i === currentAboutSlide">
+                        <img [src]="image" alt="Arista">
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <section id="productos" class="products-section">
         <div class="products-header">
@@ -122,31 +125,31 @@
     </section>
 
     <section class="featured-section">
-    <div class="container">
-        <h2 class="featured-title">NOS DESTACAMOS EN</h2>
-    </div>
-    <div class="featured-carousel" 
-         (mouseenter)="pausarAutoplay()" 
-         (mouseleave)="reanudarAutoplay()">
-        <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
-        <div class="carousel-content">
-            <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
-                <div class="featured-image" [style.background-image]="'linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(' + item.image + ')'">
-                    <div class="featured-badge">
-                        <h3 class="badge-title">{{item.title}}</h3>
-                        <p class="badge-text">{{item.text}}</p>
+        <div class="container">
+            <h2 class="featured-title">NOS DESTACAMOS EN</h2>
+        </div>
+        <div class="featured-carousel" 
+             (mouseenter)="pausarAutoplay()" 
+             (mouseleave)="reanudarAutoplay()">
+            <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
+            <div class="carousel-content">
+                <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
+                    <div class="featured-image" [style.background-image]="'linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(' + item.image + ')'">
+                        <div class="featured-badge">
+                            <h3 class="badge-title">{{item.title}}</h3>
+                            <p class="badge-text">{{item.text}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
         </div>
-        <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
-    </div>
-    <div class="carousel-dots">
-        <span class="dot" *ngFor="let item of carouselItems; let i = index" 
-              [class.active]="i === currentSlide" 
-              (click)="irASlide(i)"></span>
-    </div>
-</section>
+        <div class="carousel-dots">
+            <span class="dot" *ngFor="let item of carouselItems; let i = index" 
+                  [class.active]="i === currentSlide" 
+                  (click)="irASlide(i)"></span>
+        </div>
+    </section>
 
     <section id="contacto" class="contact-section">
         <div class="container">

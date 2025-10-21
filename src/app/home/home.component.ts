@@ -18,26 +18,37 @@ export class HomeComponent implements OnInit, OnDestroy {
   thumbnailsDirectory = 'assets/images/products/thumbnails/';
 
   
-currentSlide: number = 0;
-carouselItems = [
-  { 
-    title: 'PIJAMAS', 
-    text: 'Amplia variedad de diseños',
-    image: 'assets/images/PIJAMAS.jpeg'
-  },
-  { 
-    title: 'PINES', 
-    text: 'Accesorios de calidad certificada',
-    image: 'assets/images/PINES.jpeg'
-  },
-  { 
-    title: 'PLUMILLAS', 
-    text: 'Tecnología y durabilidad',
-    image: 'assets/images/PLUMILLAS.jpeg'
-  }
-];
+  currentSlide: number = 0;
+  carouselItems = [
+    { 
+      title: 'PIJAMAS', 
+      text: 'Amplia variedad de diseños',
+      image: 'assets/images/PIJAMAS.jpeg'
+    },
+    { 
+      title: 'PINES', 
+      text: 'Accesorios de calidad certificada',
+      image: 'assets/images/PINES.jpeg'
+    },
+    { 
+      title: 'PLUMILLAS', 
+      text: 'Tecnología y durabilidad',
+      image: 'assets/images/PLUMILLAS.jpeg'
+    }
+  ];
+
+  
+  currentAboutSlide: number = 0;
+  aboutImages: string[] = [
+    'assets/images/PORTADA.jpeg',
+    'assets/images/PORTADA2.jpeg',
+    'assets/images/PORTADA3.jpeg',
+    'assets/images/PORTADA4.jpeg'
+    
+  ];
 
   autoplayInterval: any;
+  aboutAutoplayInterval: any;
 
   constructor(
     public apiService: ApiService,
@@ -47,10 +58,12 @@ carouselItems = [
   ngOnInit(): void {
     this.cargarDatos();
     this.iniciarAutoplay();
+    this.iniciarAboutAutoplay();
   }
 
   ngOnDestroy(): void {
     this.detenerAutoplay();
+    this.detenerAboutAutoplay();
   }
 
   cargarDatos() {
@@ -70,16 +83,12 @@ carouselItems = [
     });
   }
 
-
   irCatalog(catId?: number) {
-    
     if (!this.estaLogueado()) {
-      
       this.router.navigate(['/login']);
       return;
     }
 
-   
     if (catId) {
       this.router.navigate(['/home/catalog', catId]);
     } else {
@@ -87,7 +96,6 @@ carouselItems = [
     }
   }
 
- 
   verProducto(prod: Product) {
     if (!this.estaLogueado()) { 
       this.router.navigate(['/login']);
@@ -97,11 +105,9 @@ carouselItems = [
     console.log('Ver producto:', prod);
   }
 
-
   estaLogueado(): boolean {
     return localStorage.getItem('userId') !== null;
   }
-
 
   irALogin() {
     if (!this.estaLogueado()) {
@@ -110,6 +116,7 @@ carouselItems = [
       this.router.navigate(['/home/catalog']);
     }
   }
+
 
   siguienteSlide() {
     this.detenerAutoplay();
@@ -148,6 +155,20 @@ carouselItems = [
     if (this.autoplayInterval) {
       clearInterval(this.autoplayInterval);
       this.autoplayInterval = null;
+    }
+  }
+
+  iniciarAboutAutoplay() {
+    this.detenerAboutAutoplay();
+    this.aboutAutoplayInterval = setInterval(() => {
+      this.currentAboutSlide = (this.currentAboutSlide + 1) % this.aboutImages.length;
+    }, 3000); // Cambia cada 3 segundos
+  }
+
+  detenerAboutAutoplay() {
+    if (this.aboutAutoplayInterval) {
+      clearInterval(this.aboutAutoplayInterval);
+      this.aboutAutoplayInterval = null;
     }
   }
 }

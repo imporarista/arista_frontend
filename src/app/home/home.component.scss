@@ -600,17 +600,15 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: all 0.5s ease;
-  border-left: none;
-  border: none;
- 
-  
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
 }
 
 .featured-item.active {
   opacity: 1;
   visibility: visible;
-  border-left: none;
-  border: none;
+  pointer-events: auto;
 }
 
 .featured-image {
@@ -693,7 +691,49 @@ body {
   transform: scale(1.2);
 }
 
+/* Featured Section Sobre Nosotros*/
+
+.about-carousel {
+  border-radius: 20px;
+  height: 400px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  background: #000000; /* Fondo para cuando la imagen no llena todo el espacio */
+}
+
+.about-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.about-carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-carousel-item.active {
+  opacity: 1;
+}
+
+.about-carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ← Cambia esto de 'cover' a 'contain' */
+  object-position: center;
+}
+
 /* Contact Section */
+
 .contact-section {
   background: linear-gradient(180deg, var(--color-bg-white) 0%, var(--color-bg-light) 100%);
   padding: 5rem 0;
