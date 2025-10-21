@@ -21,9 +21,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentSlide: number = 0;
   carouselItems = [
     { 
-      title: 'PIJAMAS', 
+      title: 'PIJAMAs', 
       text: 'Amplia variedad de diseños',
-      image: 'assets/images/PIJAMAS.jpeg'
+      image: 'assets/images/PIJAMA.jpeg'
     },
     { 
       title: 'PINES', 
@@ -37,14 +37,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   ];
 
-  
+ 
   currentAboutSlide: number = 0;
   aboutImages: string[] = [
     'assets/images/PORTADA.jpeg',
     'assets/images/PORTADA2.jpeg',
-    'assets/images/PORTADA3.jpeg',
-    'assets/images/PORTADA4.jpeg'
     
+   
   ];
 
   autoplayInterval: any;
@@ -117,7 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  // Métodos del carrusel principal (Featured)
   siguienteSlide() {
     this.detenerAutoplay();
     this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
@@ -148,7 +147,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.detenerAutoplay();
     this.autoplayInterval = setInterval(() => {
       this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
-    }, 5000);
+    }, 7000);
   }
 
   detenerAutoplay() {
@@ -158,11 +157,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Métodos del carrusel About
   iniciarAboutAutoplay() {
     this.detenerAboutAutoplay();
     this.aboutAutoplayInterval = setInterval(() => {
       this.currentAboutSlide = (this.currentAboutSlide + 1) % this.aboutImages.length;
-    }, 3000); // Cambia cada 3 segundos
+    }, 7000); // Cambia cada 7 segundos
   }
 
   detenerAboutAutoplay() {

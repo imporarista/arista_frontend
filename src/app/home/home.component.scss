@@ -558,7 +558,7 @@ body {
 .featured-section {
   background: var(--color-bg-white);
   padding: 5rem 0;
-  border-left: none;
+  
   
 }
 
@@ -577,7 +577,7 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 0 60px; 
-  border-left: none;
+  
 }
 
 
@@ -586,9 +586,9 @@ body {
   position: relative;
   height: 400px;
   overflow: hidden;
-  border-left: none;
-  border: none;
   
+  border-radius: 20px;
+  border: 2px solid #d1d5db;
 }
 
 .featured-item {
