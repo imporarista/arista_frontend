@@ -18,12 +18,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   thumbnailsDirectory = 'assets/images/products/thumbnails/';
 
   
-  currentSlide: number = 0;
-  carouselItems = [
-    { title: 'CALIDAD', text: 'Antenas certificadas y garantizadas' },
-    { title: 'VARIEDAD', text: 'Amplio catálogo de modelos' },
-    { title: 'EXPERIENCIA', text: 'Más de 10 años en el mercado' }
-  ];
+currentSlide: number = 0;
+carouselItems = [
+  { 
+    title: 'PIJAMAS', 
+    text: 'Amplia variedad de diseños',
+    image: 'assets/images/PIJAMAS.jpeg'
+  },
+  { 
+    title: 'PINES', 
+    text: 'Accesorios de calidad certificada',
+    image: 'assets/images/PINES.jpeg'
+  },
+  { 
+    title: 'PLUMILLAS', 
+    text: 'Tecnología y durabilidad',
+    image: 'assets/images/PLUMILLAS.jpeg'
+  }
+];
+
   autoplayInterval: any;
 
   constructor(
