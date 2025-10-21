@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Métodos del carrusel principal (Featured)
+  
   siguienteSlide() {
     this.detenerAutoplay();
     this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
@@ -157,12 +157,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Métodos del carrusel About
+  
   iniciarAboutAutoplay() {
     this.detenerAboutAutoplay();
     this.aboutAutoplayInterval = setInterval(() => {
       this.currentAboutSlide = (this.currentAboutSlide + 1) % this.aboutImages.length;
-    }, 7000); // Cambia cada 7 segundos
+    }, 7000);
   }
 
   detenerAboutAutoplay() {
