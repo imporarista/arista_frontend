@@ -105,8 +105,9 @@ export class HeaderOneComponent implements OnInit {
     localStorage.removeItem('products');
     localStorage.removeItem('start');
     this.router.navigate(['/home/catalog'], {
-      queryParams: { status: this.statusProduct },
-      queryParamsHandling: 'merge' // Mantiene otros queryParams existentes si los hay
+
+        queryParams: { status: this.statusProduct },
+        queryParamsHandling: 'merge'
     });
   }
 

@@ -20,11 +20,34 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   currentSlide: number = 0;
   carouselItems = [
-    { title: 'CALIDAD', text: 'Antenas certificadas y garantizadas' },
-    { title: 'VARIEDAD', text: 'Amplio catálogo de modelos' },
-    { title: 'EXPERIENCIA', text: 'Más de 10 años en el mercado' }
+    { 
+      title: 'PIJAMAs', 
+      text: 'Amplia variedad de diseños',
+      image: 'assets/images/PIJAMA.jpeg'
+    },
+    { 
+      title: 'PINES', 
+      text: 'Accesorios de calidad certificada',
+      image: 'assets/images/PINES.jpeg'
+    },
+    { 
+      title: 'PLUMILLAS', 
+      text: 'Tecnología y durabilidad',
+      image: 'assets/images/PLUMILLAS.jpeg'
+    }
   ];
+
+ 
+  currentAboutSlide: number = 0;
+  aboutImages: string[] = [
+    'assets/images/PORTADA.jpeg',
+    'assets/images/PORTADA2.jpeg',
+    
+   
+  ];
+
   autoplayInterval: any;
+  aboutAutoplayInterval: any;
 
   constructor(
     public apiService: ApiService,
@@ -34,10 +57,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cargarDatos();
     this.iniciarAutoplay();
+    this.iniciarAboutAutoplay();
   }
 
   ngOnDestroy(): void {
     this.detenerAutoplay();
+    this.detenerAboutAutoplay();
   }
 
   cargarDatos() {
@@ -57,16 +82,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-
   irCatalog(catId?: number) {
-    
     if (!this.estaLogueado()) {
-      
       this.router.navigate(['/login']);
       return;
     }
 
-   
     if (catId) {
       this.router.navigate(['/home/catalog', catId]);
     } else {
@@ -74,7 +95,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
- 
   verProducto(prod: Product) {
     if (!this.estaLogueado()) { 
       this.router.navigate(['/login']);
@@ -84,11 +104,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('Ver producto:', prod);
   }
 
-
   estaLogueado(): boolean {
     return localStorage.getItem('userId') !== null;
   }
-
 
   irALogin() {
     if (!this.estaLogueado()) {
@@ -98,6 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  
   siguienteSlide() {
     this.detenerAutoplay();
     this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
@@ -128,13 +147,28 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.detenerAutoplay();
     this.autoplayInterval = setInterval(() => {
       this.currentSlide = (this.currentSlide + 1) % this.carouselItems.length;
-    }, 5000);
+    }, 7000);
   }
 
   detenerAutoplay() {
     if (this.autoplayInterval) {
       clearInterval(this.autoplayInterval);
       this.autoplayInterval = null;
+    }
+  }
+
+  
+  iniciarAboutAutoplay() {
+    this.detenerAboutAutoplay();
+    this.aboutAutoplayInterval = setInterval(() => {
+      this.currentAboutSlide = (this.currentAboutSlide + 1) % this.aboutImages.length;
+    }, 7000);
+  }
+
+  detenerAboutAutoplay() {
+    if (this.aboutAutoplayInterval) {
+      clearInterval(this.aboutAutoplayInterval);
+      this.aboutAutoplayInterval = null;
     }
   }
 }

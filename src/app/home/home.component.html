@@ -9,7 +9,9 @@
     <nav class="navbar">
     <div class="container">
         <div class="nav-content">
-            <a href="#" class="logo">Tienda Arista</a>
+            <a href="#" class="logo">
+             <img src="assets/appImages/logo.svg" alt="Arista" class="logo-img">
+            </a>
             <ul class="nav-links">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a (click)="irALogin()" style="cursor: pointer;">Catálogo</a></li>
@@ -45,7 +47,7 @@
         <div class="hero-overlay"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">ENCUENTRA VARIEDAD Y CALIDAD EN ANTENAS PARA VEHÍCULOS</h1>
+                <h1 class="hero-title">"LUJOS Y ACCESORIOS QUE TU NEGOCIO MERECE CON 23 AÑOS DE RESPALDO"</h1>
                 <p class="hero-subtitle">¡Todo en un solo lugar!</p>
                 <button (click)="irALogin()" class="btn btn-hero">INGRESA A NUESTRA TIENDA ONLINE</button>
             </div>
@@ -55,31 +57,33 @@
     <section class="brand-section">
         <div class="container">
             <div class="brand-content">
-                <h2 class="brand-title">MÁS DE 10 AÑOS OFRECIENDO CALIDAD EN ANTENAS AUTOMOTRICES</h2>
+                <h2 class="brand-title">MÁS DE 10 AÑOS OFRECIENDO CALIDAD EN PRODUCTOS AUTOMOTRICES</h2>
                 <p class="brand-subtitle">EFICIENCIA, CALIDAD, INNOVACIÓN</p>
             </div>
         </div>
     </section>
 
     <section id="nosotros" class="about-section">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2 class="about-title">Sobre nosotros</h2>
-                    <p>Somos una empresa orientada a la fabricación, desarrollo y comercialización de antenas y accesorios para el sector automotriz.</p>
-                    <p>Nos enfocamos en ofrecer productos de alta calidad que resalten la estética y funcionalidad de tu vehículo. Buscamos estar en un lugar único de personalidad y exclusividad.</p>
-                    <p>Nuestra gama de productos está dirigida a clientes, comerciantes, cadenas, tiendas y más.</p>
-                    <a href="#contacto" class="btn btn-outline">CONÓCENOS</a>
-                </div>
-                <div class="about-image">
-                    <div class="about-visual">
-                        <h3>Antenas de Calidad</h3>
-                        <p>Tecnología automotriz innovadora</p>
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2 class="about-title">Sobre nosotros</h2>
+                <p>En Importadora Arista S.A.S llevamos más de dos décadas ofreciendo lujos y accesorios automotrices de alta calidad. Cuidando cada detalle desde la importación hasta la entrega.</p>
+                <p>Con presencia nacional y un catálogo en constante crecimiento, somos el socio estratégico ideal para quienes buscan calidad, diseño y rentabilidad en el mundo automotriz.</p>
+                <a href="#contacto" class="btn btn-outline">CONÓCENOS</a>
+            </div>
+            <div class="about-carousel">
+                <div class="about-carousel-container">
+                    <div class="about-carousel-item" 
+                         *ngFor="let image of aboutImages; let i = index" 
+                         [class.active]="i === currentAboutSlide">
+                        <img [src]="image" alt="Arista">
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <section id="productos" class="products-section">
         <div class="products-header">
@@ -91,30 +95,30 @@
             <div class="products-grid">
                 <div class="product-item">
                     <div class="product-image">
-                        <div class="product-icon">PIONNER</div>
+                        <div class="product-icon"></div>
                     </div>
-                    <h3 class="product-name">ANTENAS TIPO PIONNER</h3>
+                    <h3 class="product-name">LEDS</h3>
                 </div>
                 
                 <div class="product-item">
                     <div class="product-image">
-                        <div class="product-icon">ACTION</div>
+                        <div class="product-icon"></div>
                     </div>
-                    <h3 class="product-name">ANTENAS ACTION</h3>
+                    <h3 class="product-name">FAROLAS</h3>
                 </div>
                 
                 <div class="product-item">
                     <div class="product-image">
-                        <div class="product-icon">ESPIRAL</div>
+                        <div class="product-icon"></div>
                     </div>
-                    <h3 class="product-name">ANTENAS ESPIRALES</h3>
+                    <h3 class="product-name">BOMBILLAS</h3>
                 </div>
                 
                 <div class="product-item">
                     <div class="product-image">
-                        <div class="product-icon">ELECTRÓNICA</div>
+                        <div class="product-icon"></div>
                     </div>
-                    <h3 class="product-name">ANTENAS ELECTRÓNICAS</h3>
+                    <h3 class="product-name">FILTROS</h3>
                 </div>
             </div>
         </div>
@@ -123,27 +127,27 @@
     <section class="featured-section">
         <div class="container">
             <h2 class="featured-title">NOS DESTACAMOS EN</h2>
-            <div class="featured-carousel" 
-                 (mouseenter)="pausarAutoplay()" 
-                 (mouseleave)="reanudarAutoplay()">
-                <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
-                <div class="carousel-content">
-                    <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
-                        <div class="featured-image">
-                            <div class="featured-badge">
-                                <h3 class="badge-title">{{item.title}}</h3>
-                                <p class="badge-text">{{item.text}}</p>
-                            </div>
+        </div>
+        <div class="featured-carousel" 
+             (mouseenter)="pausarAutoplay()" 
+             (mouseleave)="reanudarAutoplay()">
+            <button class="carousel-btn prev" (click)="anteriorSlide()" aria-label="Anterior">‹</button>
+            <div class="carousel-content">
+                <div class="featured-item" *ngFor="let item of carouselItems; let i = index" [class.active]="i === currentSlide">
+                    <div class="featured-image" [style.background-image]="'linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(' + item.image + ')'">
+                        <div class="featured-badge">
+                            <h3 class="badge-title">{{item.title}}</h3>
+                            <p class="badge-text">{{item.text}}</p>
                         </div>
                     </div>
                 </div>
-                <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
             </div>
-            <div class="carousel-dots">
-                <span class="dot" *ngFor="let item of carouselItems; let i = index" 
-                      [class.active]="i === currentSlide" 
-                      (click)="irASlide(i)"></span>
-            </div>
+            <button class="carousel-btn next" (click)="siguienteSlide()" aria-label="Siguiente">›</button>
+        </div>
+        <div class="carousel-dots">
+            <span class="dot" *ngFor="let item of carouselItems; let i = index" 
+                  [class.active]="i === currentSlide" 
+                  (click)="irASlide(i)"></span>
         </div>
     </section>
 
