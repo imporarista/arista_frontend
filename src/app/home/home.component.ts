@@ -16,7 +16,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   cargando: boolean = true;
   imageDirectory = 'assets/images/categories/';
   thumbnailsDirectory = 'assets/images/products/thumbnails/';
-
+  
+  // Variable para controlar el estado del menú móvil
+  menuMovilAbierto: boolean = false;
   
   currentSlide: number = 0;
   carouselItems = [
@@ -37,13 +39,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   ];
 
- 
   currentAboutSlide: number = 0;
   aboutImages: string[] = [
     'assets/images/PORTADA.jpeg',
     'assets/images/PORTADA2.jpeg',
-    
-   
   ];
 
   autoplayInterval: any;
@@ -82,7 +81,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Método para alternar el menú móvil
+  toggleMenuMovil() {
+    this.menuMovilAbierto = !this.menuMovilAbierto;
+  }
+
+  // Método para cerrar el menú móvil
+  cerrarMenuMovil() {
+    this.menuMovilAbierto = false;
+  }
+
   irCatalog(catId?: number) {
+    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    
     if (!this.estaLogueado()) {
       this.router.navigate(['/login']);
       return;
@@ -109,6 +120,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   irALogin() {
+    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    
     if (!this.estaLogueado()) {
       this.router.navigate(['/login']);
     } else {
@@ -116,6 +129,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  navegarA(seccion: string) {
+    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    
+    // Scroll suave a la sección
+    const elemento = document.querySelector(seccion);
+    if (elemento) {
+      elemento.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
   
   siguienteSlide() {
     this.detenerAutoplay();
@@ -156,7 +178,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.autoplayInterval = null;
     }
   }
-
   
   iniciarAboutAutoplay() {
     this.detenerAboutAutoplay();

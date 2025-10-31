@@ -6,18 +6,18 @@
     <title>Arista Store - Antenas para Vehículos</title>
 </head>
 <body>
-    <nav class="navbar">
+   <nav class="navbar">
     <div class="container">
         <div class="nav-content">
-            <a href="#" class="logo">
-             <img src="assets/appImages/logo.svg" alt="Arista" class="logo-img">
+            <a href="#inicio" class="logo">
+                <img src="assets/appImages/logo.svg" alt="Arista" class="logo-img">
             </a>
-            <ul class="nav-links">
-                <li><a href="#inicio">Inicio</a></li>
+            <ul class="nav-links" [class.active]="menuMovilAbierto">
+                <li><a href="#inicio" (click)="navegarA('#inicio')">Inicio</a></li>
                 <li><a (click)="irALogin()" style="cursor: pointer;">Catálogo</a></li>
                 <li><a (click)="irALogin()" style="cursor: pointer;">Productos</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#nosotros" (click)="navegarA('#nosotros')">Nosotros</a></li>
+                <li><a href="#contacto" (click)="navegarA('#contacto')">Contacto</a></li>
                 
                 <li class="auth-button">
                     <a *ngIf="!estaLogueado()" 
@@ -34,7 +34,10 @@
                     </a>
                 </li>
             </ul>
-            <button class="menu-toggle" aria-label="Toggle menu">
+            <button class="menu-toggle" 
+                    [class.active]="menuMovilAbierto"
+                    (click)="toggleMenuMovil()" 
+                    aria-label="Toggle menu">
                 <span></span>
                 <span></span>
                 <span></span>
