@@ -5,9 +5,15 @@ import { CatalogComponent } from './catalog/catalog.component';
 import { FashionOneComponent } from './fashion/fashion-one/fashion-one.component';
 import { WatchComponent } from './watch/watch.component';
 import { authGuard } from '../guards/auth.guard';
+import { HomeComponent } from './home.component';
 
 const routes: Routes = [
-  // filtros
+
+  {
+    path: '',
+    component: HomeComponent
+  },
+  
   {
     path: 'catalog',
     component: CatalogComponent,
@@ -23,7 +29,7 @@ const routes: Routes = [
     component: CatalogComponent,
     canActivate: [authGuard]
   },
-  // codigo pre existente
+  
   {
     path: 'fashion',
     component: FashionOneComponent
@@ -31,7 +37,7 @@ const routes: Routes = [
   {
     path: 'watch',
     component: WatchComponent
-  },
+  }
 ];
 
 @NgModule({

@@ -47,7 +47,7 @@ export class ProductBoxOneComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  // Cambia realizado en el loader
+ 
   this.loader = false;
   
   this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');

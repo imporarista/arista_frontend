@@ -6,71 +6,77 @@
       </button>
 
       <div class="row">
+        
         <div class="col-lg-6 col-xs-12">
-          <owl-carousel-o [options]="ProductDetailsMainSliderConfig" #owlCar class="product-slick height-512">
-            <ng-container *ngFor="let image of product_images; index as i">
-              <ng-template carouselSlide [id]="i">
-                <div class="zoom-container" (click)="openPhotoSwipe(i)">
-                  <img [defaultImage]="'assets/images/product/placeholder.jpg'"
-                       [lazyLoad]="apiService.thumbnailsDirectory + image + (image.includes('.') ? '' : '.jpg')"
-                       [alt]="product.prod_name" class="img-fluid"
-                       [src]="apiService.imageDirectory + image + (image?.includes('.') ? '' : '.jpg')">
-                </div>
-              </ng-template>
-            </ng-container>
-          </owl-carousel-o>
-        </div>
-
-        <div class="col-lg-6 rtl-text">
-          <div class="product-right">
-            <h2>{{ product.prod_name | titlecase }}</h2>
-            <h3>{{ product.price | currency }}</h3>
-
-            <div class="border-product">
-              <h6 class="product-title">Detalle del Producto</h6>
-              <p [innerHTML]="product.prod_descriptions.substring(0, 200) + '...'"></p>
+          <div class="mercado-libre-gallery">
+           
+          
+            <div class="main-image-container" (click)="openPhotoSwipe(activeSlide)">
+              <img [src]="apiService.imageDirectory + product_images[activeSlide] + (product_images[activeSlide]?.includes('.') ? '' : '.jpg')"
+                   [alt]="product.prod_name" 
+                   class="main-image img-fluid"
+                   [defaultImage]="'assets/images/product/placeholder.jpg'"
+                   [lazyLoad]="apiService.imageDirectory + product_images[activeSlide] + (product_images[activeSlide]?.includes('.') ? '' : '.jpg')">
             </div>
 
-            <div class="product-description border-product">
-              <h5 class="avalibility" *ngIf="userType == '2'">
-                <span *ngIf="counter <= product.stock && !stockMessage">{{ product.stock }} En Stock</span>
-                <span *ngIf="stockMessage" class="text-danger">{{ stockMessage }}</span>
-              </h5>
-
-              <h6 class="product-title">Cantidad</h6>
-              <div class="qty-box">
-                <div class="input-group">
-                  <span class="input-group-prepend">
-                    <button type="button" class="btn quantity-left-minus" (click)="decrement()">
-                      <i class="ti-angle-left"></i>
-                    </button>
-                  </span>
-
-                  <input type="number"
-                         name="quantity"
-                         class="form-control input-number no-arrows"
-                         [(ngModel)]="counter"
-                         [max]="product.stock"
-                         [min]="1"
-                         (input)="onQuantityChange($event)">
-
-                  <span class="input-group-prepend">
-                    <button type="button" class="btn quantity-right-plus" (click)="increment()">
-                      <i class="ti-angle-right"></i>
-                    </button>
-                  </span>
+           
+            <div class="thumbnails-container" *ngIf="product_images.length > 1">
+              <div class="thumbnails-scroll">
+                <div *ngFor="let image of product_images; index as i" 
+                     class="thumbnail-item" 
+                     [class.active]="i === activeSlide"
+                     (mouseenter)="activeSlide = i"
+                     (click)="activeSlide = i">
+                  <img [src]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')"
+                       [alt]="product.prod_name"
+                       class="thumbnail-image"
+                       [defaultImage]="'assets/images/product/placeholder.jpg'"
+                       [lazyLoad]="apiService.thumbnailsDirectory + image + (image?.includes('.') ? '' : '.jpg')">
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="product-buttons">
-              <a href="javascript:void(0)" class="btn btn-solid" [class.disabled]="counter > product.stock"
-                 (click)="addToCart(product)">
-                Agregar al Carrito
-              </a>
-              <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name.replace(' ', '-')]" class="btn btn-solid">
-                Detalle
-              </a>
+        <div class="col-lg-6 rtl-text">
+          <div class="product-right mercado-libre-style">
+           
+
+            <h2 class="product-title">{{ product.prod_name | titlecase }}</h2>
+             <div class="product-price">{{ product.price | currency }}</div>
+
+            <div class="stock-info" *ngIf="userType == '2'">
+              <span *ngIf="counter <= product.stock && !stockMessage" class="in-stock">✓ {{ product.stock }} En Stock</span>
+              <span *ngIf="stockMessage" class="out-of-stock">✗ {{ stockMessage }}</span>
+            </div>
+
+            <div class="quantity-section">
+              <h6 class="quantity-label">Cantidad</h6>
+              <div class="quantity-controls">
+                <button type="button" class="quantity-btn" (click)="decrement()">&lt;</button>
+                <input type="number"
+                       name="quantity"
+                       class="quantity-input no-arrows"
+                       [(ngModel)]="counter"
+                       [max]="product.stock"
+                       [min]="1"
+                       (input)="onQuantityChange($event)">
+                <button type="button" class="quantity-btn" (click)="increment()">&gt;</button>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <a href="javascript:void(0)" class="btn btn-primary" 
+                 [class.disabled]="counter > product.stock"
+                 (click)="addToCart(product)">AGREGAR AL CARRITO</a>
+              <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name.replace(' ', '-')]" 
+                 class="btn btn-secondary"
+                 (click)="modal.dismiss()">VER DETALLE COMPLETO</a>
+            </div>
+
+            <div class="product-details-section">
+              <h6 class="section-title">Detalle del producto</h6>
+              <p class="product-description" [innerHTML]="product.prod_descriptions"></p>
             </div>
           </div>
         </div>

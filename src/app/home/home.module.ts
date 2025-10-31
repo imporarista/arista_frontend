@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HomeRoutingModule } from './home-routing.module';
 
+import { HomeComponent } from './home.component';
 import { FashionOneComponent } from './fashion/fashion-one/fashion-one.component';
 import { WatchComponent } from './watch/watch.component';
 
@@ -19,6 +20,7 @@ import { GridComponent } from './catalog/widgets/grid/grid.component';
 
 @NgModule({
   declarations: [
+    HomeComponent,
     CatalogComponent,
     PaginationComponent,
     GridComponent,

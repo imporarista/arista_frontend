@@ -38,7 +38,7 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
 
   openModal() {
     this.modalOpen = true;
-    if (isPlatformBrowser(this.platformId)) { // For SSR 
+    if (isPlatformBrowser(this.platformId)) { 
       this.modalService.open(this.QuickView, { 
         size: 'lg',
         ariaLabelledBy: 'modal-basic-title',
@@ -62,7 +62,7 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
     }
   }
 
-  // Get Product Color
+
   Color(variants) {
     const uniqColor = []
     for (let i = 0; i < Object.keys(variants).length; i++) {
@@ -73,7 +73,7 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
     return uniqColor
   }
 
-  // Get Product Size
+
   Size(variants) {
     const uniqSize = []
     for (let i = 0; i < Object.keys(variants).length; i++) {
@@ -84,7 +84,7 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
     return uniqSize
   }
 
-  // Change Variants
+
   ChangeVariants(color, product) {
     product.variants.map((item) => {
       if (item.color === color) {
@@ -97,17 +97,16 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
     })
   }
 
-  // Increament
+
   increment() {
     this.counter++ ;
   }
 
-  // Decrement
   decrement() {
     if (this.counter > 1) this.counter-- ;
   }
 
-  // Add to cart
+
   async addToCart(product: any) {
     const status = await this.desiredProduct.iLike(product);
     product.quantity = this.counter || 1;

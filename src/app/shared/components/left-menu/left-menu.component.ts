@@ -18,9 +18,11 @@ export class LeftMenuComponent implements OnInit {
 
   constructor(
     private router: Router, 
-    public navServices: NavService, private apiService: ApiService) {
+    public navServices: NavService, 
+    private apiService: ApiService
+  ) {
     this.apiService.getCategories(this.userId).subscribe((categories: Category[]) => {
-      this.categories =  categories;
+      this.categories = categories;
       this.apiService.getSubCategories(this.userId).subscribe((subcategory: Subcategory[]) => {
         for (let category of this.categories) {
           category.menu_active = false;
@@ -28,7 +30,7 @@ export class LeftMenuComponent implements OnInit {
         }
       });
     })
-    this.navServices.leftMenuItems.subscribe(menuItems => this.menuItems = menuItems );
+    this.navServices.leftMenuItems.subscribe(menuItems => this.menuItems = menuItems);
     this.router.events.subscribe((event) => {
       this.navServices.mainMenuToggle = false;
     });
@@ -47,13 +49,17 @@ export class LeftMenuComponent implements OnInit {
   }
 
   onHover(menuItem) {
-    // No desactivar el scroll del contenedor del menú
     const el = document.getElementById('unset');
     if (el) {
       el.classList.remove('sidebar-unset');
     }
   }
 
-  // No need to intercept wheel; submenu opens inline
-
+ 
+  irAHome(): void {
+    this.leftMenuToggle(); 
+    localStorage.removeItem('products');
+    localStorage.removeItem('start');
+    this.router.navigate(['/home']); 
+  }
 }
