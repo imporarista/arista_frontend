@@ -3,11 +3,77 @@
 <section class="cart-section section-b-space">
     <div class="container">
         <div class="col-sm-12 empty-cart-cls text-center" *ngIf="!desiredProduct.desiredProducts.length">
-            <img src="assets/images/icon-empty-cart.png" class="img-fluid mb-4">
-            <h3><strong>Tu carrito está vacío</strong></h3>
-            <h4>Agrega algo que te haga feliz :)</h4>
+            <img src="assets/images/icon-empty-cart.png" class="img-fluid mb-4 empty-cart-img">
+            <h3 class="empty-cart-title"><strong>Tu carrito está vacío</strong></h3>
+            <h4 class="empty-cart-subtitle">Agrega algo que te haga feliz :)</h4>
         </div>
-        <div class="row" *ngIf="desiredProduct.desiredProducts.length">
+        
+        <!-- Vista móvil optimizada para pantallas pequeñas -->
+        <div class="d-block d-md-none" *ngIf="desiredProduct.desiredProducts.length">
+            <div class="mobile-cart-container">
+                <div class="mobile-cart-item" *ngFor="let product of desiredProduct.desiredProducts">
+                    <div class="mobile-product-card">
+                        <div class="mobile-product-image">
+                            <img [src]="api.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')"
+                                [alt]="product.prod_name" class="img-fluid">
+                        </div>
+                        <div class="mobile-product-details">
+                            <h5 class="mobile-product-name">
+                                <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name]">
+                                    {{ (product.prod_name.length > 25) ? (product.prod_name | slice:0:25) + '...' : (product.prod_name | titlecase) }}
+                                </a>
+                            </h5>
+                            <div class="mobile-product-price">
+                                <span class="price-label">Precio:</span> {{ product.price | currency }}
+                            </div>
+                            <div class="mobile-quantity-controls">
+                                <div class="mobile-qty-box">
+                                    <div class="mobile-input-group">
+                                        <button type="button" class="btn mobile-quantity-btn minus" 
+                                                (click)="decrement(product)">
+                                            <i class="ti-minus"></i>
+                                        </button>
+                                        <input type="number" name="quantity" class="mobile-input-number"
+                                            [(ngModel)]="product.quantity" min="1">
+                                        <button type="button" class="btn mobile-quantity-btn plus"
+                                                (click)="increment(product)">
+                                            <i class="ti-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mobile-product-total">
+                                    <span class="total-label">Total:</span> {{ (product.price * product.quantity) | currency }}
+                                </div>
+                            </div>
+                            <div class="mobile-actions">
+                                <a href="javascript:void(0)" (click)="removeItem(product)" class="mobile-remove-btn">
+                                    <i class="ti-close"></i> Eliminar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen móvil -->
+                <div class="mobile-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Sub Total:</span>
+                        <span class="summary-value">{{ subTotal | currency }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">IVA:</span>
+                        <span class="summary-value">{{ iva | currency }}</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span class="summary-label">Precio Total:</span>
+                        <span class="summary-value">{{ totalPrice | currency }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vista de escritorio -->
+        <div class="row d-none d-md-block" *ngIf="desiredProduct.desiredProducts.length">
             <div class="col-sm-12">
                 <table class="table cart-table table-responsive-xs">
                     <thead>
@@ -23,51 +89,11 @@
                     <tbody *ngFor="let product of desiredProduct.desiredProducts">
                         <tr>
                             <td>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="zoom-container" (click)="openPhotoSwipe(product.image)">
-                                            <a>
-                                                <img [src]="api.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')"
-                                                [alt]="product.prod_name">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6" *ngIf="isSmallScreen()">
-                                        <a [routerLink]="['/shop/product/no/sidebar/', product.prod_name]">{{ product.prod_name | titlecase }}</a>
-                                        <div class="mobile-cart-content row">
-                                            <div class="col col-9">
-                                                <div class="text-truncate" [innerHTML]="product.prod_descriptions"></div>
-                                                <div><strong>Precio:</strong> {{ product.price | currency }}</div>
-                                                <div>
-                                                    <div class="qty-box">
-                                                        <div class="input-group">
-                                                            <span class="input-group-prepend">
-                                                                <button type="button" class="btn quantity-left-minus" data-type="minus"
-                                                                    (click)="decrement(product)">
-                                                                    <i class="ti-angle-left"></i>
-                                                                </button>
-                                                            </span>
-                                                            <input type="number" name="quantity" class="form-control input-number"
-                                                                [(ngModel)]="product.quantity">
-                                                            <span class="input-group-prepend">
-                                                                <button type="button" class="btn quantity-right-plus" data-type="plus"
-                                                                    (click)="increment(product)">
-                                                                    <i class="ti-angle-right"></i>
-                                                                </button>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col col-1">
-                                                <h2 class="td-color">
-                                                    <a (click)="removeItem(product)" class="icon">
-                                                        <i class="ti-close"></i>
-                                                    </a>
-                                                </h2>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="zoom-container" (click)="openPhotoSwipe(product.image)">
+                                    <a>
+                                        <img [src]="api.thumbnailsDirectory + product.image + (product?.image?.includes('.') ? '' : '.jpg')"
+                                        [alt]="product.prod_name">
+                                    </a>
                                 </div>
                             </td>
                             <td>
@@ -116,21 +142,18 @@
                         <tr>
                             <td>Sub Total:</td>
                             <td>
-                                <!-- <h2> {{ 5000 | currency}}</h2> -->
                                 <h2> {{ subTotal | currency }}</h2>
                             </td>
                         </tr>
                         <tr>
                             <td>IVA:</td>
                             <td>
-                                <!-- <h2> {{ 5000 | currency}}</h2> -->
                                 <h2> {{ iva | currency }}</h2>
                             </td>
                         </tr>
                         <tr>
                             <td>Precio Total:</td>
                             <td>
-                                <!-- <h2> {{ 5000 | currency}}</h2> -->
                                 <h2> {{ totalPrice | currency }}</h2>
                             </td>
                         </tr>
@@ -138,19 +161,19 @@
                 </table>
             </div>
         </div>
+        
+        <!-- Botones  -->
         <div class="row cart-buttons" *ngIf='desiredProduct.desiredProducts.length'>
-            <div [ngClass]="{'col-6': userType == 1, 'col-12': userType == 2}">
-                <a [routerLink]="['/home/catalog']" class="btn btn-solid">Continua tu compra</a>
+            <div [ngClass]="{'col-12 col-sm-6': userType == 1, 'col-12': userType == 2}">
+                <a [routerLink]="['/home/catalog']" class="btn btn-solid mobile-btn">Continua tu compra</a>
             </div>
-            <div class="col-6" *ngIf="userType == 1">
-                <a (click)="sendOrder()" class="btn btn-solid">enviar pedido</a>
+            <div class="col-12 col-sm-6" *ngIf="userType == 1">
+                <a (click)="sendOrder()" class="btn btn-solid mobile-btn">enviar pedido</a>
             </div>
-            <!-- <div class="col-6">
-                <a [routerLink]="['/shop/checkout']" class="btn btn-solid">Pagar</a>
-            </div> -->
         </div>
     </div>
 </section>
+
 <ng-template #alert_no_visit let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Atención</h4>
@@ -161,3 +184,4 @@
     </div>
 </ng-template>
 <!--section end-->
+
