@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   imageDirectory = 'assets/images/categories/';
   thumbnailsDirectory = 'assets/images/products/thumbnails/';
   
-  // Variable para controlar el estado del menú móvil
+ 
   menuMovilAbierto: boolean = false;
   
   currentSlide: number = 0;
@@ -81,18 +81,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Método para alternar el menú móvil
+
   toggleMenuMovil() {
     this.menuMovilAbierto = !this.menuMovilAbierto;
   }
 
-  // Método para cerrar el menú móvil
+
   cerrarMenuMovil() {
     this.menuMovilAbierto = false;
   }
 
   irCatalog(catId?: number) {
-    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    this.cerrarMenuMovil(); 
     
     if (!this.estaLogueado()) {
       this.router.navigate(['/login']);
@@ -120,7 +120,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   irALogin() {
-    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    this.cerrarMenuMovil(); 
     
     if (!this.estaLogueado()) {
       this.router.navigate(['/login']);
@@ -130,7 +130,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   navegarA(seccion: string) {
-    this.cerrarMenuMovil(); // Cerrar menú al navegar
+    this.cerrarMenuMovil();
     
     // Scroll suave a la sección
     const elemento = document.querySelector(seccion);
