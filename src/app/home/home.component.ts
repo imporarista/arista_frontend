@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentSlide: number = 0;
   carouselItems = [
     { 
-      title: 'PIJAMAs', 
+      title: 'PIJAMAS', 
       text: 'Amplia variedad de diseños',
       image: 'assets/images/PIJAMA.jpeg'
     },

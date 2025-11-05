@@ -8,7 +8,8 @@ import { Visitinterface } from '../interfaces/visitinterface';
 import { Subcategory } from '../interfaces/subcategory';
 import { Product } from '../interfaces/product';
 import { CacheService } from './cache.service';
-import { of, tap } from 'rxjs';
+import { of, tap, throwError } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -39,16 +40,17 @@ export class ApiService {
     return this.httpClient.get(this.apiUrl + 'priceRateId/' + userId);
   }
 
-  getCategories(userId: any):  Observable<Category[]>  {
+  getCategories(userId: any): Observable<Category[]> {
     return this.httpClient.get<Category[]>(this.apiUrl + 'categoryListApp/' + userId);
   }
 
-  getSubCategories(userId: any):  Observable<Subcategory[]>  {
+  getSubCategories(userId: any): Observable<Subcategory[]> {
     return this.httpClient.get<Subcategory[]>(this.apiUrl + 'subCategoryList');
   }
 
-  getProducts(selector: string, id: number, start: number, limit: number ,statusProduct: string, priceRate: number): Observable<Product[]> {
-    const data = {
+  getProducts(selector: string, id: number, start: number, limit: number, statusProduct: string, priceRate: number): Observable<Product[]> {
+    const startedAt = Date.now();
+    const payload = {
       selector,
       id,
       start,
@@ -56,23 +58,43 @@ export class ApiService {
       priceRate,
       limit
     };
-    console.log('data de busqueda', data);
-    const url = this.apiUrl + 'getProducts/' + JSON.stringify(data);
+
+    // Logs de depuración de entrada y armado de request
+    console.log('[ApiService.getProducts] params', { selector, id, start, limit, statusProduct, priceRate });
+    console.log('[ApiService.getProducts] payload', payload);
+
+    const url = this.apiUrl + 'getProducts/' + JSON.stringify(payload);
     const cacheurl = 'product-' + selector + '-' + id + '-' + start + '-' + statusProduct + '-' + priceRate;
+
     const cacheData = this.cacheService.get(cacheurl);
+    console.log('[ApiService.getProducts] cache', cacheData ? 'HIT' : 'MISS', { cacheurl });
     if (cacheData) {
+      console.log('[ApiService.getProducts] returning cached data', { count: Array.isArray(cacheData) ? cacheData.length : undefined });
       return of(cacheData);
     }
+
+    console.log('[ApiService.getProducts] GET', url);
     return this.httpClient.get<Product[]>(url.toString())
-    .pipe(
-      tap(data => {
-        this.cacheService.put(cacheurl, data)
-      })
-    );
+      .pipe(
+        tap(response => {
+          console.log('[ApiService.getProducts] response OK', {
+            count: Array.isArray(response) ? response.length : undefined,
+            sample: Array.isArray(response) && response.length ? response[0] : null
+          });
+          this.cacheService.put(cacheurl, response)
+        }),
+        catchError(error => {
+          console.error('[ApiService.getProducts] error', { url, params: { selector, id, start, limit, statusProduct, priceRate }, error });
+          return throwError(() => error);
+        }),
+        finalize(() => {
+          console.log('[ApiService.getProducts] completed in', (Date.now() - startedAt) + 'ms');
+        })
+      );
   }
 
   getImagesProduct(id: any): Observable<Array<any>> {
-    const data = {"prod_id":id}
+    const data = { "prod_id": id }
     return this.httpClient.get<Array<any>>(this.apiUrl + 'getImagesProduct/' + JSON.stringify(data));
   }
 
@@ -100,7 +122,7 @@ export class ApiService {
 
   sendOrder(order: any) {
     const dataOrder = JSON.stringify(order);
-    return this.httpClient.post(this.apiUrl + 'order', {dataOrder});
+    return this.httpClient.post(this.apiUrl + 'order', { dataOrder });
   }
 
   removeUser(userId: number, userType: number) {
@@ -110,7 +132,7 @@ export class ApiService {
 
   updateCustomerLocation(localization: any) {
     const customerLocation = JSON.stringify(localization);
-    return this.httpClient.post(this.apiUrl + 'customer_location', {customerLocation});
+    return this.httpClient.post(this.apiUrl + 'customer_location', { customerLocation });
   }
 
   loginUser(objectUserData: any) {
@@ -126,8 +148,8 @@ export class ApiService {
     return this.httpClient.get<Array<Customerinterface>>(this.apiUrl + 'get_customers_seller/' + userId);
   }
   saveVisit(visit: Visitinterface) {
-    const dataVisit =  JSON.stringify(visit);
-    return this.httpClient.post(this.apiUrl + 'visit', {dataVisit})
+    const dataVisit = JSON.stringify(visit);
+    return this.httpClient.post(this.apiUrl + 'visit', { dataVisit })
   }
 
   getSellerVisit(date: any, userId: string) {

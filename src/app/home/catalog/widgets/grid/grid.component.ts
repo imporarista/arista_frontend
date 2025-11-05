@@ -73,7 +73,7 @@ export class GridComponent implements OnInit {
         this.statusName = 'Todos'; // Manejo de caso por defecto
         break;
     }
-    console.log('this.status', this.status, 'this.statusName', this.statusName);
+    /* console.log('this.status', this.status, 'this.statusName', this.statusName); */
 
   }
 
