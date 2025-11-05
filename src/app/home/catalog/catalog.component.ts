@@ -23,6 +23,8 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   private start: number;
   private subc_id: number;
   private shouldRestoreScroll: boolean = false; // NUEVO
+  private pinnedProductIds: number[] = [];
+  private pinnedProductNames: string[] = ['04941', '04948', '04943', '04949'];
   
   public aristaLogo = 'assets/appImages/logoMenu.svg';
   public category: string;
@@ -68,6 +70,27 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.priceRateId = 1;
     this.loading = false;
     this.readFromDB = true;
+
+    // Cargar IDs fijados desde localStorage (ej: [101,202,303,404])
+    try {
+      const defaultPinned: number[] = [];
+      const pinned = localStorage.getItem('pinnedProductIds');
+      const parsed = pinned ? JSON.parse(pinned) : null;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        this.pinnedProductIds = parsed
+          .map((n: any) => Number(n))
+          .filter((n: number, idx: number, arr: number[]) => Number.isFinite(n) && arr.indexOf(n) === idx);
+      } else {
+        this.pinnedProductIds = defaultPinned;
+      }
+    } catch (e) {
+      this.pinnedProductIds = [];
+    }
+    console.log('[CatalogComponent] pinnedProductIds loaded:', this.pinnedProductIds);
+
+    // Productos fijados por NOMBRE (sin usar localStorage)
+    this.pinnedProductNames = ['04941', '04948', '04943', '04949'];
+    console.log('[CatalogComponent] pinnedProductNames loaded:', this.pinnedProductNames);
   }
 
   getParams() {
@@ -247,11 +270,15 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
         (products) => {
           this.loading = false;
           if (resetList) {
-            this.products = products;
+            this.products = this.reorderPinned(products);
+            this.debugPinned(this.products, 'after reset');
             this.finished = false;
             this.start = this.products.length;
           } else {
-            this.products = [...new Map([...this.products, ...products].map(item => [item.prod_id, item])).values()];
+            // Dedupe por prod_id normalizado a string para evitar '2839' vs 2839
+            this.products = [...new Map([...this.products, ...products].map(item => [String((item as any).prod_id), item])).values()];
+            this.products = this.reorderPinned(this.products);
+            this.debugPinned(this.products, 'after append');
             this.start = this.products.length;
             if (products.length < this.limit) {
               this.finished = true;
@@ -335,5 +362,81 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       key: 'desiredProductsIds',
       value: JSON.stringify(this.desiredProduct.desiredProductsIds)
     });
+  }
+
+  // Reordenar para poner primero los productos fijados (si están presentes en el resultado)
+  private reorderPinned(list: Product[]): Product[] {
+    if (!Array.isArray(list) || list.length === 0) return list;
+
+    // Prioridad: si hay nombres configurados, usar prod_name
+    if (this.pinnedProductNames && this.pinnedProductNames.length > 0) {
+      const norm = (s: any) => String(s ?? '').trim().toLowerCase();
+      const orderIndexByName = new Map(this.pinnedProductNames.map((name, idx) => [norm(name), idx]));
+      const pinned: Product[] = [];
+      const others: Product[] = [];
+      for (const item of list) {
+        const key = norm((item as any).prod_name);
+        if (orderIndexByName.has(key)) {
+          pinned.push(item);
+        } else {
+          others.push(item);
+        }
+      }
+      pinned.sort((a, b) => ((orderIndexByName.get(norm((a as any).prod_name)) ?? 0) - (orderIndexByName.get(norm((b as any).prod_name)) ?? 0)));
+      return pinned.concat(others);
+    }
+
+    // Si no hay nombres, usar IDs fijados
+    if (this.pinnedProductIds && this.pinnedProductIds.length > 0) {
+      const orderIndex = new Map(this.pinnedProductIds.map((id, idx) => [Number(id), idx]));
+      const pinned: Product[] = [];
+      const others: Product[] = [];
+      for (const item of list) {
+        const itemId = Number((item as any).prod_id);
+        if (Number.isFinite(itemId) && orderIndex.has(itemId)) {
+          pinned.push(item);
+        } else {
+          others.push(item);
+        }
+      }
+      pinned.sort((a, b) => ((orderIndex.get(Number((a as any).prod_id)) ?? 0) - (orderIndex.get(Number((b as any).prod_id)) ?? 0)));
+      return pinned.concat(others);
+    }
+
+    return list;
+  }
+
+  // Logs de apoyo para verificar fijados y orden
+  private debugPinned(list: Product[], context: string) {
+    try {
+      if (this.pinnedProductNames && this.pinnedProductNames.length > 0) {
+        const norm = (s: any) => String(s ?? '').trim().toLowerCase();
+        const firstNames = Array.isArray(list) ? list.slice(0, 10).map(p => (p as any).prod_name) : [];
+        const foundPinnedNames = this.pinnedProductNames.filter(name => Array.isArray(list) && list.some(p => norm((p as any).prod_name) === norm(name)));
+        const missingPinnedNames = this.pinnedProductNames.filter(name => !foundPinnedNames.map(n => norm(n)).includes(norm(name)));
+        console.log('[CatalogComponent] pinned check - ' + context, {
+          mode: 'names',
+          total: Array.isArray(list) ? list.length : 0,
+          pinnedConfigured: this.pinnedProductNames,
+          foundPinned: foundPinnedNames,
+          missingPinned: missingPinnedNames,
+          firstNames
+        });
+      } else {
+        const firstIds = Array.isArray(list) ? list.slice(0, 10).map(p => Number((p as any).prod_id)) : [];
+        const foundPinnedIds = this.pinnedProductIds.filter(id => Array.isArray(list) && list.some(p => Number((p as any).prod_id) === Number(id)));
+        const missingPinnedIds = this.pinnedProductIds.filter(id => !foundPinnedIds.includes(id));
+        console.log('[CatalogComponent] pinned check - ' + context, {
+          mode: 'ids',
+          total: Array.isArray(list) ? list.length : 0,
+          pinnedConfigured: this.pinnedProductIds,
+          foundPinned: foundPinnedIds,
+          missingPinned: missingPinnedIds,
+          firstIds
+        });
+      }
+    } catch (e) {
+      console.warn('[CatalogComponent] debugPinned error', e);
+    }
   }
 }

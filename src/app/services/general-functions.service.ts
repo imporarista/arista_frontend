@@ -1,82 +1,60 @@
 import { Injectable } from '@angular/core';
 import { constants } from '../../environments/constants';
-@Injectable({
-  providedIn: 'root'
-})
-export class GeneralFunctionsService {
 
-  constructor() { 
-  
-  }
+@Injectable({ providedIn: 'root' })
+export class GeneralFunctionsService {
+  constructor() {}
 
   public getCurrentDate() {
     return GeneralFunctionsService.formatDate(new Date());
   }
 
-  /**
-   * retorna date time en tiempo con formato de base de datos o de presentación a usuario
-   * @param format
-   */
   public getCurrentDateTime(format: any) {
     return GeneralFunctionsService.formatDateHour(new Date(), format);
   }
 
-  /**
-   * da formato de dos digitos a numeros
-   * @param number
-   */
   static formatNumberDate(number: any) {
-    if (number < 10) {
-      number = '0' + number;
-    }
+    if (number < 10) number = '0' + number;
     return number;
   }
 
-  /**
-   * retorna la fecha en formato yyyy-m-d
-   * @param date
-   */
-  static formatDate(date: any) {
-    return date.getFullYear() + '-' + GeneralFunctionsService.formatNumberDate(date.getMonth() + 1) + '-' + GeneralFunctionsService.formatNumberDate(date.getDate());
+  static formatDate(date: Date) {
+    return (
+      date.getFullYear() +
+      '-' +
+      GeneralFunctionsService.formatNumberDate(date.getMonth() + 1) +
+      '-' +
+      GeneralFunctionsService.formatNumberDate(date.getDate())
+    );
   }
 
-  /**
-   * retorna la fecha en string con el formato deseado
-   * @param date
-   * @param format
-   */
-  static formatDateHour(date: any, format: any) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-    let month = (date.getMonth() + 1);
+  static formatDateHour(date: Date, format: any) {
+    let hours: number | string = date.getHours();
+    let minutes: number | string = date.getMinutes();
+    let seconds: number | string = date.getSeconds();
+    let month: number | string = date.getMonth() + 1;
     let strTime = '';
 
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-    if (format === constants.DATE_FORMAT.USER) {
+    minutes = +minutes < 10 ? '0' + minutes : minutes;
+    seconds = +seconds < 10 ? '0' + seconds : seconds;
 
-      const ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
+    if (format === constants.DATE_FORMAT.USER) {
+      const ampm = +hours >= 12 ? 'pm' : 'am';
+      hours = (+hours % 12) || 12;
       strTime = ' ' + hours + ':' + minutes + ' ' + ampm;
     } else if (format === constants.DATE_FORMAT.DATABASE) {
-      hours = hours < 10 ? '0' + hours : hours;
+      hours = +hours < 10 ? '0' + hours : hours;
+      if (+month < 10) month = '0' + month;
       strTime = ' ' + hours + ':' + minutes + ':' + seconds;
-      if (month < 10) {
-        month = '0' + month;
-      }
     }
 
-    return date.getFullYear() + '-' + month + '-' + date.getDate() + strTime;
+    // ✅ Zero-pad del día (antes no lo hacías)
+    const day = GeneralFunctionsService.formatNumberDate(date.getDate());
+    return date.getFullYear() + '-' + month + '-' + day + strTime;
   }
 
-  /**
-   * retorna la hora de un data time
-   * @param timeString
-   */
-  public getTimeFromDateTimeString(timeString: any) {
-    const time: string[] = timeString.split(' ');
+  public getTimeFromDateTimeString(timeString: string) {
+    const time = timeString.split(' ');
     return this.convertTo12HourFormat(time[1]);
   }
 
@@ -84,25 +62,18 @@ export class GeneralFunctionsService {
     const [hours, minutes, seconds] = time.split(':');
     let hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12;
-    hour = hour ? hour : 12; // la hora '0' debe ser '12'
+    hour = hour % 12 || 12;
     const formattedHour = hour < 10 ? '0' + hour : hour.toString();
     return `${formattedHour}:${minutes}:${seconds} ${ampm}`;
   }
 
-  public getDateFromDataTimeString(timeString: any) {
-    const time: string[] = timeString.split(' ');
-    const dataDate: string[] = time[0].split('-');
+  public getDateFromDataTimeString(timeString: string) {
+    const time = timeString.split(' ');
+    const dataDate = time[0].split('-');
     return dataDate[2] + '/' + GeneralFunctionsService.getStringMonth(dataDate[1]) + '/' + dataDate[0];
   }
 
-  /**
-   * retorna la diferencia en tre dos fechas en horas, minutos y segundos
-   * @param dateIni
-   * @param dateEnd
-   * @param typeReturn
-   */
-  public calculateDifferenceBetweenTimes(dateIni: any, dateEnd: any, typeReturn: any) {
+  public calculateDifferenceBetweenTimes(dateIni: string, dateEnd: string, typeReturn: any) {
     const from = new Date(dateIni);
     const to = new Date(dateEnd);
     const diff = to.getTime() - from.getTime();
@@ -114,20 +85,22 @@ export class GeneralFunctionsService {
     }
   }
 
-  /**
-   * convierte un tiempo en horas minutos y segundos
-   * @param duration
-   */
-  public msToTime(duration: any) {
+  public msToTime(duration: number) {
     let seconds = Math.floor((duration / 1000) % 60);
     let minutes = Math.floor((duration / (1000 * 60)) % 60);
     let hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    return GeneralFunctionsService.parseHourFormatNumber(hours) + ":" + GeneralFunctionsService.parseHourFormatNumber(minutes) + ":" + GeneralFunctionsService.parseHourFormatNumber(seconds);
+    return (
+      GeneralFunctionsService.parseHourFormatNumber(hours) +
+      ':' +
+      GeneralFunctionsService.parseHourFormatNumber(minutes) +
+      ':' +
+      GeneralFunctionsService.parseHourFormatNumber(seconds)
+    );
   }
 
-  static parseHourFormatNumber(number: any) {
-    return number < 10 ? "0" + number : number;
+  static parseHourFormatNumber(number: number) {
+    return number < 10 ? '0' + number : number.toString();
   }
 
   static getStringMonth(month: any) {
@@ -135,13 +108,32 @@ export class GeneralFunctionsService {
     return months[Number(month)];
   }
 
-  getLocation() {
-    return new Promise(async (resolve, reject) => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        resolve (position.coords);
-      }, error => {
-        reject('Error getting location' + error);
-      });
-    })
+  // ✅ Versión corregida y tipada de getLocation (sin concatenar strings)
+  getLocation(options: PositionOptions = { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }): Promise<GeolocationPosition> {
+    return new Promise((resolve, reject) => {
+      if (!('geolocation' in navigator)) {
+        return reject(new Error('Geolocalización no soportada por el navegador'));
+      }
+      // En web, Geolocation solo funciona en HTTPS o http://localhost
+      if (!(location.protocol === 'https:' || location.hostname === 'localhost')) {
+        return reject(new Error('La geolocalización requiere HTTPS (o localhost)'));
+      }
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  }
+
+  // ✅ Helper para convertir el error a un mensaje legible
+  mapGeoError(err: GeolocationPositionError | any): string {
+    if (err && typeof err.code === 'number') {
+      switch (err.code) {
+        case err.PERMISSION_DENIED:
+          return 'Permiso de ubicación denegado por el usuario.';
+        case err.POSITION_UNAVAILABLE:
+          return 'Ubicación no disponible (sin señal o GPS desactivado).';
+        case err.TIMEOUT:
+          return 'Se agotó el tiempo para obtener la ubicación.';
+      }
+    }
+    return err?.message || 'No se pudo obtener la ubicación.';
   }
 }

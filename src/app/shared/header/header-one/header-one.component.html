@@ -1,5 +1,7 @@
 <header class="sticky" [ngClass]="class" [class.fixed]="stick && sticky">
   <div class="mobile-fix-option"></div>
+  
+  <!-- TOP HEADER - Solo visible en desktop -->
   <div class="top-header" *ngIf="topbar">
     <div class="container">
       <div class="row">
@@ -15,16 +17,16 @@
         <div class="col-lg-6 text-end">
           <ul class="header-dropdown">
             <li class="mobile-wishlist">
-              <a [routerLink]="['/shop/cart']"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Carrito de
-                Compras</a>
+              <a [routerLink]="['/shop/cart']">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>Carrito de Compras
+              </a>
             </li>
-            <li></li>
             <li class="onhover-dropdown mobile-account">
               <i class="fa fa-user" aria-hidden="true"></i> {{ name }} - {{ email }}
               <ul class="onhover-show-div">
                 <li>
                   <a data-lng="es" (click)="closeSession()">
-                    Cerrar sesion
+                    Cerrar sesión
                   </a>
                 </li>
               </ul>
@@ -34,6 +36,27 @@
       </div>
     </div>
   </div>
+
+  <!-- BARRA MÓVIL INFERIOR - Solo visible en móvil -->
+  <div class="mobile-user-bar d-md-none">
+    <div class="user-info-compact">
+      <i class="fa fa-user" aria-hidden="true"></i>
+      <div class="user-details">
+        <span class="user-name">{{ name }}</span>
+        <span class="user-meta">{{ email }}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-icon" [routerLink]="['/shop/cart']">
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+      </button>
+      <button class="btn-icon" (click)="closeSession()">
+        <i class="fa fa-sign-out" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- MENÚ PRINCIPAL -->
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -42,7 +65,8 @@
             <app-left-menu></app-left-menu>
             <div class="brand-logo">
               <a routerLink="/home/catalog" id="headerlogo">
-                <img [src]="themeLogo" width="130" height="40" class="img-fluid" alt="logo" (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">
+                <img [src]="themeLogo" width="130" height="40" class="img-fluid" alt="logo" 
+                     (click)="window.localStorage.removeItem('products'); window.localStorage.removeItem('start')">
               </a>
             </div>
           </div>
@@ -61,9 +85,6 @@
                   <option value="4">Agotado</option>
                   <option value="6">Outlet</option>
                 </select>
-              </div>
-              <div>
-                <!-- <app-menu></app-menu> -->
               </div>
             </div>
             <div>

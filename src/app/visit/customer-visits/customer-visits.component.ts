@@ -36,6 +36,7 @@ export class CustomerVisitsComponent implements OnInit {
 
   public visiting: boolean
   public userType: string;
+  loading: any;
 
   constructor(
     private api: ApiService,
@@ -82,13 +83,18 @@ export class CustomerVisitsComponent implements OnInit {
   /**
    * inicializa los datos de una visita y los guarda en Preferences
    */
-  startVisit() {
-    // this.presentLoading();
-    this.generalFunctions.getLocation().then(async (message: any) => {
+  async startVisit() {
+    try {
+      // Si algún día usas un loader:
+      // await this.presentLoading();
+
+      // Espera la promesa que devuelve la ubicación
+      const pos = await this.generalFunctions.getLocation();
       const localization = {
-        latitude: message.latitude,
-        longitude: message.longitude
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude
       };
+
       this.visiting = true;
       this.visit.visitSellerId = Number(localStorage.getItem('userId'));
       this.visit.visitCustomerId = this.customers.customerIdSelected;
@@ -96,13 +102,27 @@ export class CustomerVisitsComponent implements OnInit {
       this.visit.visitStartTime = this.generalFunctions.getCurrentDateTime(constants.DATE_FORMAT.DATABASE);
       this.visit.visitCoordinates = JSON.stringify(localization);
       this.visit.visitHasSale = 0;
-      // this.loading.dismiss();
+
       localStorage.setItem(constants.CUSTOMER_VISIT, JSON.stringify(this.visit));
-    }, () => {
-      // this.loading.dismiss();
-      // this.toastError();
-    });
+
+      console.log('Visita iniciada correctamente', this.visit);
+    } catch (err) {
+      // Mapea el error a un mensaje legible usando el helper del servicio
+      const msg = this.generalFunctions.mapGeoError(err);
+      this.toastError(msg);
+      console.error('Error al obtener ubicación:', err);
+    } finally {
+      // Si usas loader:
+      // this.loading?.dismiss();
+    }
   }
+
+  toastError(message?: string) {
+    // Puedes cambiar esto por un ToastController, SweetAlert, etc.
+    alert(message ?? 'No se pudo obtener la ubicación.');
+  }
+
+
 
   goVisitList() {
     this.router.navigate(['visit/customer-visits-list']);
