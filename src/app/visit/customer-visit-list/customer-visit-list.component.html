@@ -54,10 +54,13 @@
             </div>
         </div>
     </div>
-    <div class="product-buttons buttons-center" *ngIf="userType == '2'">
+    <div
+        class="product-buttons buttons-center floating-visit-btn"
+        *ngIf="userType == '2'">
         <a class="btn btn-solid" (click)="newVisit()">Visitar Cliente</a>
     </div>
 </div>
-<br>
+<!-- Espaciador para evitar solapamiento con el footer fijo -->
+<div class="footer-spacer"></div>
 <app-footer-two></app-footer-two>
 <!-- Container-fluid Ends-->
