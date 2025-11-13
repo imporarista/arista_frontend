@@ -1,0 +1,24 @@
+/* Botón flotante centrado sobre el footer fijo */
+.floating-visit-btn {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 120px; /* separación por encima del footer */
+  z-index: 1100;
+}
+
+/* Espaciador para evitar que el contenido quede oculto por el footer */
+.footer-spacer {
+  height: 140px;
+}
+
+/* Ajustes responsivos para distintos altos de viewport */
+@media (max-width: 576px) {
+  .floating-visit-btn { bottom: 130px; }
+  .footer-spacer { height: 150px; }
+}
+
+@media (min-width: 992px) {
+  .floating-visit-btn { bottom: 110px; }
+  .footer-spacer { height: 140px; }
+}
