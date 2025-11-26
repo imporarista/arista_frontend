@@ -26,7 +26,7 @@ export class ApiService {
     private httpClient: HttpClient,
     private cacheService: CacheService
   ) {
-    this.apiUrl = 'https://aristaws.kijhotechnologies.com/';
+    this.apiUrl = 'https://stage-aristaws.kijhotechnologies.com/';
     this.imageDirectory = 'https://arista.kijhotechnologies.com/uploads/images/';
     this.thumbnailsDirectory = 'https://arista.kijhotechnologies.com/uploads/images/thumbnails/';
   }
