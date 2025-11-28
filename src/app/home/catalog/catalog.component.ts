@@ -12,6 +12,8 @@ import { Category } from 'src/app/interfaces/category';
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
+
+// comentario
 export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   private categories: Category[];
   private cat_id: number;
@@ -345,3 +347,4 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 }
+
