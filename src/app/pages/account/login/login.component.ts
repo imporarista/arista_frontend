@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
 
   errorMessage: string = '';
   loading: boolean = false;
+  showPassword: boolean = false;
 
   constructor(
     private api: ApiService,
@@ -25,10 +26,13 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     if (localStorage.getItem('userId') !== null) {
       this.router.navigate(['/home/catalog']);
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   loginUser() {
