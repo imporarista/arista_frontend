@@ -28,14 +28,24 @@
                         </div>
                         <div class="form-group">
                             <label for="review">Contraseña</label>
-                            <input type="password" 
-                                   class="form-control" 
-                                   id="review" 
-                                   placeholder="Ingrese su contraseña" 
-                                   [(ngModel)]="registerCredentials.password" 
-                                   name="password" 
-                                   required
-                                   [disabled]="loading">
+                            <div class="password-input-wrapper" style="position: relative;">
+                                <input [type]="showPassword ? 'text' : 'password'" 
+                                       class="form-control" 
+                                       id="review" 
+                                       placeholder="Ingrese su contraseña" 
+                                       [(ngModel)]="registerCredentials.password" 
+                                       name="password" 
+                                       required
+                                       [disabled]="loading"
+                                       style="padding-right: 45px;">
+                                <button type="button" 
+                                        class="btn-toggle-password" 
+                                        (click)="togglePasswordVisibility()"
+                                        [disabled]="loading"
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666; padding: 5px;">
+                                    <i [class]="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="btn-centered">
                             <button type="submit" class="btn btn-solid" [disabled]="loading">

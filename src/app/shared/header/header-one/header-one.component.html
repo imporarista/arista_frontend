@@ -96,3 +96,29 @@
     </div>
   </div>
 </header>
+
+<!-- Modal de Confirmación de Cierre de Sesión (Angular puro) -->
+<div class="custom-modal-overlay" *ngIf="showLogoutModal" (click)="cancelLogout()">
+  <div class="custom-modal" (click)="$event.stopPropagation()">
+    <div class="custom-modal-header">
+      <h5 class="custom-modal-title">
+        <i class="fa fa-sign-out" aria-hidden="true"></i> Confirmar cierre de sesión
+      </h5>
+      <button type="button" class="custom-close-btn" (click)="cancelLogout()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="custom-modal-body">
+      <p class="mb-0">¿Está seguro que desea cerrar sesión?</p>
+      <small class="text-muted">Será redirigido a la página de inicio de sesión.</small>
+    </div>
+    <div class="custom-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cancelLogout()">
+        <i class="fa fa-times" aria-hidden="true"></i> Cancelar
+      </button>
+      <button type="button" class="btn btn-danger" (click)="confirmLogout()">
+        <i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</div>

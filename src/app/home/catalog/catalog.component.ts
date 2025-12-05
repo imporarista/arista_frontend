@@ -41,7 +41,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     total: 0
   };
 
- 
   private readonly CATALOG_STATE_KEY = 'catalog_scroll_state';
 
   constructor(
@@ -94,13 +93,17 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getParams() {
-   
     this.start = 0;
     this.route.queryParams.subscribe(params => {
-      this.statusProduct = params.status ? params.status : '';
+      const newStatus = params.status !== undefined ? params.status : '';
+      
+      if (newStatus !== this.statusProduct) {
+        this.clearSavedState();
+      }
+      
+      this.statusProduct = newStatus;
       this.searchProduct = params.search ? params.search : '';
       
-  
       if (this.tryRestoreState()) {
         return; 
       }
@@ -121,7 +124,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.subc_id = params['subc_id'];
       this.priceRateId = Number(localStorage.getItem('price_rate_id')) || 1;
-      
 
       if (this.tryRestoreState()) {
         return;
@@ -138,7 +140,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-
   ngAfterViewInit(): void {
     if (this.shouldRestoreScroll) {
       const savedState = this.getSavedState();
@@ -154,11 +155,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-
   ngOnDestroy(): void {
     this.saveCurrentState();
   }
-
 
   private getSavedState(): any {
     try {
@@ -169,7 +168,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return null;
     }
   }
-
 
   private saveCurrentState(): void {
     try {
@@ -197,7 +195,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-
   private tryRestoreState(): boolean {
     const savedState = this.getSavedState();
     
@@ -211,7 +208,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
-    
     const paramsMatch = 
       savedState.cat_id === this.cat_id &&
       savedState.subc_id === this.subc_id &&
@@ -223,8 +219,10 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
-    // Restaurar estado
-    this.products = savedState.products || [];
+    let restoredProducts = savedState.products || [];
+    restoredProducts = this.applyOutletFilter(restoredProducts);
+    
+    this.products = restoredProducts;
     this.start = savedState.start || 0;
     this.limit = savedState.limit || 120;
     this.finished = savedState.finished || false;
@@ -235,7 +233,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     return true;
   }
 
-
   private clearSavedState(): void {
     try {
       sessionStorage.removeItem(this.CATALOG_STATE_KEY);
@@ -244,8 +241,19 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private applyOutletFilter(products: Product[]): Product[] {
+    const isTodosView = !this.statusProduct || 
+                        this.statusProduct === '' || 
+                        this.statusProduct === 'undefined';
+    
+    if (isTodosView) {
+      return products.filter(product => product.status != 6);
+    }
+    
+    return products;
+  }
+
   loadProducts(resetList: boolean): void {
-    // Limpiar estado al resetear lista (nuevos filtros)
     if (resetList) {
       this.clearSavedState();
     }
@@ -269,6 +277,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
         (products) => {
           this.loading = false;
+          
+          let filteredProducts = this.applyOutletFilter(products);
+          
           if (resetList) {
             this.products = this.reorderPinned(products);
             this.debugPinned(this.products, 'after reset');
@@ -280,7 +291,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
             this.products = this.reorderPinned(this.products);
             this.debugPinned(this.products, 'after append');
             this.start = this.products.length;
-            if (products.length < this.limit) {
+            if (filteredProducts.length < this.limit) {
               this.finished = true;
             }
           }
@@ -294,13 +305,11 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   saveProductsLocalStorages() {
-    // Método legacy - mantener por compatibilidad
     localStorage.setItem('products', JSON.stringify(this.products));
     localStorage.setItem('start', this.start.toString());
   }
 
   sortByFilter(value) {
-    // Limpiar estado al aplicar filtros
     this.clearSavedState();
     
     this.router.navigate([], {
@@ -314,7 +323,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setPage(page: number) {
- 
     this.clearSavedState();
     
     this.router.navigate([], {

@@ -12,9 +12,9 @@ import { Router } from '@angular/router';
 export class HeaderOneComponent implements OnInit {
   public window = window;
   @Input() class: string;
-  @Input() themeLogo: string = 'assets/appImages/logoMenu.svg'; // Default Logo
-  @Input() topbar: boolean = true; // Default True
-  @Input() sticky: boolean = false; // Default false
+  @Input() themeLogo: string = 'assets/appImages/logoMenu.svg';
+  @Input() topbar: boolean = true;
+  @Input() sticky: boolean = false;
 
   public stick: boolean = false;
   public statusProduct = '';
@@ -23,8 +23,8 @@ export class HeaderOneComponent implements OnInit {
   public priceRateId: string | null = null;
   public name: string | null = null;
   public email: string | null = null;
+  public showLogoutModal: boolean = false;
   
-
   api: ApiService;
   start: number;
   productList: any[];
@@ -54,16 +54,13 @@ export class HeaderOneComponent implements OnInit {
       }
     }
 
-    // Leer datos del usuario desde localStorage para mostrarlos en el header
     this.userId = localStorage.getItem('userId');
     this.userType = localStorage.getItem('userType');
     this.priceRateId = localStorage.getItem('priceRateId');
     this.name = localStorage.getItem('userName');
     this.email = localStorage.getItem('userEmail');
-
   }
 
-  // @HostListener Decorator
   @HostListener("window:scroll", [])
   onWindowScroll() {
     let number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -105,15 +102,26 @@ export class HeaderOneComponent implements OnInit {
     localStorage.removeItem('products');
     localStorage.removeItem('start');
     this.router.navigate(['/home/catalog'], {
-
         queryParams: { status: this.statusProduct },
         queryParamsHandling: 'merge'
     });
   }
 
-  closeSession() {
+  openLogoutModal(): void {
+    this.showLogoutModal = true;
+  }
+
+  confirmLogout(): void {
+    this.showLogoutModal = false;
     localStorage.clear();
     window.location.reload();
   }
 
+  cancelLogout(): void {
+    this.showLogoutModal = false;
+  }
+
+  closeSession() {
+    this.openLogoutModal();
+  }
 }
