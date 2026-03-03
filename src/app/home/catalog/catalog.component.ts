@@ -59,7 +59,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initData() {
     this.start = 0;
-    this.limit = 120;
+    this.limit = 240;
     this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
@@ -282,6 +282,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
           
           if (resetList) {
             this.products = this.reorderPinned(products);
+            this.products = this.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after reset');
             this.finished = false;
             this.start = this.products.length;
@@ -289,6 +290,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
             // Dedupe por prod_id normalizado a string para evitar '2839' vs 2839
             this.products = [...new Map([...this.products, ...products].map(item => [String((item as any).prod_id), item])).values()];
             this.products = this.reorderPinned(this.products);
+            this.products = this.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after append');
             this.start = this.products.length;
             if (filteredProducts.length < this.limit) {
@@ -412,6 +414,27 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return list;
+  }
+
+  private sortByStatusPriority(list: Product[]): Product[] {
+    if (!Array.isArray(list)) return list;
+
+    const priorityMap = new Map<number, number>([
+      [2, 1], // Nuevo
+      [1, 2], // Destacado
+      [0, 3], // Normal (default)
+      [6, 4], // Outlet
+      [4, 5], // Agotado
+    ]);
+
+    const getStatusPriority = (product: Product) => {
+      const rawStatus = (product as any).status;
+      const status = Number(rawStatus);
+      const validStatus = Number.isFinite(status) ? status : 0;
+      return priorityMap.get(validStatus) ?? 3;
+    };
+
+    return [...list].sort((a, b) => getStatusPriority(a) - getStatusPriority(b));
   }
 
   // Logs de apoyo para verificar fijados y orden
