@@ -1,26 +1,199 @@
-h3 {
-    font-size: 24px;
-    font-weight: 400;
-    color: #777777;
-    letter-spacing: 0.03em;
-    margin-top: 30px;
-    padding-left: 20vw;
+.visit-container {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding-bottom: 160px;
 }
 
-.padding-left {
-    padding-left: inherit;
-}
-.content-center {
-    display: grid;
-    justify-content: space-around;
-}
-.full {
-    width: 80%;
-    div,form {
-        width: 60vw;
-    }
+.visit-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 1rem;
+  display: grid;
+  gap: 1.2rem;
 }
 
-.display-grid {
-    display: grid;
+.visit-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.6rem;
+  box-shadow: 0 25px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.visit-card--highlighted {
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 25px 40px rgba(59, 130, 246, 0.12);
+}
+
+.visit-card__header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.visit-card__header h2,
+.visit-card__header h3 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.visit-card__header p,
+.visit-card__header .subtext {
+  margin: 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.visit-card__header--small {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.back-chip {
+  border: none;
+  background: #eef2ff;
+  color: #1d4ed8;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.back-chip img {
+  width: 16px;
+  filter: invert(27%) sepia(55%) saturate(556%) hue-rotate(207deg) brightness(99%) contrast(90%);
+}
+
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  margin-bottom: 0.35rem;
+}
+
+.autocomplete-wrapper {
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  border-radius: 12px;
+  padding: 0.25rem 0.75rem;
+  background: #f8fafc;
+  position: relative;
+}
+
+.autocomplete-wrapper ng-autocomplete {
+  width: 100%;
+}
+
+.autocomplete-wrapper .ng-autocomplete {
+  width: 100%;
+}
+
+.autocomplete-item {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.visit-card__footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.visit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toggle-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggle-pill {
+  flex: 1;
+  border-radius: 12px;
+  padding: 0.7rem;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  background: #fff;
+  font-weight: 600;
+  color: #0f172a;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.toggle-pill.active {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
+}
+
+.visit-form__fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-field label {
+  font-weight: 600;
+  color: #334155;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.form-control {
+  border-radius: 10px;
+  padding: 0.9rem;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  background: #f8fafc;
+}
+
+.visit-form__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.visit-form__actions .btn {
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+}
+
+.autocomplete-empty {
+  color: #94a3b8;
+  padding: 0.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .visit-card {
+    padding: 1.2rem;
+  }
+
+  .visit-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .visit-form__actions {
+    justify-content: center;
+  }
+
+  .toggle-group {
+    flex-direction: column;
+  }
+
+  .visit-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .visit-card__header--small {
+    align-items: flex-start;
+  }
 }

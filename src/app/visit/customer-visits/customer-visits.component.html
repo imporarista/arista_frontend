@@ -1,70 +1,79 @@
-<!-- Container-fluid starts-->
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <img src="assets/images/icon/arrow_back.png" class="arrow_back" (click)="goBack()">
-          <span>VISITA CLIENTE</span>
+<div class="visit-container">
+  <div class="visit-page">
+    <div class="visit-card">
+      <div class="visit-card__header">
+        <button class="back-chip" type="button" (click)="goBack()">
+          <img src="assets/images/icon/arrow_back.png" alt="regresar">
+          <span>Regresar</span>
+        </button>
+        <div>
+          <h2>Visita Cliente</h2>
+          <p>Registra la atención en campo y documenta las ventas.</p>
         </div>
-        <section class="search-block">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-6 offset-lg-3">
-                <div class="ng-autocomplete">
-                  <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
-                    placeholder="Cliente" (selected)='customers.setCustomerSelected($event)'
-                    (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
-                    [notFoundTemplate]="notFoundTemplate">
-                  </ng-autocomplete>
-
-                  <ng-template #itemTemplate let-item>
-                    <a [innerHTML]="item.label"></a><br />
-                  </ng-template>
-
-                  <ng-template #notFoundTemplate let-notFound>
-                    <div [innerHTML]="notFound"></div>
-                  </ng-template>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
-      <div *ngIf="!visiting" class="product-buttons buttons-center">
-        <a class="btn btn-solid" (click)="startVisit()">Empezar visita</a>
+      <div class="visit-card__body">
+        <label class="field-label">Selecciona el cliente a visitar</label>
+        <div class="autocomplete-wrapper">
+          <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
+            placeholder="Cliente" (selected)='customers.setCustomerSelected($event)'
+            (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
+            [notFoundTemplate]="notFoundTemplate">
+          </ng-autocomplete>
+        </div>
+
+        <ng-template #itemTemplate let-item>
+          <a [innerHTML]="item.label" class="autocomplete-item"></a><br />
+        </ng-template>
+
+        <ng-template #notFoundTemplate let-notFound>
+          <div class="autocomplete-empty" [innerHTML]="notFound"></div>
+        </ng-template>
       </div>
-      <div *ngIf="visiting" class="padding-left content-center full">
-        <h3>{{visit.visitCustomerName}}</h3>
-        <form type="radio" [(ngModel)]="visit.visitHasSale">
-          <span>
-            ¿Realizó Venta?
-          </span>
-          <div class="display-grid">
-            <label>Si</label>
-            <input type="radio" name="sale" value="1" (click)="visit.visitHasSale = 1">
-          </div>
-          <div class="display-grid">
-            <label>No</label>
-            <input type="radio" name="sale" value="0" (click)="visit.visitHasSale = 0">
-          </div>
-          <div class="col-md-6" *ngIf="visit.visitHasSale == 1">
-            <label>Valor de la venta</label>
-            <input type="number" class="form-control" placeholder="Valor de la venta"
-              [(ngModel)]="visit.visitTotalSale">
-          </div>
-          <div class="col-md-6" *ngIf="visit.visitHasSale != 1">
-            <label>Motivo por el que no hubo venta</label>
-            <input type="text" class="form-control" placeholder="Motivo por el que no hubo venta"
-              [(ngModel)]="visit.visitNoSaleReason">
-          </div>
-          <div class="product-buttons buttons-center">
-            <a class="btn btn-solid" (click)="finishVisit()">Finalizar visita</a>
-          </div>
-        </form>
+      <div class="visit-card__footer" *ngIf="!visiting">
+        <button class="btn btn-primary w-100" (click)="startVisit()">Empezar visita</button>
       </div>
     </div>
+
+    <div *ngIf="visiting" class="visit-card visit-card--highlighted">
+      <div class="visit-card__header visit-card__header--small">
+        <div>
+          <h3>{{visit.visitCustomerName}}</h3>
+          <p class="subtext">
+            Inicio: {{generalFunctions.getDateFromDataTimeString(visit.visitStartTime)}} ·
+            {{generalFunctions.getTimeFromDateTimeString(visit.visitStartTime)}}
+          </p>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary" (click)="goVisitList()">Volver a la lista</button>
+      </div>
+
+      <form class="visit-form">
+        <label class="field-label">¿Realizó venta?</label>
+        <div class="toggle-group">
+          <button type="button" class="toggle-pill" [class.active]="visit.visitHasSale === 1"
+            (click)="visit.visitHasSale = 1">Sí</button>
+          <button type="button" class="toggle-pill" [class.active]="visit.visitHasSale === 0"
+            (click)="visit.visitHasSale = 0">No</button>
+        </div>
+
+        <div class="visit-form__fields">
+          <div class="form-field" *ngIf="visit.visitHasSale == 1">
+            <label>Valor de la venta</label>
+            <input type="number" class="form-control" placeholder="Valor estimado"
+              [(ngModel)]="visit.visitTotalSale">
+          </div>
+          <div class="form-field" *ngIf="visit.visitHasSale != 1">
+            <label>Motivo por el que no hubo venta</label>
+            <input type="text" class="form-control" placeholder="Motivo breve"
+              [(ngModel)]="visit.visitNoSaleReason">
+          </div>
+        </div>
+
+        <div class="visit-form__actions">
+          <button class="btn btn-success" type="button" (click)="finishVisit()">Finalizar visita</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <br>
+
   <app-footer-two></app-footer-two>
-  <!-- Container-fluid Ends-->
+</div>

@@ -1,24 +1,62 @@
-/* Botón flotante centrado sobre el footer fijo */
-.floating-visit-btn {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 120px; /* separación por encima del footer */
-  z-index: 1100;
+.visit-list-card {
+  border-radius: 15px;
+  border: none;
 }
 
-/* Espaciador para evitar que el contenido quede oculto por el footer */
+.visit-list-card .card-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  border-radius: 15px 15px 0 0;
+  padding: 1.2rem 1.5rem;
+}
+
+.visit-list-card .card-body {
+  padding: 1.5rem;
+}
+
+.visit-list-card table {
+  min-width: 100%;
+}
+
+.visit-list-card .table-responsive {
+  overflow: hidden;
+}
+
+.visit-list-card .table-responsive table {
+  margin-bottom: 0;
+}
+
+.visit-list-card .table-responsive tr:hover {
+  background-color: #f8faff;
+}
+
+.visit-actions button {
+  min-width: 170px;
+}
+
+.visit-actions button:first-child {
+  min-width: 200px;
+}
+
+.visit-actions button + button {
+  margin-left: 0.5rem;
+}
+
 .footer-spacer {
   height: 140px;
 }
 
-/* Ajustes responsivos para distintos altos de viewport */
 @media (max-width: 576px) {
-  .floating-visit-btn { bottom: 130px; }
-  .footer-spacer { height: 150px; }
-}
-
-@media (min-width: 992px) {
-  .floating-visit-btn { bottom: 110px; }
-  .footer-spacer { height: 140px; }
+  .visit-list-card .card-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .visit-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  .visit-actions button + button {
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
 }

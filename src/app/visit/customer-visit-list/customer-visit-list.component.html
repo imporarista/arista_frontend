@@ -1,66 +1,85 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <img src="assets/images/icon/arrow_back.png" class="arrow_back" (click)="goBack()">
-                    <span>LISTA DE VISITAS</span>
-                </div>
-                <div class="card-body visit-table">
-                    <div class="custom-datatable">
-                        <div class="form-group row">
-                            <div class="col-xl-3 col-md-4">
-                                <label for="datefilter">
-                                    Fecha:</label>
-                            </div>
-                            <div class="col-md-7">
-                                <input class="form-control" data-date-format="dd/mm/yyyy"
-                                    [(ngModel)]="dateList.filterDate" type="date">
-                            </div>
-                        </div>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" sortable="order_id" (sort)="onSort($event)">Cliente</th>
-                                    <th scope="col" sortable="date" (sort)="onSort($event)">Hora</th>
-                                    <th scope="col" sortable="date" (sort)="onSort($event)">Tiempo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of visits">
-                                    <td scope="row">{{item.visitCustomerName}}</td>
-                                    <td>
-                                        {{generalFunctionsService.getTimeFromDateTimeString(item.visitStartTime)}}
-                                    </td>
-                                    <td>
-                                        {{generalFunctionsService.msToTime(item.visitSpendTime)}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2">
-                                        Total
-                                    </td>
-                                    <td>
-                                        {{totalTime}}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+  <div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-11 col-md-12">
+      <div class="card visit-list-card shadow-sm">
+        <div class="card-header d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 gap-md-0 justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <img src="assets/images/icon/arrow_back.png" class="arrow_back" (click)="goBack()">
+            <div>
+              <h5 class="mb-0">Lista de visitas</h5>
+              <p class="text-muted small mb-0">Registros actuales</p>
             </div>
+          </div>
+          <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2 gap-sm-3">
+            <label class="mb-1 mb-sm-0 fw-semibold text-muted">Fecha</label>
+            <input class="form-control form-control-sm" data-date-format="dd/mm/yyyy" [(ngModel)]="dateList.filterDate" type="date">
+          </div>
         </div>
+        <div class="card-body">
+          <div class="table-responsive border rounded-3 shadow-sm px-0">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Hora</th>
+                  <th scope="col">Tiempo</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="pagedVisits.length; else emptyState">
+                <tr *ngFor="let item of pagedVisits">
+                  <td>{{item.visitCustomerName}}</td>
+                  <td>{{generalFunctionsService.getTimeFromDateTimeString(item.visitStartTime)}}</td>
+                  <td>{{generalFunctionsService.msToTime(item.visitSpendTime)}}</td>
+                </tr>
+              </tbody>
+              <ng-template #emptyState>
+                <tr>
+                  <td colspan="3" class="text-center py-5 text-muted">
+                    No hay visitas registradas para la fecha seleccionada.
+                  </td>
+                </tr>
+              </ng-template>
+              <tfoot *ngIf="visits.length">
+                <tr>
+                  <td class="fw-semibold">Total de visitas</td>
+                  <td colspan="1" class="fw-semibold text-end">Tiempo acumulado</td>
+                  <td class="fw-semibold text-end">{{totalTime}}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="d-flex flex-column flex-md-row gap-3 gap-md-0 justify-content-between align-items-center mt-3">
+            <div class="d-flex align-items-center gap-3">
+              <span class="text-muted small">Página {{currentPage}} de {{pageCount}}</span>
+              <nav aria-label="Paginación de visitas">
+                <ul class="pagination mb-0">
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="setPage(1)" type="button">Primera</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="previousPage()" type="button">Anterior</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === pageCount">
+                    <button class="page-link" (click)="nextPage()" type="button">Siguiente</button>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === pageCount">
+                    <button class="page-link" (click)="setPage(pageCount)" type="button">Última</button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div class="text-muted small">{{visits.length}} visitas encontradas</div>
+          </div>
+        </div>
+      </div>
+      <div class="visit-actions text-center" *ngIf="userType == '2'">
+        <button class="btn btn-primary btn-lg mt-4 px-5" (click)="newVisit()">Visitar Cliente</button>
+        <button class="btn btn-outline-secondary btn-lg mt-4 ms-3" (click)="goVisitCatalog()">Catálogo</button>
+      </div>
     </div>
-    <div
-        class="product-buttons buttons-center floating-visit-btn"
-        *ngIf="userType == '2'">
-        <a class="btn btn-solid" (click)="newVisit()">Visitar Cliente</a>
-    </div>
+  </div>
 </div>
-<!-- Espaciador para evitar solapamiento con el footer fijo -->
 <div class="footer-spacer"></div>
 <app-footer-two></app-footer-two>
 <!-- Container-fluid Ends-->

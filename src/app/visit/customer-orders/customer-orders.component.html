@@ -1,42 +1,40 @@
-<!-- Container-fluid starts-->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <img src="assets/images/icon/arrow_back.png" class="arrow_back"
-                        (click)="goBack()">
-                    <span>PEDIDOS CLIENTE</span>
-                </div>
-                <section class="search-block">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6 offset-lg-3">
-                                <div class="ng-autocomplete">
-                                    <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
-                                        placeholder="Cliente" (selected)='customers.setCustomerSelected($event)'
-                                        (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
-                                        [notFoundTemplate]="notFoundTemplate">
-                                    </ng-autocomplete>
-
-                                    <ng-template #itemTemplate let-item>
-                                        <a [innerHTML]="item.label"></a><br/>
-                                    </ng-template>
-
-                                    <ng-template #notFoundTemplate let-notFound>
-                                        <div [innerHTML]="notFound"></div>
-                                    </ng-template>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
+<div class="orders-container">
+  <div class="orders-page">
+    <div class="orders-card">
+      <div class="orders-card__header">
+        <div>
+          <img src="assets/images/icon/arrow_back.png" alt="volver" class="header-icon" (click)="goBack()">
         </div>
-        <div class="product-buttons buttons-center">
-            <a class="btn btn-solid" (click)="searchOrders()">Buscar órdenes</a>
+        <div>
+          <h2>Pedidos cliente</h2>
+          <p>Elige a quién atender y encuentra sus órdenes en segundos.</p>
         </div>
+      </div>
+
+      <div class="orders-card__body">
+        <label class="field-label">Cliente</label>
+        <div class="autocomplete-input">
+          <ng-autocomplete [data]="customers.customerList" [searchKeyword]="customers.keyword"
+            placeholder="Nombre del cliente" (selected)='customers.setCustomerSelected($event)'
+            (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate"
+            [notFoundTemplate]="notFoundTemplate">
+          </ng-autocomplete>
+        </div>
+
+        <ng-template #itemTemplate let-item>
+          <div class="autocomplete-suggestion" [innerHTML]="item.label"></div>
+        </ng-template>
+
+        <ng-template #notFoundTemplate let-notFound>
+          <div class="autocomplete-empty" [innerHTML]="notFound"></div>
+        </ng-template>
+      </div>
+
+      <div class="orders-card__footer">
+        <button class="btn btn-primary w-100" (click)="searchOrders()">Buscar órdenes</button>
+      </div>
     </div>
-    <br>
-    <app-footer-two></app-footer-two>
-    <!-- Container-fluid Ends-->
+  </div>
+
+  <app-footer-two></app-footer-two>
+</div>

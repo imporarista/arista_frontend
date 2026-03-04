@@ -41,7 +41,7 @@ export class CustomerVisitsComponent implements OnInit {
   constructor(
     private api: ApiService,
     public customers: CustomerService,
-    private generalFunctions: GeneralFunctionsService,
+    public generalFunctions: GeneralFunctionsService,
     private router: Router,
     private location: Location,
   ) {
@@ -149,4 +149,3 @@ export class CustomerVisitsComponent implements OnInit {
     this.location.back();
   }
 }
-
