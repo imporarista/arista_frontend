@@ -45,7 +45,7 @@
             ],
             "scripts": [
               "node_modules/isotope-layout/dist/isotope.pkgd.min.js",
-              "node_modules/photoswipe/dist/photoswipe.esm.js"
+              "node_modules/photoswipe/dist/umd/photoswipe.umd.min.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

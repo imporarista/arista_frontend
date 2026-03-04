@@ -30,6 +30,8 @@ export class CustomerVisitListComponent implements OnInit {
   ];
   public userType: string;
   visit: Visitinterface;
+  public currentPage = 1;
+  public pageSize = 5;
 
   constructor(
     private apiservice: ApiService,
@@ -46,6 +48,7 @@ export class CustomerVisitListComponent implements OnInit {
     const dateformat = date.getFullYear() + '-' + this.formatNumberDate(date.getMonth() + 1) + '-' + this.formatNumberDate(date.getDate());
     this.apiservice.getSellerVisit(dateformat, this.userId).subscribe((data) => {
       this.visits = data;
+      this.currentPage = 1;
       this.getTotalTime();
     });
   }
@@ -74,10 +77,40 @@ export class CustomerVisitListComponent implements OnInit {
   }
 
   goVisitCatalog() {
-    this.router.navigate(['visit/home/catalog']);
+    this.router.navigate(['/home/catalog']);
   }
 
   goBack() {
     this.location.back();
+  }
+
+  get pageCount(): number {
+    if (!this.visits?.length) {
+      return 1;
+    }
+    return Math.max(1, Math.ceil(this.visits.length / this.pageSize));
+  }
+
+  get pagedVisits(): Visitinterface[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.visits.slice(start, start + this.pageSize);
+  }
+
+  setPage(page: number) {
+    if (page < 1) {
+      page = 1;
+    }
+    if (page > this.pageCount) {
+      page = this.pageCount;
+    }
+    this.currentPage = page;
+  }
+
+  nextPage() {
+    this.setPage(this.currentPage + 1);
+  }
+
+  previousPage() {
+    this.setPage(this.currentPage - 1);
   }
 }

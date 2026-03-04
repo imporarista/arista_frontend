@@ -1,0 +1,101 @@
+
+.orders-container {
+  min-height: 100vh;
+  background: #f6f8fb;
+  padding-bottom: 160px;
+}
+
+.orders-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1rem 1rem;
+}
+
+.orders-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.8rem;
+  box-shadow: 0 25px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.orders-card__header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.orders-card__header h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.orders-card__header p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.header-icon {
+  width: 32px;
+  height: 32px;
+  filter: invert(28%) sepia(56%) saturate(535%) hue-rotate(205deg) brightness(103%) contrast(94%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.header-icon:hover {
+  transform: translateX(-2px);
+}
+
+.orders-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  color: #64748b;
+}
+
+.autocomplete-input {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  padding: 0.35rem 0.75rem;
+  background: #f8fafc;
+}
+
+.autocomplete-input .ng-autocomplete {
+  width: 100%;
+}
+
+.autocomplete-suggestion {
+  color: #0f172a;
+  font-weight: 500;
+  padding: 0.4rem 0;
+}
+
+.orders-card__footer {
+  display: flex;
+  justify-content: center;
+}
+
+.autocomplete-empty {
+  color: #94a3b8;
+  padding: 0.5rem 0;
+}
+
+@media (max-width: 600px) {
+  .orders-card {
+    padding: 1.2rem;
+  }
+}
