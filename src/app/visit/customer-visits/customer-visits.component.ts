@@ -10,6 +10,7 @@ import { NgIf } from '@angular/common';
 import { Location } from '@angular/common';
 import { ApiService } from 'src/app/services/api.service';
 import { FooterTwoComponent } from 'src/app/footer/footer-two/footer-two.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-customer-visits',
@@ -44,21 +45,10 @@ export class CustomerVisitsComponent implements OnInit {
     public generalFunctions: GeneralFunctionsService,
     private router: Router,
     private location: Location,
+    private toastr: ToastrService,
   ) {
     this.visiting = false;
-    this.visit = {
-      visitCoordinates: null,
-      visitCustomerId: 0,
-      visitCustomerName: null,
-      visitEndTime: null,
-      visitHasSale: 0,
-      visitId: 0,
-      visitNoSaleReason: null,
-      visitSellerId: 0,
-      visitSpendTime: 0,
-      visitStartTime: null,
-      visitTotalSale: 0
-    };
+    this.visit = this.createEmptyVisit();
     this.userType = localStorage.getItem('userType');
   }
 
@@ -67,6 +57,9 @@ export class CustomerVisitsComponent implements OnInit {
   }
 
   async loadData() {
+    this.customers.customerIdSelected = -1;
+    this.customers.customerSelected = { id: 0, label: '' };
+    this.customers.searchText = '';
     this.customers.getCustomers().then(async () => {
       const customerVisitReaded = localStorage.getItem(constants.CUSTOMER_VISIT);
 
@@ -74,6 +67,9 @@ export class CustomerVisitsComponent implements OnInit {
         this.visiting = true;
         this.visit = JSON.parse(customerVisitReaded);
       }
+      this.customers.customerIdSelected = 0;
+      this.customers.customerSelected = { id: 0, label: '' };
+      this.customers.searchText = '';
     });
   }
 
@@ -139,13 +135,37 @@ export class CustomerVisitsComponent implements OnInit {
     } else {
       this.visit.visitTotalSale = 0;
     }
-    this.api.saveVisit(this.visit).subscribe(() => {
-      localStorage.remove({ key: constants.CUSTOMER_VISIT });
-      this.router.navigate(['/visit-list']);
+    this.api.saveVisit(this.visit).subscribe({
+      next: () => {
+        localStorage.removeItem(constants.CUSTOMER_VISIT);
+        this.visit = this.createEmptyVisit();
+        this.toastr.success('Visita guardada correctamente');
+        this.router.navigate(['/visit/customer-visits-list']);
+      },
+      error: (error) => {
+        console.error('Error guardando visita:', error);
+        this.toastError('No se pudo guardar la visita');
+      }
     });
   }
 
   goBack() {
     this.location.back();
+  }
+
+  private createEmptyVisit() {
+    return {
+      visitCoordinates: null,
+      visitCustomerId: 0,
+      visitCustomerName: null,
+      visitEndTime: null,
+      visitHasSale: 0,
+      visitId: 0,
+      visitNoSaleReason: null,
+      visitSellerId: 0,
+      visitSpendTime: 0,
+      visitStartTime: null,
+      visitTotalSale: 0
+    };
   }
 }

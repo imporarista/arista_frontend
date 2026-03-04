@@ -96,6 +96,27 @@
   width: 100%;
 }
 
+:host ::ng-deep .ng-autocomplete .autocomplete-container {
+  width: 100%;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container {
+  top: calc(100% + 0.35rem);
+  bottom: auto;
+  z-index: 55;
+  width: 100%;
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.18);
+  border-radius: 12px;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container ul {
+  max-height: 220px;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container.is-visible {
+  visibility: visible;
+}
+
 .autocomplete-item {
   color: #0f172a;
   font-weight: 500;
