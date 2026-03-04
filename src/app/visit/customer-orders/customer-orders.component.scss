@@ -78,6 +78,50 @@
   width: 100%;
 }
 
+:host ::ng-deep .ng-autocomplete .autocomplete-container {
+  width: 100%;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container {
+  top: calc(100% + 0.35rem);
+  bottom: auto;
+  z-index: 55;
+  width: 100%;
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.18);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container ul {
+  max-height: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container .item {
+  list-style: none;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 0;
+  margin: 0;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container .item a,
+:host ::ng-deep .ng-autocomplete .suggestions-container .item div {
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+:host ::ng-deep .ng-autocomplete .suggestions-container.is-visible {
+  visibility: visible;
+}
+
 .orders-page :host ::ng-deep .ng-autocomplete .autocomplete-container {
   width: 100%;
 }
