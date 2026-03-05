@@ -10,8 +10,8 @@
       <a href="javascript:void(0)" (click)="FullView.openModal()">
       <!-- <a href="javascript:void(0)" (click)="openFullScreenPopup(product?.prod_name)"> -->
         <div class="img-fluid lazy-loading"
-            style="height: 200px; width: 100%; background-size: contain; background-repeat: no-repeat; background-position: center;" 
-            [ngStyle]="{'background-image': 'url(' + (ImageSrc ? ImageSrc : apiService.thumbnailsDirectory + product?.image + (product?.image?.includes('.') ? '' : '.jpg')) + ')'}">
+            style="height: 200px; width: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #f0f2f5;"
+            [ngStyle]="{'background-image': backgroundImageStyle}">
         </div>
       </a>
     </div>
@@ -52,4 +52,3 @@
         <iframe [src]="selectedProductUrl" width="100%" height="100%" style="border: none;"></iframe>
     </div>
 </div> -->
-
