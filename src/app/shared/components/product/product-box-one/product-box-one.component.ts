@@ -1,6 +1,6 @@
 import { NgIf } from '@angular/common';
 import { ApiService } from 'src/app/services/api.service';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
 import { QuickViewComponent } from "../../modal/quick-view/quick-view.component";
 import { CartModalComponent } from "../../modal/cart-modal/cart-modal.component";
 import { ProductService } from "../../../services/product.service";
@@ -16,7 +16,7 @@ import { FullViewComponent } from '../../modal/full-view/full-view.component';
   templateUrl: './product-box-one.component.html',
   styleUrls: ['./product-box-one.component.scss']
 })
-export class ProductBoxOneComponent implements OnInit {
+export class ProductBoxOneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() product: Product;
   @Input() currency: any = this.productService.Currency; // Default Currency 
@@ -36,28 +36,103 @@ export class ProductBoxOneComponent implements OnInit {
   public ngIf: number;
   public selectedProductUrl: SafeResourceUrl; // Variable para almacenar la URL del producto
   public isModalOpen: boolean = false; // Variable para controlar el estado del modal
+  public backgroundImageStyle: string = 'none';
+  private lazyObserver: IntersectionObserver | null = null;
+  private hasLoadedImage: boolean = false;
 
   constructor(
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     public apiService: ApiService,
-    public desiredProduct: DesiredProductsService
+    public desiredProduct: DesiredProductsService,
+    private elementRef: ElementRef
   ) { 
     this.userType = localStorage.getItem('userType');
   }
 
   ngOnInit(): void {
  
-  this.loader = false;
-  
-  this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
-  this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
-  this.changeVoltsColor();
-}
+    this.loader = false;
+    
+    this.desiredProduct.desiredProducts = JSON.parse(localStorage.getItem('desiredProducts') || '[]');
+    this.desiredProduct.desiredProductsIds = JSON.parse(localStorage.getItem('desiredProductsIds') || '[]');
+    this.changeVoltsColor();
+    this.resetLazyImage();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupIntersectionObserver();
+  }
+
+  ngOnDestroy(): void {
+    this.disconnectObserver();
+  }
 
   // Change Variants Image
   ChangeVariantsImage(src) {
     this.ImageSrc = src;
+    this.resetLazyImage();
+  }
+
+  private resetLazyImage(): void {
+    this.hasLoadedImage = false;
+    this.backgroundImageStyle = 'none';
+    if (this.lazyObserver) {
+      this.setupIntersectionObserver();
+    }
+  }
+
+  private setupIntersectionObserver(): void {
+    this.disconnectObserver();
+
+    if (typeof IntersectionObserver === 'undefined') {
+      this.loadImage();
+      return;
+    }
+
+    this.lazyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.loadImage();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    this.lazyObserver.observe(this.elementRef.nativeElement);
+  }
+
+  private loadImage(): void {
+    if (this.hasLoadedImage) {
+      return;
+    }
+
+    const src = this.getResolvedImageUrl();
+    if (src) {
+      this.backgroundImageStyle = `url(${src})`;
+      this.hasLoadedImage = true;
+      this.disconnectObserver();
+    }
+  }
+
+  private disconnectObserver(): void {
+    if (this.lazyObserver) {
+      this.lazyObserver.disconnect();
+      this.lazyObserver = null;
+    }
+  }
+
+  private getResolvedImageUrl(): string {
+    if (this.ImageSrc) {
+      return this.ImageSrc;
+    }
+
+    const imageName = this.product?.image;
+    if (!imageName) {
+      return '';
+    }
+
+    const extension = imageName.includes('.') ? '' : '.jpg';
+    return `${this.apiService.thumbnailsDirectory}${imageName}${extension}`;
   }
 
   addToWishlist(product: any) {

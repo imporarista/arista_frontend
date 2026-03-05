@@ -59,7 +59,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initData() {
     this.start = 0;
-    this.limit = 240;
+    this.limit = 200;
     this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
