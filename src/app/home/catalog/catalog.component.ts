@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Product } from 'src/app/interfaces/product';
+import { CatalogCacheService, CatalogCacheState } from 'src/app/services/catalog-cache.service';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
 import { Category } from 'src/app/interfaces/category';
 
@@ -25,6 +26,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   private shouldRestoreScroll: boolean = false; // NUEVO
   private pinnedProductIds: number[] = [];
   private pinnedProductNames: string[] = ['04941', '04948', '04943', '04949'];
+  private restoredScrollPosition: number = 0;
+  private readonly CACHE_KEY_PREFIX = 'catalog_state';
+  private readonly CACHE_TTL = 15 * 60 * 1000;
   
   public aristaLogo = 'assets/appImages/logoMenu.svg';
   public category: string;
@@ -41,7 +45,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     total: 0
   };
 
-  private readonly CATALOG_STATE_KEY = 'catalog_scroll_state';
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +52,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     private viewScroller: ViewportScroller,
     public productService: ProductService,
     private apiService: ApiService,
+    private catalogCacheService: CatalogCacheService,
     public desiredProduct: DesiredProductsService,
   ) {
     this.categories = [];
@@ -59,7 +63,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initData() {
     this.start = 0;
-    this.limit = 200;
+    this.limit = 150;
     this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
@@ -141,17 +145,23 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.shouldRestoreScroll) {
-      const savedState = this.getSavedState();
-      if (savedState && savedState.scrollPosition) {
-        setTimeout(() => {
-          window.scrollTo({
-            top: savedState.scrollPosition,
-            behavior: 'auto'
-          });
-          this.shouldRestoreScroll = false;
-        }, 100);
-      }
+    if (!this.shouldRestoreScroll) {
+      return;
+    }
+
+    const scrollPosition = this.restoredScrollPosition || 0;
+    const canScroll = typeof window !== 'undefined' && scrollPosition > 0;
+
+    if (canScroll) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollPosition,
+          behavior: 'auto'
+        });
+        this.shouldRestoreScroll = false;
+      }, 100);
+    } else {
+      this.shouldRestoreScroll = false;
     }
   }
 
@@ -159,23 +169,12 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.saveCurrentState();
   }
 
-  private getSavedState(): any {
-    try {
-      const saved = sessionStorage.getItem(this.CATALOG_STATE_KEY);
-      return saved ? JSON.parse(saved) : null;
-    } catch (error) {
-      console.error('Error al leer estado:', error);
-      return null;
-    }
-  }
-
   private saveCurrentState(): void {
     try {
-      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-      
-      const state = {
+      const scrollPosition = this.getScrollPosition();
+      const state: CatalogCacheState = {
         products: this.products,
-        scrollPosition: scrollPosition,
+        scrollPosition,
         start: this.start,
         limit: this.limit,
         finished: this.finished,
@@ -188,57 +187,83 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: this.grid,
         timestamp: Date.now()
       };
-      
-      sessionStorage.setItem(this.CATALOG_STATE_KEY, JSON.stringify(state));
+
+      const cacheKey = this.buildCacheKey();
+      this.catalogCacheService.saveState(cacheKey, state, this.CACHE_TTL);
     } catch (error) {
       console.error('Error al guardar estado:', error);
     }
   }
 
   private tryRestoreState(): boolean {
-    const savedState = this.getSavedState();
-    
+    const cacheKey = this.buildCacheKey();
+    const savedState = this.catalogCacheService.loadState(cacheKey);
+
     if (!savedState) {
+      this.restoredScrollPosition = 0;
       return false;
     }
 
-    const fifteenMinutes = 15 * 60 * 1000;
-    if (Date.now() - savedState.timestamp > fifteenMinutes) {
-      this.clearSavedState();
-      return false;
-    }
-
-    const paramsMatch = 
+    const paramsMatch =
       savedState.cat_id === this.cat_id &&
       savedState.subc_id === this.subc_id &&
       savedState.statusProduct === this.statusProduct &&
-      savedState.searchProduct === this.searchProduct;
+      savedState.searchProduct === this.searchProduct &&
+      savedState.priceRateId === this.priceRateId;
 
     if (!paramsMatch) {
-      this.clearSavedState();
+      this.catalogCacheService.clearState(cacheKey);
+      this.restoredScrollPosition = 0;
       return false;
     }
 
-    let restoredProducts = savedState.products || [];
-    restoredProducts = this.applyOutletFilter(restoredProducts);
-    
+    const restoredProducts = this.applyOutletFilter(savedState.products || []);
+
     this.products = restoredProducts;
     this.start = savedState.start || 0;
-    this.limit = savedState.limit || 120;
+    this.limit = savedState.limit || this.limit;
     this.finished = savedState.finished || false;
-    this.layoutView = savedState.layoutView || 'grid-view';
-    this.grid = savedState.grid || 'col-xl-3 col-md-6';
+    this.layoutView = savedState.layoutView || this.layoutView;
+    this.grid = savedState.grid || this.grid;
     this.shouldRestoreScroll = true;
+    this.restoredScrollPosition = savedState.scrollPosition || 0;
 
     return true;
   }
 
   private clearSavedState(): void {
     try {
-      sessionStorage.removeItem(this.CATALOG_STATE_KEY);
+      const cacheKey = this.buildCacheKey();
+      this.catalogCacheService.clearState(cacheKey);
+      this.restoredScrollPosition = 0;
+      this.shouldRestoreScroll = false;
     } catch (error) {
       console.error('Error al limpiar estado:', error);
     }
+  }
+
+  private buildCacheKey(): string {
+    const catPart = this.cat_id ?? 'all';
+    const subPart = this.subc_id ?? 'none';
+    const statusPart = this.normalizeCacheToken(this.statusProduct, 'all');
+    const searchPart = this.normalizeCacheToken(this.searchProduct, 'none');
+    const priceRatePart = this.priceRateId ?? 0;
+    return `${this.CACHE_KEY_PREFIX}-${catPart}-${subPart}-${statusPart}-${searchPart}-${priceRatePart}`;
+  }
+
+  private normalizeCacheToken(value: string, fallback: string): string {
+    if (!value || value === 'undefined') {
+      return fallback;
+    }
+    return value;
+  }
+
+  private getScrollPosition(): number {
+    if (typeof window === 'undefined') {
+      return 0;
+    }
+    const doc = typeof document !== 'undefined' ? document.documentElement : null;
+    return window.pageYOffset || (doc && doc.scrollTop) || 0;
   }
 
   private applyOutletFilter(products: Product[]): Product[] {
@@ -297,6 +322,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
               this.finished = true;
             }
           }
+          this.saveCurrentState();
         },
         (error) => {
           console.error('Error al cargar productos:', error);

@@ -20,6 +20,7 @@ export class ApiService {
   private apiUrl: string;
   public imageDirectory: string;
   public thumbnailsDirectory: string;
+  private readonly productCacheTtl = 5 * 60 * 1000;
 
   nameSelector = 'Todos';
 
@@ -81,7 +82,7 @@ export class ApiService {
             count: Array.isArray(response) ? response.length : undefined,
             sample: Array.isArray(response) && response.length ? response[0] : null
           });
-          this.cacheService.put(cacheurl, response)
+          this.cacheService.put(cacheurl, response, this.productCacheTtl)
         }),
         catchError(error => {
           console.error('[ApiService.getProducts] error', { url, params: { selector, id, start, limit, statusProduct, priceRate }, error });
