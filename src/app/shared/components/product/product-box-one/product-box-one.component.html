@@ -1,6 +1,7 @@
 <div *ngIf="!loader">
   <div class="img-wrapper">
     <div class="lable-block">
+      <span class="lable4 foco-label" *ngIf="product?.status == 7">Foco</span>
       <span class="lable4 orange" *ngIf="product?.status == 1">Destacado</span>
       <span class="lable3" *ngIf="product?.status == 2">Nuevo</span>
       <span class="lable4 red" *ngIf="product?.status == 4">Agotado</span>
