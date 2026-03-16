@@ -57,6 +57,9 @@ export class GridComponent implements OnInit {
   // Nueva función para actualizar el status
   private updateStatus(): void {
     switch(this.status) {
+      case '7':
+        this.statusName = 'Foco';
+        break;
       case '1':
         this.statusName = 'Destacado';
         break;

@@ -217,7 +217,11 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
-    const restoredProducts = this.applyOutletFilter(savedState.products || []);
+    const restoredProducts = this.sortByStatusPriority(
+      this.reorderPinned(
+        this.applyOutletFilter(savedState.products || [])
+      )
+    );
 
     this.products = restoredProducts;
     this.start = savedState.start || 0;
@@ -303,25 +307,68 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
         (products) => {
           this.loading = false;
           
-          let filteredProducts = this.applyOutletFilter(products);
+          const filteredProducts = this.applyOutletFilter(products);
+          const receivedCount = Array.isArray(products) ? products.length : 0;
+          const focoReceived = Array.isArray(products)
+            ? products.filter(product => Number((product as any).status) === 7)
+            : [];
+          const focoFiltered = Array.isArray(filteredProducts)
+            ? filteredProducts.filter(product => Number((product as any).status) === 7)
+            : [];
+
+          console.log('[CatalogComponent] loadProducts response', {
+            selector,
+            id,
+            resetList,
+            startRequested: this.start,
+            limit: this.limit,
+            statusProduct: this.statusProduct,
+            receivedCount,
+            filteredCount: filteredProducts.length,
+            focoReceivedCount: focoReceived.length,
+            focoFilteredCount: focoFiltered.length,
+            focoReceivedIds: focoReceived.slice(0, 10).map(product => ({
+              prod_id: (product as any).prod_id,
+              prod_name: (product as any).prod_name,
+              status: (product as any).status
+            }))
+          });
           
           if (resetList) {
-            this.products = this.reorderPinned(products);
+            this.products = this.reorderPinned(filteredProducts);
             this.products = this.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after reset');
-            this.finished = false;
-            this.start = this.products.length;
+            this.finished = receivedCount < this.limit;
+            this.start = receivedCount;
           } else {
             // Dedupe por prod_id normalizado a string para evitar '2839' vs 2839
-            this.products = [...new Map([...this.products, ...products].map(item => [String((item as any).prod_id), item])).values()];
+            this.products = [...new Map([...this.products, ...filteredProducts].map(item => [String((item as any).prod_id), item])).values()];
             this.products = this.reorderPinned(this.products);
             this.products = this.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after append');
-            this.start = this.products.length;
-            if (filteredProducts.length < this.limit) {
-              this.finished = true;
-            }
+            this.start += receivedCount;
+            this.finished = receivedCount < this.limit;
           }
+
+          const focoVisible = this.products.filter(product => Number((product as any).status) === 7);
+          console.log('[CatalogComponent] loadProducts final list', {
+            resetList,
+            totalVisible: this.products.length,
+            nextStart: this.start,
+            finished: this.finished,
+            focoVisibleCount: focoVisible.length,
+            firstTenVisible: this.products.slice(0, 10).map(product => ({
+              prod_id: (product as any).prod_id,
+              prod_name: (product as any).prod_name,
+              status: (product as any).status
+            })),
+            focoVisibleIds: focoVisible.slice(0, 10).map(product => ({
+              prod_id: (product as any).prod_id,
+              prod_name: (product as any).prod_name,
+              status: (product as any).status
+            }))
+          });
+
           this.saveCurrentState();
         },
         (error) => {
@@ -446,21 +493,61 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!Array.isArray(list)) return list;
 
     const priorityMap = new Map<number, number>([
-      [2, 1], // Nuevo
-      [1, 2], // Destacado
-      [0, 3], // Normal (default)
-      [6, 4], // Outlet
-      [4, 5], // Agotado
+      [7, 1], // Foco
+      [2, 2], // Nuevo
+      [1, 3], // Destacado
+      [0, 4], // Normal (default)
+      [6, 5], // Outlet
+      [4, 6], // Agotado
     ]);
 
     const getStatusPriority = (product: Product) => {
       const rawStatus = (product as any).status;
       const status = Number(rawStatus);
       const validStatus = Number.isFinite(status) ? status : 0;
-      return priorityMap.get(validStatus) ?? 3;
+      return priorityMap.get(validStatus) ?? 99;
     };
 
-    return [...list].sort((a, b) => getStatusPriority(a) - getStatusPriority(b));
+    const sortedList = [...list]
+      .map((product, index) => ({ product, index }))
+      .sort((a, b) => {
+        const priorityDiff = getStatusPriority(a.product) - getStatusPriority(b.product);
+        if (priorityDiff !== 0) {
+          return priorityDiff;
+        }
+
+        const statusA = Number((a.product as any).status);
+        const statusB = Number((b.product as any).status);
+        const isFocoA = statusA === 7;
+        const isFocoB = statusB === 7;
+        if (isFocoA !== isFocoB) {
+          return isFocoA ? -1 : 1;
+        }
+
+        return a.index - b.index;
+      })
+      .map(item => item.product);
+
+    console.log('[CatalogComponent] sortByStatusPriority', {
+      total: sortedList.length,
+      firstTen: sortedList.slice(0, 10).map(product => ({
+        prod_id: (product as any).prod_id,
+        prod_name: (product as any).prod_name,
+        status: (product as any).status,
+        priority: getStatusPriority(product)
+      })),
+      focoPositions: sortedList
+        .map((product, index) => ({
+          index,
+          prod_id: (product as any).prod_id,
+          prod_name: (product as any).prod_name,
+          status: (product as any).status
+        }))
+        .filter(item => Number(item.status) === 7)
+        .slice(0, 10)
+    });
+
+    return sortedList;
   }
 
   // Logs de apoyo para verificar fijados y orden
