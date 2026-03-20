@@ -16,6 +16,14 @@ const state = {
   providedIn: 'root'
 })
 export class ProductService {
+  private readonly statusPriorityMap = new Map<number, number>([
+    [7, 1], // Foco
+    [2, 2], // Destacado
+    [1, 3], // Nuevo
+    [3, 4], // Normal
+    [4, 5], // Outlet
+    [5, 6], // Agotado
+  ]);
 
   public Currency = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
   public OpenCart: boolean = false;
@@ -40,6 +48,30 @@ export class ProductService {
   // Get Products
   public get getProducts(): Observable<Product[]> {
     return this.products;
+  }
+
+  public sortByStatusPriority<T>(products: T[]): T[] {
+    if (!Array.isArray(products)) {
+      return products;
+    }
+
+    const getPriority = (product: T): number => {
+      const status = Number((product as { status?: number }).status);
+      const normalizedStatus = Number.isFinite(status) ? status : 0;
+      return this.statusPriorityMap.get(normalizedStatus) ?? 99;
+    };
+
+    return [...products]
+      .map((product, index) => ({ product, index }))
+      .sort((a, b) => {
+        const priorityDiff = getPriority(a.product) - getPriority(b.product);
+        if (priorityDiff !== 0) {
+          return priorityDiff;
+        }
+
+        return a.index - b.index;
+      })
+      .map(item => item.product);
   }
 
   // Get Products By Slug

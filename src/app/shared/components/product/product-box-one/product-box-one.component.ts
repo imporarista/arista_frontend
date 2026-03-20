@@ -156,4 +156,9 @@ export class ProductBoxOneComponent implements OnInit, AfterViewInit, OnDestroy 
     this.selectedProductUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Sanitiza la URL
     this.isModalOpen = true; // Abre el modal
   }
+
+  hasStatus(expectedStatus: number): boolean {
+    const status = Number(this.product?.status);
+    return Number.isFinite(status) && status === expectedStatus;
+  }
 }

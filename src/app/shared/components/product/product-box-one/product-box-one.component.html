@@ -1,11 +1,11 @@
 <div *ngIf="!loader">
   <div class="img-wrapper">
     <div class="lable-block">
-      <span class="lable4 foco-label" *ngIf="product?.status == 7">Foco</span>
-      <span class="lable4 orange" *ngIf="product?.status == 1">Destacado</span>
-      <span class="lable3" *ngIf="product?.status == 2">Nuevo</span>
-      <span class="lable4 red" *ngIf="product?.status == 4">Agotado</span>
-      <span class="lable4 green" *ngIf="product?.status == 6">Outlet</span>
+      <span class="lable4 foco-label" *ngIf="hasStatus(7)">Foco</span>
+      <span class="lable4 orange" *ngIf="hasStatus(2)">Destacado</span>
+      <span class="lable3" *ngIf="hasStatus(1)">Nuevo</span>
+      <span class="lable4 green" *ngIf="hasStatus(4)">Outlet</span>
+      <span class="lable4 red" *ngIf="hasStatus(5)">Agotado</span>
     </div>
     <div class="front">
       <a href="javascript:void(0)" (click)="FullView.openModal()">

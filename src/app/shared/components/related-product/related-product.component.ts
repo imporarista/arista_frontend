@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Product } from 'src/app/interfaces/product';
 import { ApiService } from 'src/app/services/api.service';
+import { ProductService } from 'src/app/shared/services/product.service';
 
 @Component({
   selector: 'app-related-product',
@@ -14,7 +15,10 @@ export class RelatedProductComponent implements OnInit {
   public products: Product[];
   private priceRateId: number;
 
-  constructor(public apiService: ApiService) { 
+  constructor(
+    public apiService: ApiService,
+    public productService: ProductService
+  ) { 
     this.products = [];
     this.priceRateId = 0;
   }
@@ -22,7 +26,7 @@ export class RelatedProductComponent implements OnInit {
   ngOnInit(): void {
     this.priceRateId = Number(localStorage.getItem('price_rate_id')) | 1;
     this.apiService.getProducts('category', this.type, 0, 5000,'', this.priceRateId).subscribe(response => {
-      this.products = response;
+      this.products = this.productService.sortByStatusPriority(response);
     });
   }
 
