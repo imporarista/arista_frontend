@@ -63,7 +63,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initData() {
     this.start = 0;
-    this.limit = 150;
+    this.limit = 250;
     this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
@@ -217,7 +217,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
-    const restoredProducts = this.sortByStatusPriority(
+    const restoredProducts = this.productService.sortByStatusPriority(
       this.reorderPinned(
         this.applyOutletFilter(savedState.products || [])
       )
@@ -276,7 +276,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.statusProduct === 'undefined';
     
     if (isTodosView) {
-      return products.filter(product => product.status != 6);
+      return products.filter(product => product.status != 4);
     }
     
     return products;
@@ -336,7 +336,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
           
           if (resetList) {
             this.products = this.reorderPinned(filteredProducts);
-            this.products = this.sortByStatusPriority(this.products);
+            this.products = this.productService.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after reset');
             this.finished = receivedCount < this.limit;
             this.start = receivedCount;
@@ -344,7 +344,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
             // Dedupe por prod_id normalizado a string para evitar '2839' vs 2839
             this.products = [...new Map([...this.products, ...filteredProducts].map(item => [String((item as any).prod_id), item])).values()];
             this.products = this.reorderPinned(this.products);
-            this.products = this.sortByStatusPriority(this.products);
+            this.products = this.productService.sortByStatusPriority(this.products);
             this.debugPinned(this.products, 'after append');
             this.start += receivedCount;
             this.finished = receivedCount < this.limit;
@@ -487,67 +487,6 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return list;
-  }
-
-  private sortByStatusPriority(list: Product[]): Product[] {
-    if (!Array.isArray(list)) return list;
-
-    const priorityMap = new Map<number, number>([
-      [7, 1], // Foco
-      [2, 2], // Nuevo
-      [1, 3], // Destacado
-      [0, 4], // Normal (default)
-      [6, 5], // Outlet
-      [4, 6], // Agotado
-    ]);
-
-    const getStatusPriority = (product: Product) => {
-      const rawStatus = (product as any).status;
-      const status = Number(rawStatus);
-      const validStatus = Number.isFinite(status) ? status : 0;
-      return priorityMap.get(validStatus) ?? 99;
-    };
-
-    const sortedList = [...list]
-      .map((product, index) => ({ product, index }))
-      .sort((a, b) => {
-        const priorityDiff = getStatusPriority(a.product) - getStatusPriority(b.product);
-        if (priorityDiff !== 0) {
-          return priorityDiff;
-        }
-
-        const statusA = Number((a.product as any).status);
-        const statusB = Number((b.product as any).status);
-        const isFocoA = statusA === 7;
-        const isFocoB = statusB === 7;
-        if (isFocoA !== isFocoB) {
-          return isFocoA ? -1 : 1;
-        }
-
-        return a.index - b.index;
-      })
-      .map(item => item.product);
-
-    console.log('[CatalogComponent] sortByStatusPriority', {
-      total: sortedList.length,
-      firstTen: sortedList.slice(0, 10).map(product => ({
-        prod_id: (product as any).prod_id,
-        prod_name: (product as any).prod_name,
-        status: (product as any).status,
-        priority: getStatusPriority(product)
-      })),
-      focoPositions: sortedList
-        .map((product, index) => ({
-          index,
-          prod_id: (product as any).prod_id,
-          prod_name: (product as any).prod_name,
-          status: (product as any).status
-        }))
-        .filter(item => Number(item.status) === 7)
-        .slice(0, 10)
-    });
-
-    return sortedList;
   }
 
   // Logs de apoyo para verificar fijados y orden

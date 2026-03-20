@@ -60,17 +60,20 @@ export class GridComponent implements OnInit {
       case '7':
         this.statusName = 'Foco';
         break;
-      case '1':
+      case '2':
         this.statusName = 'Destacado';
         break;
-      case '2':
+      case '1':
         this.statusName = 'Nuevo';
         break;
-      case '4':
-        this.statusName = 'Agotado';
+      case '3':
+        this.statusName = 'Normal';
         break;
-      case '6':
+      case '4':
         this.statusName = 'Outlet';
+        break;
+      case '5':
+        this.statusName = 'Agotado';
         break;
       default:
         this.statusName = 'Todos'; // Manejo de caso por defecto
