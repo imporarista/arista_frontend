@@ -24,6 +24,18 @@ export class HeaderOneComponent implements OnInit {
   public name: string | null = null;
   public email: string | null = null;
   public showLogoutModal: boolean = false;
+  public statusSearchTerm: string = '';
+  public statusDropdownOpen: boolean = false;
+  public readonly statusOptions = [
+    { value: '', label: 'Todos' },
+    { value: '7', label: 'Foco' },
+    { value: '1', label: 'Destacado' },
+    { value: '2', label: 'Nuevo' },
+    { value: '3', label: 'Normal' },
+    { value: '6', label: 'Outlet' },
+    { value: '4', label: 'Agotado' },
+    { value: '5', label: 'Inactivo' }
+  ];
   
   api: ApiService;
   start: number;
@@ -71,6 +83,11 @@ export class HeaderOneComponent implements OnInit {
     }
   }
 
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.closeStatusDropdown();
+  }
+
   URL_add_parameter(url, param, value) {
     var hash = {};
     var parser = document.createElement('a');
@@ -105,6 +122,49 @@ export class HeaderOneComponent implements OnInit {
         queryParams: { status: this.statusProduct },
         queryParamsHandling: 'merge'
     });
+  }
+
+  get filteredStatusOptions() {
+    const normalizedSearch = this.statusSearchTerm.trim().toLowerCase();
+    if (!normalizedSearch) {
+      return this.statusOptions;
+    }
+
+    return this.statusOptions.filter(option =>
+      option.label.toLowerCase().includes(normalizedSearch)
+    );
+  }
+
+  get selectedStatusLabel(): string {
+    const selectedOption = this.statusOptions.find(option => option.value === this.statusProduct);
+    return selectedOption ? selectedOption.label : 'Todos';
+  }
+
+  toggleStatusDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.statusDropdownOpen = !this.statusDropdownOpen;
+    if (this.statusDropdownOpen) {
+      this.statusSearchTerm = '';
+    }
+  }
+
+  closeStatusDropdown(): void {
+    this.statusDropdownOpen = false;
+    this.statusSearchTerm = '';
+  }
+
+  onStatusSearchClick(event: MouseEvent): void {
+    event.stopPropagation();
+  }
+
+  selectStatus(value: string, event?: MouseEvent): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    this.statusProduct = value;
+    this.closeStatusDropdown();
+    this.filterStatus();
   }
 
   openLogoutModal(): void {

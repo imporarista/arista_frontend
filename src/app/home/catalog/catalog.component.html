@@ -19,7 +19,7 @@
                                     </app-grid>
                                     <div class="product-wrapper-grid" [ngClass]="layoutView">
                                         <div class="row">
-                                            <div class="col-grid-box" [ngClass]="grid" *ngFor="let product of products">
+                                            <div class="col-grid-box" [ngClass]="grid" *ngFor="let product of products; trackBy: trackByProductId">
                                                 <div class="product-box">
                                                     <app-product-box-one [product]="product"
                                                         [currency]="productService?.Currency" [thumbnail]="false"
@@ -30,9 +30,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Infinite Scroll -->
                                 <div infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="5000"
-                                    (scrolled)="loadProducts(false)" *ngIf="products.length">
+                                    (scrolled)="loadProducts(false)" *ngIf="products.length && !finished">
                                 </div>
                                 <div class="product-infinitescroll">
                                     <div class="theme-paggination-block">

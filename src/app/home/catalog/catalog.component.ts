@@ -7,6 +7,8 @@ import { Product } from 'src/app/interfaces/product';
 import { CatalogCacheService, CatalogCacheState } from 'src/app/services/catalog-cache.service';
 import { DesiredProductsService } from 'src/app/services/desired-products.service';
 import { Category } from 'src/app/interfaces/category';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
+import { distinctUntilChanged, map, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-catalog',
@@ -14,6 +16,9 @@ import { Category } from 'src/app/interfaces/category';
   styleUrl: './catalog.component.scss'
 })
 export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly destroy$ = new Subject<void>();
+  private readonly VISIBLE_BATCH_SIZE = 150;
+  private readonly STATUS_SEQUENCE_ALL = [7, 1, 2, 3, 4, 5];
   private categories: Category[];
   private cat_id: number;
   private limit: number;
@@ -26,6 +31,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
   private shouldRestoreScroll: boolean = false; // NUEVO
   private pinnedProductIds: number[] = [];
   private pinnedProductNames: string[] = ['04941', '04948', '04943', '04949'];
+  private statusLoadSequence: number[] = [];
+  private currentStatusSequenceIndex: number = 0;
+  private statusStartByValue: Record<number, number> = {};
   private restoredScrollPosition: number = 0;
   private readonly CACHE_KEY_PREFIX = 'catalog_state';
   private readonly CACHE_TTL = 15 * 60 * 1000;
@@ -63,7 +71,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initData() {
     this.start = 0;
-    this.limit = 250;
+    this.limit = this.VISIBLE_BATCH_SIZE;
     this.finished = false;
     this.priceRateId = 0;
     this.statusProduct = '';
@@ -72,6 +80,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subc_id = undefined;
     this.priceRateId = 1;
     this.loading = false;
+    this.statusLoadSequence = [];
+    this.currentStatusSequenceIndex = 0;
+    this.statusStartByValue = {};
     this.readFromDB = true;
 
     // Cargar IDs fijados desde localStorage (ej: [101,202,303,404])
@@ -98,49 +109,48 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getParams() {
     this.start = 0;
-    this.route.queryParams.subscribe(params => {
-      const newStatus = params.status !== undefined ? params.status : '';
-      
-      if (newStatus !== this.statusProduct) {
-        this.clearSavedState();
-      }
-      
-      this.statusProduct = newStatus;
-      this.searchProduct = params.search ? params.search : '';
-      
-      if (this.tryRestoreState()) {
-        return; 
-      }
+    combineLatest([this.route.params, this.route.queryParams]).pipe(
+      map(([params, queryParams]) => ({
+        cat_id: params['cat_id'] !== undefined ? Number(params['cat_id']) : undefined,
+        subc_id: params['subc_id'] !== undefined ? Number(params['subc_id']) : undefined,
+        statusProduct: queryParams.status !== undefined ? queryParams.status : '',
+        searchProduct: queryParams.search ? queryParams.search : '',
+        priceRateId: Number(localStorage.getItem('price_rate_id')) || 1
+      })),
+      distinctUntilChanged((previous, current) =>
+        previous.cat_id === current.cat_id &&
+        previous.subc_id === current.subc_id &&
+        previous.statusProduct === current.statusProduct &&
+        previous.searchProduct === current.searchProduct &&
+        previous.priceRateId === current.priceRateId
+      ),
+      takeUntil(this.destroy$)
+    ).subscribe(routeState => {
+      this.cat_id = routeState.cat_id;
+      this.subc_id = routeState.subc_id;
+      this.statusProduct = routeState.statusProduct;
+      this.searchProduct = routeState.searchProduct;
+      this.priceRateId = routeState.priceRateId;
 
-      this.start = 0;
-      this.loadProducts(true);
-    });
-
-    this.route.params.subscribe(params => {
-      this.cat_id = params['cat_id'];
-      
-      if (this.cat_id) {
-        const selectedCategory = this.categories.find(category => category.cat_id === this.cat_id);
-        this.category = selectedCategory ? selectedCategory.cat_name : 'Todos';
-      } else {
-        this.category = 'Todos';
-      }
-
-      this.subc_id = params['subc_id'];
-      this.priceRateId = Number(localStorage.getItem('price_rate_id')) || 1;
+      this.updateCategoryName();
 
       if (this.tryRestoreState()) {
         return;
       }
 
+      this.products = [];
       this.start = 0;
+      this.finished = false;
       this.loadProducts(true);
     });
   }
 
   ngOnInit(): void {
-    this.apiService.getCategories(localStorage.getItem('user_id')).subscribe((categories) => {
+    this.apiService.getCategories(localStorage.getItem('user_id')).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((categories) => {
       this.categories = categories;
+      this.updateCategoryName();
     });
   }
 
@@ -167,6 +177,18 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.saveCurrentState();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private updateCategoryName(): void {
+    if (!this.cat_id) {
+      this.category = 'Todos';
+      return;
+    }
+
+    const selectedCategory = this.categories.find(category => category.cat_id === this.cat_id);
+    this.category = selectedCategory ? selectedCategory.cat_name : 'Todos';
   }
 
   private saveCurrentState(): void {
@@ -217,6 +239,12 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
+    if (!savedState.finished) {
+      this.catalogCacheService.clearState(cacheKey);
+      this.restoredScrollPosition = 0;
+      return false;
+    }
+
     const restoredProducts = this.productService.sortByStatusPriority(
       this.reorderPinned(
         this.applyOutletFilter(savedState.products || [])
@@ -226,7 +254,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.products = restoredProducts;
     this.start = savedState.start || 0;
     this.limit = savedState.limit || this.limit;
-    this.finished = savedState.finished || false;
+    this.finished = true;
     this.layoutView = savedState.layoutView || this.layoutView;
     this.grid = savedState.grid || this.grid;
     this.shouldRestoreScroll = true;
@@ -276,92 +304,51 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.statusProduct === 'undefined';
     
     if (isTodosView) {
-      return products.filter(product => product.status != 4);
+      return products.filter(product => product.status != 6);
     }
     
     return products;
   }
 
   loadProducts(resetList: boolean): void {
+    if (!resetList) {
+      if (this.loading || this.finished) {
+        return;
+      }
+    }
+
     if (resetList) {
       this.clearSavedState();
+      this.initializeStatusLoadingState();
     }
 
     if (!this.loading && this.readFromDB) {
       this.loading = true;
-      let selector = 'all';
-      let id = null;
-      
-      if (typeof (this.subc_id) !== 'undefined') {
-        selector = 'subCategory';
-        id = this.subc_id;
-      } else if (typeof (this.cat_id) !== 'undefined') {
-        selector = 'category';
-        id = this.cat_id;
-      } else if (this.searchProduct !== '') {
-        selector = 'search';
-        id = this.searchProduct;
-      }
-      
-      this.apiService.getProducts(selector, id, this.start, this.limit, this.statusProduct, this.priceRateId).subscribe(
-        (products) => {
+      this.fetchNextVisibleBatch(this.VISIBLE_BATCH_SIZE).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(
+        ({ products: nextBatch, nextSequenceIndex, finished }) => {
           this.loading = false;
-          
-          const filteredProducts = this.applyOutletFilter(products);
-          const receivedCount = Array.isArray(products) ? products.length : 0;
-          const focoReceived = Array.isArray(products)
-            ? products.filter(product => Number((product as any).status) === 7)
-            : [];
-          const focoFiltered = Array.isArray(filteredProducts)
-            ? filteredProducts.filter(product => Number((product as any).status) === 7)
-            : [];
+
+          this.currentStatusSequenceIndex = nextSequenceIndex;
+          const visibleProducts = resetList
+            ? nextBatch
+            : this.mergeProductsById(this.products, nextBatch);
+          this.products = this.productService.sortByStatusPriority(
+            this.reorderPinned(visibleProducts)
+          );
+          this.start = this.products.length;
+          this.finished = finished;
+          const focoVisible = this.products.filter(product => Number((product as any).status) === 7);
 
           console.log('[CatalogComponent] loadProducts response', {
-            selector,
-            id,
             resetList,
-            startRequested: this.start,
-            limit: this.limit,
             statusProduct: this.statusProduct,
-            receivedCount,
-            filteredCount: filteredProducts.length,
-            focoReceivedCount: focoReceived.length,
-            focoFilteredCount: focoFiltered.length,
-            focoReceivedIds: focoReceived.slice(0, 10).map(product => ({
-              prod_id: (product as any).prod_id,
-              prod_name: (product as any).prod_name,
-              status: (product as any).status
-            }))
-          });
-          
-          if (resetList) {
-            this.products = this.reorderPinned(filteredProducts);
-            this.products = this.productService.sortByStatusPriority(this.products);
-            this.debugPinned(this.products, 'after reset');
-            this.finished = receivedCount < this.limit;
-            this.start = receivedCount;
-          } else {
-            // Dedupe por prod_id normalizado a string para evitar '2839' vs 2839
-            this.products = [...new Map([...this.products, ...filteredProducts].map(item => [String((item as any).prod_id), item])).values()];
-            this.products = this.reorderPinned(this.products);
-            this.products = this.productService.sortByStatusPriority(this.products);
-            this.debugPinned(this.products, 'after append');
-            this.start += receivedCount;
-            this.finished = receivedCount < this.limit;
-          }
-
-          const focoVisible = this.products.filter(product => Number((product as any).status) === 7);
-          console.log('[CatalogComponent] loadProducts final list', {
-            resetList,
+            batchCount: nextBatch.length,
             totalVisible: this.products.length,
-            nextStart: this.start,
+            nextStatusSequenceIndex: this.currentStatusSequenceIndex,
             finished: this.finished,
             focoVisibleCount: focoVisible.length,
-            firstTenVisible: this.products.slice(0, 10).map(product => ({
-              prod_id: (product as any).prod_id,
-              prod_name: (product as any).prod_name,
-              status: (product as any).status
-            })),
             focoVisibleIds: focoVisible.slice(0, 10).map(product => ({
               prod_id: (product as any).prod_id,
               prod_name: (product as any).prod_name,
@@ -369,6 +356,7 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
             }))
           });
 
+          this.debugPinned(this.products, resetList ? 'after reset' : 'after append');
           this.saveCurrentState();
         },
         (error) => {
@@ -377,6 +365,123 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       );
     }
+  }
+
+  private initializeStatusLoadingState(): void {
+    const selectedStatus = this.normalizeSelectedStatus(this.statusProduct);
+    this.statusLoadSequence = selectedStatus === null ? [...this.STATUS_SEQUENCE_ALL] : [selectedStatus];
+    this.currentStatusSequenceIndex = 0;
+    this.statusStartByValue = {};
+    this.products = [];
+    this.start = 0;
+    this.finished = this.statusLoadSequence.length === 0;
+  }
+
+  private fetchNextVisibleBatch(
+    remaining: number,
+    sequenceIndex: number = this.currentStatusSequenceIndex,
+    accumulatedProducts: Product[] = []
+  ): Observable<{ products: Product[]; nextSequenceIndex: number; finished: boolean }> {
+    if (remaining <= 0) {
+      return of({
+        products: accumulatedProducts,
+        nextSequenceIndex: sequenceIndex,
+        finished: false
+      });
+    }
+
+    if (sequenceIndex >= this.statusLoadSequence.length) {
+      return of({
+        products: accumulatedProducts,
+        nextSequenceIndex: sequenceIndex,
+        finished: true
+      });
+    }
+
+    const statusValue = this.statusLoadSequence[sequenceIndex];
+    const start = this.statusStartByValue[statusValue] ?? 0;
+    const requestContext = this.buildRequestContext(start, remaining, statusValue);
+
+    return this.apiService.getProducts(
+      requestContext.selector,
+      requestContext.id as any,
+      requestContext.start,
+      requestContext.limit,
+      requestContext.statusProduct as unknown as string,
+      this.priceRateId
+    ).pipe(
+      switchMap(products => {
+        const safeProducts = Array.isArray(products) ? products : [];
+        const mergedProducts = this.mergeProductsById(accumulatedProducts, safeProducts);
+        this.statusStartByValue[statusValue] = start + safeProducts.length;
+
+        if (safeProducts.length < remaining) {
+          return this.fetchNextVisibleBatch(
+            remaining - safeProducts.length,
+            sequenceIndex + 1,
+            mergedProducts
+          );
+        }
+
+        return of({
+          products: mergedProducts,
+          nextSequenceIndex: sequenceIndex,
+          finished: false
+        });
+      })
+    );
+  }
+
+  private buildRequestContext(
+    start: number,
+    limit: number,
+    statusProduct: number | string
+  ): {
+    selector: string;
+    id: number | string | null;
+    start: number;
+    limit: number;
+    statusProduct: number | string;
+  } {
+    let selector = 'all';
+    let id: number | string | null = null;
+
+    if (typeof this.subc_id !== 'undefined') {
+      selector = 'subCategory';
+      id = this.subc_id;
+    } else if (typeof this.cat_id !== 'undefined') {
+      selector = 'category';
+      id = this.cat_id;
+    } else if (this.searchProduct !== '') {
+      selector = 'search';
+      id = this.searchProduct;
+    }
+
+    return {
+      selector,
+      id,
+      start,
+      limit,
+      statusProduct
+    };
+  }
+
+  private normalizeSelectedStatus(statusProduct: string): number | null {
+    const normalizedStatus = String(statusProduct ?? '').trim();
+    if (!normalizedStatus || normalizedStatus === 'undefined') {
+      return null;
+    }
+
+    const statusNumber = Number(normalizedStatus);
+    return Number.isFinite(statusNumber) ? statusNumber : null;
+  }
+
+  private mergeProductsById(existingProducts: Product[], incomingProducts: Product[]): Product[] {
+    return [
+      ...new Map(
+        [...existingProducts, ...incomingProducts].map(product => [String(product?.prod_id), product])
+      ).values()
+    ];
   }
 
   saveProductsLocalStorages() {
@@ -521,5 +626,9 @@ export class CatalogComponent implements OnInit, OnDestroy, AfterViewInit {
     } catch (e) {
       console.warn('[CatalogComponent] debugPinned error', e);
     }
+  }
+
+  trackByProductId(index: number, product: Product): number {
+    return product?.prod_id ?? index;
   }
 }

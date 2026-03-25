@@ -76,16 +76,40 @@
                 <h4><br>Estado<br></h4>
               </div>
               <div class="header-contant">
-                <select [(ngModel)]="statusProduct" class="product-status" cancelText="Cancelar"
-                  (change)="filterStatus()">
-                  <option value="">Todos</option>
-                  <option value="7">Foco</option>
-                  <option value="2">Destacado</option>
-                  <option value="1">Nuevo</option>
-                  <option value="3">Normal</option>
-                  <option value="4">Outlet</option>
-                  <option value="5">Agotado</option>
-                </select>
+                <div class="status-picker" (click)="$event.stopPropagation()">
+                  <button type="button" class="status-picker__trigger" (click)="toggleStatusDropdown($event)">
+                    <span class="status-picker__trigger-label">{{ selectedStatusLabel }}</span>
+                    <i class="fa" [ngClass]="statusDropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'" aria-hidden="true"></i>
+                  </button>
+
+                  <div class="status-picker__panel" *ngIf="statusDropdownOpen">
+                    <div class="status-picker__search">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                      <input
+                        type="text"
+                        [(ngModel)]="statusSearchTerm"
+                        placeholder="Escribe para buscar"
+                        (click)="onStatusSearchClick($event)"
+                      />
+                    </div>
+
+                    <div class="status-picker__options">
+                      <button
+                        type="button"
+                        class="status-picker__option"
+                        *ngFor="let option of filteredStatusOptions"
+                        [class.status-picker__option--active]="option.value === statusProduct"
+                        (click)="selectStatus(option.value, $event)">
+                        <span>{{ option.label }}</span>
+                        <i class="fa fa-check" *ngIf="option.value === statusProduct" aria-hidden="true"></i>
+                      </button>
+
+                      <div class="status-picker__empty" *ngIf="!filteredStatusOptions.length">
+                        No se encontraron estados
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div>
