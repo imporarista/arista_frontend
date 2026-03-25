@@ -2,18 +2,25 @@
   <div class="img-wrapper">
     <div class="lable-block">
       <span class="lable4 foco-label" *ngIf="hasStatus(7)">Foco</span>
-      <span class="lable4 orange" *ngIf="hasStatus(2)">Destacado</span>
-      <span class="lable3" *ngIf="hasStatus(1)">Nuevo</span>
-      <span class="lable4 green" *ngIf="hasStatus(4)">Outlet</span>
-      <span class="lable4 red" *ngIf="hasStatus(5)">Agotado</span>
+      <span class="lable4 orange" *ngIf="hasStatus(1)">Destacado</span>
+      <span class="lable3" *ngIf="hasStatus(2)">Nuevo</span>
+      <span class="lable4 green" *ngIf="hasStatus(6)">Outlet</span>
+      <span class="lable4 red" *ngIf="hasStatus(4)">Agotado</span>
+      <span class="lable4 red" *ngIf="hasStatus(5)">Inactivo</span>
     </div>
     <div class="front">
       <a href="javascript:void(0)" (click)="FullView.openModal()">
-      <!-- <a href="javascript:void(0)" (click)="openFullScreenPopup(product?.prod_name)"> -->
-        <div class="img-fluid lazy-loading"
-            style="height: 200px; width: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #f0f2f5;"
-            [ngStyle]="{'background-image': backgroundImageStyle}">
-        </div>
+        <img
+          class="img-fluid lazy-loading"
+          [src]="resolvedImageUrl || aristaLogo"
+          [alt]="product?.prod_name || 'Producto'"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          width="300"
+          height="200"
+          style="height: 200px; width: 100%; object-fit: contain; background-color: #f0f2f5;"
+        />
       </a>
     </div>
     <div class="card-info-desired" *ngIf="desiredProduct.desiredProductsIds.includes(product.prod_id)">

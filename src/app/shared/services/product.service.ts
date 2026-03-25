@@ -18,11 +18,12 @@ const state = {
 export class ProductService {
   private readonly statusPriorityMap = new Map<number, number>([
     [7, 1], // Foco
-    [2, 2], // Destacado
-    [1, 3], // Nuevo
+    [1, 2], // Destacado
+    [2, 3], // Nuevo
     [3, 4], // Normal
-    [4, 5], // Outlet
-    [5, 6], // Agotado
+    [6, 5], // Outlet
+    [4, 6], // Agotado
+    [5, 7], // Inactivo
   ]);
 
   public Currency = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
